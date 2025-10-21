@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'OrangeFlow CRM',
-  description: 'CRM Dashboard for OrangeFlow',
+  title: 'Sol & Cielo CRM',
+  description: 'CRM Dashboard for Sol & Cielo',
 };
 
 export default function RootLayout({
