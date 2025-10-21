@@ -12,15 +12,8 @@ export function SolYCieloLogo(props: SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      <path d="M12 18a6 6 0 0 0 6-6 6 6 0 0 0-6-6 6 6 0 0 0-6 6 6 6 0 0 0 6 6Z" fill="hsl(var(--accent))" stroke="none" />
-      <path d="M12 2v2" stroke="hsl(var(--primary))" />
-      <path d="M12 20v2" stroke="hsl(var(--primary))" />
-      <path d="m4.93 4.93 1.41 1.41" stroke="hsl(var(--primary))" />
-      <path d="m17.66 17.66 1.41 1.41" stroke="hsl(var(--primary))" />
-      <path d="M2 12h2" stroke="hsl(var(--primary))" />
-      <path d="M20 12h2" stroke="hsl(var(--primary))" />
-      <path d="m6.34 17.66-1.41 1.41" stroke="hsl(var(--primary))" />
-      <path d="m19.07 4.93-1.41 1.41" stroke="hsl(var(--primary))" />
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" fill="hsl(var(--primary))" stroke="none" />
+        <path d="M12 14c-3.87 0-7 3.13-7 7h14c0-3.87-3.13-7-7-7z" fill="hsl(var(--primary))" stroke="none" opacity="0.6"/>
     </svg>
   );
 }

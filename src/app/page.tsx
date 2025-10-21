@@ -1,28 +1,21 @@
 import {
   Activity,
+  AlertTriangle,
   BarChart,
   Bell,
   Building,
-  Calendar,
-  ChevronDown,
   ChevronRight,
   ClipboardList,
   Contact,
   CreditCard,
-  DollarSign,
   FileText,
   Filter,
   LayoutDashboard,
-  Mail,
+  LineChart,
   MoreHorizontal,
-  Phone,
-  Plus,
   PlusCircle,
   Search,
   Settings,
-  TrendingUp,
-  Upload,
-  UserPlus,
   Users,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -40,6 +33,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { SolYCieloLogo } from '@/components/icons';
 import {
   Sidebar,
   SidebarContent,
@@ -52,75 +47,41 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { SolYCieloLogo } from '@/components/icons';
-import { SalesChart } from '@/components/dashboard/sales-chart';
 
 const kpis = [
-  { title: "Nuevos Leads (24h)", value: "12", delta: "+15%", cta: "Ver leads" },
-  { title: "Leads sin contactar", value: "8", delta: "-5%", cta: "Contactar ahora" },
-  { title: "Cotizaciones por vencer", value: "3", delta: "+2", cta: "Revisar" },
-  { title: "Tasa de conversión (mes)", value: "25%", delta: "+2.5%", cta: "Ver informe" },
+  { title: "Total de Clientes", value: "1,250", delta: "+50 este mes", icon: <Users className="text-primary"/>, cta: "Ver clientes" },
+  { title: "Leads Activos", value: "82", delta: "+15 hoy", icon: <Contact className="text-primary"/>, cta: "Gestionar leads" },
+  { title: "Facturas Pendientes", value: "42", delta: "$15,780.00", icon: <FileText className="text-destructive"/>, cta: "Ver facturas" },
+  { title: "Contratos Firmados", value: "310", delta: "+12 este mes", icon: <ClipboardList className="text-green-500"/>, cta: "Ver contratos" },
 ];
 
-const pipelineColumns = [
-  {
-    title: "Nuevo",
-    leads: [
-      { name: "Ana Torres", city: "Madrid", lastActivity: "Hace 2h", priority: "alta" },
-      { name: "Carlos Ruiz", city: "Barcelona", lastActivity: "Hace 5h", priority: "media" },
-    ],
-  },
-  {
-    title: "Por Visitar",
-    leads: [
-      { name: "Beatriz Rico", city: "Valencia", lastActivity: "Ayer", priority: "alta" },
-    ],
-  },
-  {
-    title: "Por Cotizar",
-    leads: [
-      { name: "David Sanz", city: "Sevilla", lastActivity: "Hace 3 días", priority: "baja" },
-      { name: "Elena Gil", city: "Zaragoza", lastActivity: "Hace 4 días", priority: "media" },
-      { name: "Felipe Morales", city: "Málaga", lastActivity: "Hace 1 semana", priority: "alta" },
-    ],
-  },
-  {
-    title: "Por Contratar",
-    leads: [{ name: "Gloria Paz", city: "Murcia", lastActivity: "Hace 2 semanas", priority: "media" }],
-  },
-];
-
-const urgentLeads = [
-  { name: "Javier Soler", daysSinceContact: 5 },
-  { name: "Laura Méndez", daysSinceContact: 7 },
-  { name: "Marcos Núñez", daysSinceContact: 12 },
-];
-
-const upcomingVisits = [
-  { date: "25 Jul", time: "10:00", advisor: "Lucía", client: "Ana Torres" },
-  { date: "25 Jul", time: "12:30", advisor: "Marcos", client: "Beatriz Rico" },
-  { date: "26 Jul", time: "09:00", advisor: "Lucía", client: "cliente nuevo" },
-];
+const quickAccess = [
+    { title: "Gestión de Leads", description: "Flujo comercial y oportunidades.", icon: <Contact className="h-8 w-8"/>, href: "#"},
+    { title: "Gestión de Usuarios", description: "Clientes y equipo administrativo.", icon: <Users className="h-8 w-8"/>, href: "#"},
+    { title: "Gestión de Facturas", description: "Facturación, cobros y pagos.", icon: <FileText className="h-8 w-8"/>, href: "#"},
+    { title: "Reportes y Análisis", description: "Métricas y rendimiento.", icon: <BarChart className="h-8 w-8"/>, href: "#"},
+]
 
 const recentActivities = [
-  { type: "cotizacion", title: "Cotización #C-789 enviada a David Sanz", timestamp: "Hace 15min", meta: "Valor: $2,500" },
-  { type: "visita", title: "Visita registrada para Beatriz Rico", timestamp: "Hace 1h", meta: "Asesor: Marcos" },
-  { type: "contrato", title: "Contrato #F-123 firmado por Gloria Paz", timestamp: "Hace 3h", meta: "Estado: Completado" },
-  { type: "lead", title: "Nuevo lead: Ana Torres", timestamp: "Hace 2h", meta: "Fuente: Web" },
+  { type: "lead", title: "Nuevo lead 'Ana Torres' asignado a 'Carlos Ruiz'", timestamp: "Hace 5min", meta: "Fuente: Web" },
+  { type: "factura", title: "Factura #FAC-2024-789 generada para 'Construcciones S.A.'", timestamp: "Hace 15min", meta: "Valor: $2,500" },
+  { type: "pago", title: "Pago recibido de 'Inversiones ABC'", timestamp: "Hace 1h", meta: "Método: Wompi" },
+  { type: "usuario", title: "Nuevo usuario 'Laura Méndez' creado", timestamp: "Hace 2h", meta: "Rol: Comercial" },
+  { type: "contrato", title: "Contrato #CTR-124 firmado por 'Logística Total'", timestamp: "Ayer", meta: "Estado: Activo" },
 ];
 
-const priorityVariant = {
-  alta: 'destructive',
-  media: 'default',
-  baja: 'secondary',
-} as const;
+const alerts = [
+    { title: "5 Leads sin contactar por más de 3 días", cta: "Revisar ahora" },
+    { title: "2 Facturas a punto de vencer", cta: "Contactar clientes" },
+    { title: "Usuario 'Juan Pérez' inactivo por 30 días", cta: "Ver perfil" },
+]
 
 const activityIcons = {
-  cotizacion: <FileText className="h-4 w-4" />,
-  visita: <Calendar className="h-4 w-4" />,
-  contrato: <CreditCard className="h-4 w-4" />,
-  lead: <UserPlus className="h-4 w-4" />,
+  lead: <Contact className="h-4 w-4" />,
+  factura: <FileText className="h-4 w-4" />,
+  pago: <CreditCard className="h-4 w-4" />,
+  usuario: <Users className="h-4 w-4" />,
+  contrato: <ClipboardList className="h-4 w-4" />,
 };
 
 
@@ -130,9 +91,9 @@ export default function Dashboard() {
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border/80">
-        <SidebarHeader className="flex items-center gap-2.5">
-          <SolYCieloLogo className="h-7 w-7" />
-          <h2 className="text-lg font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
+        <SidebarHeader className="flex items-center gap-2.5 p-4">
+          <SolYCieloLogo className="h-8 w-8" />
+          <h2 className="text-xl font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
             Sol & Cielo
           </h2>
         </SidebarHeader>
@@ -141,31 +102,31 @@ export default function Dashboard() {
             <SidebarMenuItem>
               <SidebarMenuButton isActive>
                 <LayoutDashboard />
-                <span className="truncate">Inicio</span>
+                <span className="truncate">Home General</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton>
+                <Contact />
+                <span className="truncate">Gestión de Leads</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton>
                 <Users />
-                <span className="truncate">Leads</span>
+                <span className="truncate">Gestión de Usuarios</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton>
-                <Building />
-                <span className="truncate">Clientes</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <DollarSign />
-                <span className="truncate">Ventas</span>
+                <FileText />
+                <span className="truncate">Gestión de Facturas</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton>
                 <BarChart />
-                <span className="truncate">Informes</span>
+                <span className="truncate">Reportes y Análisis</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -183,29 +144,33 @@ export default function Dashboard() {
       </Sidebar>
       <SidebarInset className="flex flex-col">
         {/* Header */}
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-card px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-card px-4 sm:px-6">
           <SidebarTrigger className="md:hidden" />
-           <div className="relative flex-1 md:grow-0">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+           <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Buscar en todo el CRM..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+              className="w-full rounded-lg bg-background pl-10 md:w-[200px] lg:w-[320px] h-10"
             />
           </div>
-          <div className="ml-auto flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="rounded-full">
+          <div className="ml-auto flex items-center gap-4">
+             <Button variant="outline" size="sm" className="gap-1.5 hidden sm:flex">
+                <PlusCircle className="h-4 w-4" />
+                Crear Lead
+              </Button>
+            <Button variant="ghost" size="icon" className="rounded-full relative">
               <Bell className="h-5 w-5" />
               <span className="sr-only">Notificaciones</span>
-              <span className="absolute top-1 right-1 flex h-2 w-2">
+              <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
               </span>
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="icon" className="rounded-full">
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="rounded-full h-10 w-10 p-0">
+                  <Avatar className="h-9 w-9">
                     {userAvatar && <AvatarImage src={userAvatar.imageUrl} alt="Avatar de usuario" data-ai-hint={userAvatar.imageHint} />}
                     <AvatarFallback>JD</AvatarFallback>
                   </Avatar>
@@ -225,197 +190,145 @@ export default function Dashboard() {
           </div>
         </header>
 
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 overflow-auto">
+        <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6 overflow-auto bg-muted/40">
           <div className="flex items-center justify-between">
-            <h1 className="text-lg font-semibold md:text-2xl font-headline">Inicio</h1>
-            <div className="hidden md:flex items-center gap-2">
-              <Button variant="outline" size="sm" className="gap-1">
-                <Filter className="h-3.5 w-3.5" />
-                <span>Filtrar</span>
-              </Button>
-              <Button size="sm" className="gap-1">
-                <PlusCircle className="h-3.5 w-3.5" />
-                <span>Crear Lead</span>
-              </Button>
-            </div>
+            <h1 className="text-2xl font-bold font-headline tracking-tight">Home General</h1>
           </div>
           
           {/* KPI Strip */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {kpis.map((kpi, index) => (
-              <Card key={index}>
+              <Card key={index} className="hover:shadow-md transition-shadow">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <div className="h-8 w-8 flex items-center justify-center rounded-full bg-primary/10">
+                    {kpi.icon}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{kpi.value}</div>
-                  <div className="flex justify-between items-center">
-                    <p className="text-xs text-muted-foreground">{kpi.delta}</p>
-                    <Link href="#" className="text-xs font-medium text-primary hover:underline">
-                      {kpi.cta}
+                  <div className="flex justify-between items-center text-xs">
+                    <p className="text-muted-foreground">{kpi.delta}</p>
+                    <Link href="#" className="font-medium text-primary hover:underline flex items-center gap-1">
+                      {kpi.cta} <ChevronRight className="h-3 w-3"/>
                     </Link>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-8">
-            {/* Pipeline */}
-            <div className="lg:col-span-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-headline">Pipeline de Ventas</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                  {pipelineColumns.map((col) => (
-                    <div key={col.title} className="p-4 bg-muted/50 rounded-lg">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-sm">{col.title}</h3>
-                        <Badge variant="secondary" className="text-xs">{col.leads.length}</Badge>
-                      </div>
-                      <div className="space-y-4">
-                        {col.leads.map((lead) => (
-                           <Card key={lead.name} className="bg-card">
-                           <CardContent className="p-3">
-                             <div className="flex justify-between items-start">
-                               <div>
-                                 <p className="font-semibold text-sm">{lead.name}</p>
-                                 <p className="text-xs text-muted-foreground">{lead.city}</p>
-                               </div>
-                               <Badge variant={priorityVariant[lead.priority as keyof typeof priorityVariant]} className="capitalize text-xs">{lead.priority}</Badge>
-                             </div>
-                             <div className="flex items-center justify-between mt-4">
-                               <p className="text-xs text-muted-foreground">{lead.lastActivity}</p>
-                               <div className="flex items-center">
-                                 <Avatar className="h-6 w-6 border-2 border-card">
-                                   <AvatarImage src="https://picsum.photos/seed/asesor1/32/32" />
-                                   <AvatarFallback>AS</AvatarFallback>
-                                 </Avatar>
-                                 <DropdownMenu>
-                                   <DropdownMenuTrigger asChild>
-                                     <Button variant="ghost" size="icon" className="h-6 w-6">
-                                       <MoreHorizontal className="h-4 w-4" />
-                                     </Button>
-                                   </DropdownMenuTrigger>
-                                   <DropdownMenuContent>
-                                     <DropdownMenuItem>Ver detalles</DropdownMenuItem>
-                                     <DropdownMenuItem>Asignar tarea</DropdownMenuItem>
-                                   </DropdownMenuContent>
-                                 </DropdownMenu>
-                               </div>
-                             </div>
-                           </CardContent>
-                         </Card>
-                        ))}
-                         <Button variant="outline" size="sm" className="w-full">
-                           <Plus className="h-4 w-4 mr-2" /> Añadir Lead
-                         </Button>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
-            
-            {/* Side column */}
-            <div className="space-y-4 lg:space-y-8">
-              {/* Urgent Leads */}
-              <Card className="bg-destructive/10 border-destructive">
-                <CardHeader>
-                  <CardTitle className="text-base text-destructive font-headline">Leads Urgentes</CardTitle>
-                  <CardDescription className="text-destructive/80">Contactar lo antes posible.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                  {urgentLeads.map((lead) => (
-                    <li key={lead.name} className="flex items-center justify-between p-2 rounded-md hover:bg-destructive/10">
-                      <div>
-                        <p className="font-medium text-sm">{lead.name}</p>
-                        <p className="text-xs text-destructive/80">{lead.daysSinceContact} días sin contacto</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive/80 hover:bg-destructive/20 hover:text-destructive"><Phone className="h-4 w-4"/></Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive/80 hover:bg-destructive/20 hover:text-destructive"><Mail className="h-4 w-4"/></Button>
-                      </div>
-                    </li>
-                  ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              {/* Upcoming Visits */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-headline">Próximas Visitas</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                  {upcomingVisits.map((visit, i) => (
-                    <div key={i} className="flex gap-4">
-                      <div className="text-center">
-                        <p className="font-bold text-sm">{visit.date.split(' ')[0]}</p>
-                        <p className="text-xs text-muted-foreground">{visit.date.split(' ')[1]}</p>
-                      </div>
-                      <div className="border-l pl-4 flex-1">
-                        <p className="font-medium text-sm">{visit.time}</p>
-                        <p className="text-xs text-muted-foreground">con {visit.client} ({visit.advisor})</p>
-                      </div>
-                    </div>
-                  ))}
-                  </div>
-                  <Button size="sm" className="w-full mt-4">
-                    <Plus className="h-4 w-4 mr-2" /> Agregar visita
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
           
-          {/* Recent Activity */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline">Actividad Reciente</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-              {recentActivities.map((activity, i) => (
-                <div key={i} className="flex items-start gap-4">
-                  <div className="bg-muted p-2 rounded-full">
-                    {activityIcons[activity.type as keyof typeof activityIcons]}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm">{activity.title}</p>
-                    <p className="text-xs text-muted-foreground">{activity.timestamp} &middot; {activity.meta}</p>
-                  </div>
-                </div>
-              ))}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+                {/* Quick Access */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-lg">Accesos Rápidos</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                       {quickAccess.map((item) => (
+                         <Link key={item.title} href={item.href} className="group">
+                            <Card className="h-full hover:border-primary transition-colors">
+                                <CardHeader className="flex flex-row items-center gap-4">
+                                    <div className="p-3 rounded-full bg-primary/10 text-primary">
+                                        {item.icon}
+                                    </div>
+                                    <div>
+                                        <CardTitle className="text-base font-semibold">{item.title}</CardTitle>
+                                        <CardDescription>{item.description}</CardDescription>
+                                    </div>
+                                    <ChevronRight className="h-5 w-5 ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
+                                </CardHeader>
+                            </Card>
+                         </Link>
+                       ))}
+                    </CardContent>
+                </Card>
+                
+                {/* Recent Activity */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-lg">Actividad Reciente Global</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="space-y-4">
+                    {recentActivities.map((activity, i) => (
+                        <div key={i} className="flex items-start gap-4">
+                        <div className="bg-muted p-2 rounded-full mt-1">
+                            {activityIcons[activity.type as keyof typeof activityIcons]}
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-sm">{activity.title}</p>
+                            <p className="text-xs text-muted-foreground">{activity.timestamp} &middot; {activity.meta}</p>
+                        </div>
+                        </div>
+                    ))}
+                    </div>
+                    </CardContent>
+                </Card>
+            </div>
+            {/* Side column */}
+            <div className="space-y-6">
+                {/* Alerts */}
+                <Card className="bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800">
+                    <CardHeader>
+                        <CardTitle className="font-headline text-lg flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
+                            <AlertTriangle className="h-5 w-5" />
+                            Alertas y Recordatorios
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ul className="space-y-3">
+                            {alerts.map((alert, i) => (
+                                <li key={i} className="flex items-center justify-between text-sm">
+                                    <p className="text-yellow-900 dark:text-yellow-200">{alert.title}</p>
+                                    <Link href="#" className="font-semibold text-primary hover:underline text-xs">
+                                        {alert.cta}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                </Card>
 
-        </main>
-         {/* Mobile Quick Actions */}
-         <div className="md:hidden sticky bottom-0 left-0 right-0 bg-background border-t p-2 flex justify-around items-center">
-            <Button variant="ghost" className="flex flex-col h-auto p-1">
-              <UserPlus className="h-5 w-5 mb-1" />
-              <span className="text-xs">Crear Lead</span>
-            </Button>
-            <Button variant="ghost" className="flex flex-col h-auto p-1">
-              <Upload className="h-5 w-5 mb-1" />
-              <span className="text-xs">Importar</span>
-            </Button>
-            <Button variant="ghost" className="flex flex-col h-auto p-1">
-              <FileText className="h-5 w-5 mb-1" />
-              <span className="text-xs">Cotizar</span>
-            </Button>
-            <Button variant="ghost" className="flex flex-col h-auto p-1">
-              <DollarSign className="h-5 w-5 mb-1" />
-              <span className="text-xs">Cobrar</span>
-            </Button>
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-lg">Tasa de Conversión</CardTitle>
+                        <CardDescription>Global, últimos 6 meses.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="h-40">
+                             <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={conversionData} margin={{ top: 5, right: 10, left: -30, bottom: 0 }}>
+                                    <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}%`} />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Line type="monotone" dataKey="conversion" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, fill: "hsl(var(--primary))" }} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </CardContent>
+                 </Card>
+            </div>
           </div>
+        </main>
+        <footer className="px-6 py-3 border-t text-xs text-muted-foreground text-center">
+            Sol & Cielo CRM v2.0 | Contacto para soporte: <a href="mailto:automations@sol-cielo.com" className="text-primary hover:underline">automations@sol-cielo.com</a>
+        </footer>
       </SidebarInset>
     </SidebarProvider>
   );
 }
+
+// Placeholder data for chart
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis } from "recharts"
+import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+
+const conversionData = [
+  { name: 'Ene', conversion: 18 },
+  { name: 'Feb', conversion: 22 },
+  { name: 'Mar', conversion: 25 },
+  { name: 'Abr', conversion: 23 },
+  { name: 'May', conversion: 28 },
+  { name: 'Jun', conversion: 32 },
+];
