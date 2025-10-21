@@ -109,6 +109,11 @@ const leadsData: Lead[] = [
     { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/101/40/40', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com' },
     { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/102/40/40', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co' },
     { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/103/40/40', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com' },
+    { id: 'lead-4', name: 'Nuevo Cliente Alfa', city: 'Barranquilla', lastContact: 'Hace 1h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/104/40/40', status: 'Nuevo Cliente', phone: '318 111 2233', email: 'alfa@cliente.com' },
+    { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/105/40/40', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com' },
+    { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/106/40/40', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com' },
+    { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/107/40/40', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com' },
+    { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/108/40/40', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com' },
 ];
 
 const LeadCard = ({ lead, isSelected, onClick }: { lead: Lead, isSelected: boolean, onClick: () => void}) => {
@@ -494,13 +499,20 @@ const StageForm = ({ stageName, onOpenChange }: { stageName: string | null; onOp
 
 export default function LeadsPage() {
   const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(leadsData[0]);
   const [activeStage, setActiveStage] = useState('Por Visitar');
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(leadsData.find(l => l.status === activeStage) ?? null);
   const [formStage, setFormStage] = useState<string | null>(null);
 
   const handleUpdateStatus = (stage: string) => {
     setFormStage(stage);
   };
+  
+  const handleStageChange = (stage: string) => {
+    setActiveStage(stage);
+    setSelectedLead(null);
+  }
+
+  const filteredLeads = leadsData.filter(lead => lead.status === activeStage);
 
   return (
     <SidebarProvider>
@@ -629,7 +641,7 @@ export default function LeadsPage() {
                         {stages.map(stage => (
                             <li key={stage.name}>
                                 <button
-                                    onClick={() => setActiveStage(stage.name)}
+                                    onClick={() => handleStageChange(stage.name)}
                                     className={cn(
                                         "w-full text-left p-2 rounded-md text-sm flex justify-between items-center transition-colors",
                                         activeStage === stage.name
@@ -641,7 +653,7 @@ export default function LeadsPage() {
                                         <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
                                         <span>{stage.name}</span>
                                     </div>
-                                    <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", activeStage === stage.name ? "bg-primary/20" : "bg-muted")}>{stage.count}</span>
+                                    <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", activeStage === stage.name ? "bg-primary/20" : "bg-muted")}>{leadsData.filter(l => l.status === stage.name).length}</span>
                                 </button>
                             </li>
                         ))}
@@ -652,10 +664,10 @@ export default function LeadsPage() {
             {/* Center Column: Leads List */}
             <div className={cn("lg:col-span-2 xl:col-span-2 flex flex-col gap-4", selectedLead && "hidden lg:flex")}>
                 <div className='flex items-center justify-between'>
-                    <h2 className='text-lg font-semibold'>Leads en: {activeStage} ({leadsData.length})</h2>
+                    <h2 className='text-lg font-semibold'>Leads en: {activeStage} ({filteredLeads.length})</h2>
                 </div>
                 <div className="lg:hidden">
-                    <Select value={activeStage} onValueChange={setActiveStage}>
+                    <Select value={activeStage} onValueChange={handleStageChange}>
                         <SelectTrigger>
                             <SelectValue placeholder="Seleccionar etapa..." />
                         </SelectTrigger>
@@ -664,7 +676,7 @@ export default function LeadsPage() {
                                 <SelectItem key={stage.name} value={stage.name}>
                                     <div className="flex items-center gap-2">
                                         <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
-                                        <span>{stage.name} ({stage.count})</span>
+                                        <span>{stage.name} ({leadsData.filter(l => l.status === stage.name).length})</span>
                                     </div>
                                 </SelectItem>
                             ))}
@@ -672,7 +684,7 @@ export default function LeadsPage() {
                     </Select>
                 </div>
                 <div className='space-y-3 overflow-y-auto'>
-                    {leadsData.map(lead => (
+                    {filteredLeads.map(lead => (
                        <LeadCard 
                         key={lead.id} 
                         lead={lead} 
@@ -680,6 +692,12 @@ export default function LeadsPage() {
                         onClick={() => setSelectedLead(lead)} 
                        />
                     ))}
+                    {filteredLeads.length === 0 && (
+                        <div className="text-center text-muted-foreground py-10">
+                            <Contact className="h-12 w-12 mx-auto mb-4" />
+                            <p className="font-medium">No hay leads en esta etapa.</p>
+                        </div>
+                    )}
                 </div>
             </div>
 
