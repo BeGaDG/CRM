@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Activity,
   AlertTriangle,
@@ -77,6 +77,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useIsMobile } from '@/hooks/use-mobile';
+
 
 const leadExample = { 
   id: 'lead-1', 
@@ -105,7 +107,7 @@ const stages = [
   { name: 'No', count: 50, color: 'bg-gray-500'}
 ];
 
-const leadsData: Lead[] = [
+const initialLeads: Lead[] = [
     { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/101/40/40', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com' },
     { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/102/40/40', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co' },
     { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/103/40/40', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com' },
@@ -257,10 +259,17 @@ const DatePicker = ({ date, setDate }: { date?: Date, setDate: (date?: Date) => 
     )
 }
 
-const StageForm = ({ stageName, onOpenChange }: { stageName: string | null; onOpenChange: (open: boolean) => void }) => {
+const StageForm = ({ stageName, onOpenChange, onSave }: { stageName: string | null; onOpenChange: (open: boolean) => void; onSave: (newStage: string) => void; }) => {
     const [date, setDate] = useState<Date>()
     const [date2, setDate2] = useState<Date>()
-     const [date3, setDate3] = useState<Date>()
+    const [date3, setDate3] = useState<Date>()
+
+    const handleSave = () => {
+        if (stageName) {
+            onSave(stageName);
+        }
+        onOpenChange(false);
+    }
 
     const forms: { [key: string]: React.ReactNode } = {
         'Nuevo Cliente': (
@@ -488,7 +497,7 @@ const StageForm = ({ stageName, onOpenChange }: { stageName: string | null; onOp
                 {formContent && (
                     <div className='flex justify-end gap-2 mt-4'>
                         <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-                        <Button>Guardar y Avanzar</Button>
+                        <Button onClick={handleSave}>Guardar y Avanzar</Button>
                     </div>
                 )}
             </SheetContent>
@@ -499,20 +508,58 @@ const StageForm = ({ stageName, onOpenChange }: { stageName: string | null; onOp
 
 export default function LeadsPage() {
   const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
+  const isMobile = useIsMobile();
   const [activeStage, setActiveStage] = useState('Por Visitar');
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(leadsData.find(l => l.status === activeStage) ?? null);
+  const [leads, setLeads] = useState<Lead[]>(initialLeads);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(leads.find(l => l.status === activeStage) ?? null);
   const [formStage, setFormStage] = useState<string | null>(null);
 
   const handleUpdateStatus = (stage: string) => {
     setFormStage(stage);
   };
+
+  const handleSaveStage = (newStage: string) => {
+    if (selectedLead) {
+      const updatedLeads = leads.map(lead =>
+        lead.id === selectedLead.id ? { ...lead, status: newStage } : lead
+      );
+      setLeads(updatedLeads);
+      
+      const updatedSelectedLead = { ...selectedLead, status: newStage };
+      setSelectedLead(updatedSelectedLead);
+      setActiveStage(newStage);
+    }
+     // Logic to create a new lead
+    else if (newStage === 'Nuevo Cliente') {
+        // This is where you would handle creating a new lead.
+        // For now, let's just close the form.
+        console.log("Creating new lead...");
+    }
+    setFormStage(null);
+  };
   
   const handleStageChange = (stage: string) => {
     setActiveStage(stage);
-    setSelectedLead(leadsData.find(l => l.status === stage) ?? null);
+    setSelectedLead(leads.find(l => l.status === stage) ?? null);
   }
 
-  const filteredLeads = leadsData.filter(lead => lead.status === activeStage);
+  const filteredLeads = leads.filter(lead => lead.status === activeStage);
+
+  useEffect(() => {
+    if (!selectedLead) {
+        setSelectedLead(filteredLeads.length > 0 ? filteredLeads[0] : null);
+    }
+  }, [activeStage, filteredLeads, selectedLead]);
+
+  useEffect(() => {
+    if (isMobile === false) {
+      setSelectedLead(leads.find(l => l.status === activeStage) ?? null);
+    } else {
+        // On mobile, don't auto-select a lead to keep the list view
+        setSelectedLead(null);
+    }
+  }, [isMobile]);
+
 
   return (
     <SidebarProvider>
@@ -653,7 +700,7 @@ export default function LeadsPage() {
                                         <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
                                         <span>{stage.name}</span>
                                     </div>
-                                    <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", activeStage === stage.name ? "bg-primary/20" : "bg-muted")}>{leadsData.filter(l => l.status === stage.name).length}</span>
+                                    <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", activeStage === stage.name ? "bg-primary/20" : "bg-muted")}>{leads.filter(l => l.status === stage.name).length}</span>
                                 </button>
                             </li>
                         ))}
@@ -662,7 +709,7 @@ export default function LeadsPage() {
             </Card>
 
             {/* Center Column: Leads List */}
-            <div className={cn("flex flex-col gap-4", selectedLead && "hidden lg:flex")}>
+             <div className={cn("flex flex-col gap-4", isMobile && selectedLead && "hidden")}>
                 <div className='flex items-center justify-between'>
                     <h2 className='text-lg font-semibold'>Leads en: {activeStage} ({filteredLeads.length})</h2>
                 </div>
@@ -676,7 +723,7 @@ export default function LeadsPage() {
                                 <SelectItem key={stage.name} value={stage.name}>
                                     <div className="flex items-center gap-2">
                                         <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
-                                        <span>{stage.name} ({leadsData.filter(l => l.status === stage.name).length})</span>
+                                        <span>{stage.name} ({leads.filter(l => l.status === stage.name).length})</span>
                                     </div>
                                 </SelectItem>
                             ))}
@@ -702,7 +749,7 @@ export default function LeadsPage() {
             </div>
 
             {/* Right Column: Lead Detail */}
-            <div className={cn("hidden xl:block", !selectedLead && "hidden lg:block", selectedLead && "lg:col-start-2 xl:col-start-3")}>
+            <div className={cn("hidden xl:block", !selectedLead && "hidden xl:block", selectedLead && "lg:col-start-2 xl:col-start-3")}>
                  {selectedLead ? (
                     <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} onUpdateStatus={handleUpdateStatus} />
                 ) : (
@@ -713,11 +760,11 @@ export default function LeadsPage() {
             </div>
             
             {/* Sheet for stage forms */}
-            <StageForm stageName={formStage} onOpenChange={(isOpen) => !isOpen && setFormStage(null)} />
+            <StageForm stageName={formStage} onOpenChange={(isOpen) => !isOpen && setFormStage(null)} onSave={handleSaveStage} />
             
-             {/* Sheet for mobile lead detail */}
-            <Sheet open={!!selectedLead && window.innerWidth < 1280} onOpenChange={(isOpen) => !isOpen && setSelectedLead(null)}>
-                <SheetContent className="p-0 sm:max-w-full">
+            {/* Sheet for mobile/tablet lead detail */}
+            <Sheet open={!!selectedLead && isMobile} onOpenChange={(isOpen) => {if (!isOpen) setSelectedLead(null)}}>
+                <SheetContent className="p-0 sm:max-w-lg w-full">
                     <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} onUpdateStatus={handleUpdateStatus}/>
                 </SheetContent>
             </Sheet>
