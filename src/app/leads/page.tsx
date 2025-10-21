@@ -509,7 +509,7 @@ export default function LeadsPage() {
   
   const handleStageChange = (stage: string) => {
     setActiveStage(stage);
-    setSelectedLead(null);
+    setSelectedLead(leadsData.find(l => l.status === stage) ?? null);
   }
 
   const filteredLeads = leadsData.filter(lead => lead.status === activeStage);
@@ -630,7 +630,7 @@ export default function LeadsPage() {
           </div>
         </header>
 
-        <main className="flex-1 grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
+        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[280px_1fr] xl:grid-cols-[320px_1fr_400px] gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
             {/* Left Column: Stages */}
             <Card className="hidden lg:flex flex-col">
                 <CardHeader>
@@ -662,7 +662,7 @@ export default function LeadsPage() {
             </Card>
 
             {/* Center Column: Leads List */}
-            <div className={cn("lg:col-span-2 xl:col-span-2 flex flex-col gap-4", selectedLead && "hidden lg:flex")}>
+            <div className={cn("flex flex-col gap-4", selectedLead && "hidden lg:flex")}>
                 <div className='flex items-center justify-between'>
                     <h2 className='text-lg font-semibold'>Leads en: {activeStage} ({filteredLeads.length})</h2>
                 </div>
@@ -702,7 +702,7 @@ export default function LeadsPage() {
             </div>
 
             {/* Right Column: Lead Detail */}
-            <div className={cn("xl:col-span-1", !selectedLead && "hidden lg:block")}>
+            <div className={cn("hidden xl:block", !selectedLead && "hidden lg:block", selectedLead && "lg:col-start-2 xl:col-start-3")}>
                  {selectedLead ? (
                     <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} onUpdateStatus={handleUpdateStatus} />
                 ) : (
@@ -718,3 +718,5 @@ export default function LeadsPage() {
     </SidebarProvider>
   );
 }
+
+    
