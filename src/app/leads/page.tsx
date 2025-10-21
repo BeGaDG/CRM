@@ -511,11 +511,16 @@ export default function LeadsPage() {
   const isMobile = useIsMobile();
   const [activeStage, setActiveStage] = useState('Por Visitar');
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(leads.find(l => l.status === activeStage) ?? null);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [formStage, setFormStage] = useState<string | null>(null);
 
   const handleUpdateStatus = (stage: string) => {
     setFormStage(stage);
+  };
+
+  const handleSelectLead = (lead: Lead) => {
+    setSelectedLead(lead);
+    setActiveStage(lead.status);
   };
 
   const handleSaveStage = (newStage: string) => {
@@ -546,19 +551,28 @@ export default function LeadsPage() {
   const filteredLeads = leads.filter(lead => lead.status === activeStage);
 
   useEffect(() => {
-    if (!selectedLead) {
-        setSelectedLead(filteredLeads.length > 0 ? filteredLeads[0] : null);
+    // If no lead is selected, or the selected lead is not in the active stage,
+    // select the first lead of the active stage.
+    // This handles the initial load and stage changes from the left column.
+    if (!isMobile && (!selectedLead || selectedLead.status !== activeStage)) {
+      setSelectedLead(filteredLeads.length > 0 ? filteredLeads[0] : null);
     }
-  }, [activeStage, filteredLeads, selectedLead]);
-
-  useEffect(() => {
-    if (isMobile === false) {
-      setSelectedLead(leads.find(l => l.status === activeStage) ?? null);
-    } else {
-        // On mobile, don't auto-select a lead to keep the list view
+    
+    // On mobile, if a lead is selected, we don't want to clear it when changing stages.
+    // The detail view is a sheet, so the user manages its state separately.
+    // However, if we switch TO mobile, clear selection to show the list.
+    if (isMobile) {
         setSelectedLead(null);
     }
-  }, [isMobile]);
+
+  }, [activeStage, isMobile]);
+
+  // This effect handles the initial lead selection on desktop
+  useEffect(() => {
+    if(!isMobile && !selectedLead) {
+        handleStageChange(activeStage);
+    }
+  }, [isMobile, selectedLead, activeStage]);
 
 
   return (
@@ -736,7 +750,7 @@ export default function LeadsPage() {
                         key={lead.id} 
                         lead={lead} 
                         isSelected={selectedLead?.id === lead.id}
-                        onClick={() => setSelectedLead(lead)} 
+                        onClick={() => handleSelectLead(lead)} 
                        />
                     ))}
                     {filteredLeads.length === 0 && (
