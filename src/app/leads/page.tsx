@@ -711,12 +711,19 @@ export default function LeadsPage() {
                     </div>
                 )}
             </div>
-            {/* This Sheet is used to update the lead status */}
+            
+            {/* Sheet for stage forms */}
             <StageForm stageName={formStage} onOpenChange={(isOpen) => !isOpen && setFormStage(null)} />
+            
+             {/* Sheet for mobile lead detail */}
+            <Sheet open={!!selectedLead && window.innerWidth < 1280} onOpenChange={(isOpen) => !isOpen && setSelectedLead(null)}>
+                <SheetContent className="p-0 sm:max-w-full">
+                    <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} onUpdateStatus={handleUpdateStatus}/>
+                </SheetContent>
+            </Sheet>
+
         </main>
       </SidebarInset>
     </SidebarProvider>
   );
 }
-
-    
