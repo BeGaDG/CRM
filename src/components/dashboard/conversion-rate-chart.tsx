@@ -2,7 +2,7 @@
 
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 const conversionData = [
   { name: 'Ene', conversion: 18 },
@@ -13,6 +13,13 @@ const conversionData = [
   { name: 'Jun', conversion: 32 },
 ];
 
+const chartConfig = {
+  conversion: {
+    label: "Conversión",
+    color: "hsl(var(--primary))",
+  },
+};
+
 export function ConversionRateChart() {
     return (
         <Card>
@@ -22,14 +29,14 @@ export function ConversionRateChart() {
             </CardHeader>
             <CardContent>
                 <div className="h-40">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ChartContainer config={chartConfig} className="h-full w-full">
                         <LineChart data={conversionData} margin={{ top: 5, right: 10, left: -30, bottom: 0 }}>
                             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}%`} />
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                            <Line type="monotone" dataKey="conversion" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, fill: "hsl(var(--primary))" }} />
+                            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                            <Line type="monotone" dataKey="conversion" stroke="var(--color-conversion)" strokeWidth={2} dot={{ r: 4, fill: "var(--color-conversion)" }} />
                         </LineChart>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 </div>
             </CardContent>
         </Card>
