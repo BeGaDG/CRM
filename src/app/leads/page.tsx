@@ -47,6 +47,13 @@ import { Input } from '@/components/ui/input';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { SolYCieloLogo } from '@/components/icons';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -58,7 +65,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
@@ -126,7 +133,7 @@ const LeadCard = ({ lead, isSelected, onClick }: { lead: Lead, isSelected: boole
     );
 };
 
-const LeadDetailPanel = ({ lead, onClose }: { lead: Lead | null; onClose: () => void }) => {
+const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null; onClose: () => void; onUpdateStatus: () => void; }) => {
     if (!lead) return <Card className="hidden lg:block"><CardContent className='p-6 flex flex-col items-center justify-center h-full text-center text-muted-foreground'><Contact className="h-12 w-12 mb-4" /> <p className='font-medium'>Selecciona un lead</p><p className='text-sm'>Elige un lead de la lista para ver sus detalles completos aquí.</p></CardContent></Card>;
 
     return (
@@ -151,10 +158,13 @@ const LeadDetailPanel = ({ lead, onClose }: { lead: Lead | null; onClose: () => 
                     </TabsList>
                     <div className='overflow-y-auto flex-1'>
                         <TabsContent value="resumen" className="p-4 space-y-4 text-sm">
-                             <div className='flex items-center gap-2'>
-                                <Badge variant="secondary">Estado: {lead.status}</Badge>
-                                <Badge variant="destructive" className={cn(lead.priority !== 'alta' && 'hidden')}>Prioridad Alta</Badge>
-                             </div>
+                            <div className='flex items-center gap-2'>
+                                <Button onClick={onUpdateStatus} size="sm" variant="outline" className="flex-1">
+                                    <GitMerge className="mr-2 h-4 w-4"/>
+                                    Actualizar Estado
+                                </Button>
+                            </div>
+                            <Separator/>
                              <p><strong>Teléfono:</strong> {lead.phone}</p>
                              <p><strong>Email:</strong> {lead.email}</p>
                              <p><strong>Fuente:</strong> Referido</p>
@@ -194,10 +204,39 @@ const LeadDetailPanel = ({ lead, onClose }: { lead: Lead | null; onClose: () => 
     )
 }
 
+const UpdateStatusSheet = ({ isOpen, onOpenChange }: { isOpen: boolean, onOpenChange: (open: boolean) => void }) => (
+    <Sheet open={isOpen} onOpenChange={onOpenChange}>
+        <SheetContent>
+            <SheetHeader>
+                <SheetTitle>Actualizar Estado del Lead</SheetTitle>
+                <SheetDescription>
+                    Selecciona la nueva etapa para este lead. Esto moverá el lead en el pipeline y registrará la actividad.
+                </SheetDescription>
+            </SheetHeader>
+            <div className="py-4">
+                <p className="text-sm text-muted-foreground mb-2">Etapas disponibles</p>
+                <ul className="space-y-2">
+                    {stages.map(stage => (
+                        <li key={stage.name}>
+                            <button className="w-full text-left p-3 rounded-md border hover:bg-muted transition-colors flex items-center gap-3">
+                                <span className={cn("h-3 w-3 rounded-full", stage.color)}></span>
+                                <span className="font-medium text-sm">{stage.name}</span>
+                                <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground"/>
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </SheetContent>
+    </Sheet>
+)
+
+
 export default function LeadsPage() {
   const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [activeStage, setActiveStage] = useState('Por Visitar');
+  const [isSheetOpen, setSheetOpen] = useState(false);
 
   return (
     <SidebarProvider>
@@ -348,7 +387,26 @@ export default function LeadsPage() {
 
             {/* Center Column: Leads List */}
             <div className={cn("lg:col-span-2 xl:col-span-2 flex flex-col gap-4", selectedLead && "hidden lg:flex")}>
-                <h2 className='text-lg font-semibold'>Leads en: {activeStage} ({leadsData.length})</h2>
+                <div className='flex items-center justify-between'>
+                    <h2 className='text-lg font-semibold'>Leads en: {activeStage} ({leadsData.length})</h2>
+                </div>
+                <div className="lg:hidden">
+                    <Select value={activeStage} onValueChange={setActiveStage}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Seleccionar etapa..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {stages.map(stage => (
+                                <SelectItem key={stage.name} value={stage.name}>
+                                    <div className="flex items-center gap-2">
+                                        <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
+                                        <span>{stage.name} ({stage.count})</span>
+                                    </div>
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
                 <div className='space-y-3 overflow-y-auto'>
                     {leadsData.map(lead => (
                        <LeadCard 
@@ -364,17 +422,17 @@ export default function LeadsPage() {
             {/* Right Column: Lead Detail */}
             <div className={cn("xl:col-span-1", !selectedLead && "hidden lg:block")}>
                  {selectedLead ? (
-                    <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} />
+                    <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} onUpdateStatus={() => setSheetOpen(true)} />
                 ) : (
                     <div className='hidden xl:block'>
-                        <LeadDetailPanel lead={null} onClose={() => {}} />
+                        <LeadDetailPanel lead={null} onClose={() => {}} onUpdateStatus={() => {}} />
                     </div>
                 )}
             </div>
+            {/* This Sheet is used to update the lead status */}
+            <UpdateStatusSheet isOpen={isSheetOpen} onOpenChange={setSheetOpen} />
         </main>
       </SidebarInset>
     </SidebarProvider>
   );
 }
-
-    
