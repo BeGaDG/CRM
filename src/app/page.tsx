@@ -11,7 +11,6 @@ import {
   FileText,
   Filter,
   LayoutDashboard,
-  LineChart,
   MoreHorizontal,
   PlusCircle,
   Search,
@@ -47,6 +46,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
+import { ConversionRateChart } from '@/components/dashboard/conversion-rate-chart';
 
 const kpis = [
   { title: "Total de Clientes", value: "1,250", delta: "+50 este mes", icon: <Users className="text-primary"/>, cta: "Ver clientes" },
@@ -291,24 +291,7 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
 
-                 <Card>
-                    <CardHeader>
-                        <CardTitle className="font-headline text-lg">Tasa de Conversión</CardTitle>
-                        <CardDescription>Global, últimos 6 meses.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-40">
-                             <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={conversionData} margin={{ top: 5, right: 10, left: -30, bottom: 0 }}>
-                                    <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}%`} />
-                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Line type="monotone" dataKey="conversion" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, fill: "hsl(var(--primary))" }} />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </CardContent>
-                 </Card>
+                 <ConversionRateChart />
             </div>
           </div>
         </main>
@@ -319,16 +302,3 @@ export default function Dashboard() {
     </SidebarProvider>
   );
 }
-
-// Placeholder data for chart
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis } from "recharts"
-import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-
-const conversionData = [
-  { name: 'Ene', conversion: 18 },
-  { name: 'Feb', conversion: 22 },
-  { name: 'Mar', conversion: 25 },
-  { name: 'Abr', conversion: 23 },
-  { name: 'May', conversion: 28 },
-  { name: 'Jun', conversion: 32 },
-];
