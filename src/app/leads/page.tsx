@@ -3,6 +3,7 @@ import { useState } from 'react';
 import {
   Activity,
   AlertTriangle,
+  ArrowRight,
   BarChart,
   Bell,
   Building,
@@ -13,12 +14,14 @@ import {
   CreditCard,
   FileText,
   Filter,
+  GitMerge,
   GripVertical,
   LayoutDashboard,
   MoreHorizontal,
   Phone,
   Plus,
   PlusCircle,
+  RefreshCcw,
   Search,
   Settings,
   Star,
@@ -57,6 +60,8 @@ import {
 } from '@/components/ui/sidebar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+
 
 const kpis = [
   { title: "Leads Nuevos (Semana)", value: "28", delta: "+12%", trend: "up" },
@@ -65,36 +70,11 @@ const kpis = [
   { title: "Cierres del Mes", value: "12", delta: "+2 vs mes anterior", trend: "up" },
 ];
 
-const pipelineColumns = [
-  { id: 'nuevo', title: 'Nuevo (8)', leads: [
-    { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/101/40/40' },
-    { id: 'lead-2', name: 'Industrias ABC', city: 'Medellín', lastContact: 'Ayer', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/102/40/40' },
-  ]},
-  { id: 'por-visitar', title: 'Por Visitar (5)', leads: [
-    { id: 'lead-3', name: 'Mercacentro', city: 'Ibagué', lastContact: 'Hace 3d', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/103/40/40' },
-  ]},
-  { id: 'por-cotizar', title: 'Por Cotizar (12)', leads: [
-    { id: 'lead-4', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 1d', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/101/40/40' },
-    { id: 'lead-5', name: 'Hospital San Rafael', city: 'Bogotá D.C.', lastContact: 'Hace 4d', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed' },
-    { id: 'lead-6', name: 'Colegio Bilingüe', city: 'Medellín', lastContact: 'Hace 5d', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/102/40/40' },
-  ]},
-  { id: 'por-contratar', title: 'Por Contratar (3)', leads: [
-    { id: 'lead-7', name: 'Centro Comercial Oasis', city: 'Cartagena', lastContact: 'Hace 1 semana', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/103/40/40' },
-  ]},
-  { id: 'cerrado', title: 'Cerrado / No Interesado (2)', leads: [] },
-]
-
-const priorityStyles = {
-  alta: 'bg-red-500/20 text-red-700 border-red-500/30',
-  media: 'bg-yellow-500/20 text-yellow-700 border-yellow-500/30',
-  baja: 'bg-green-500/20 text-green-700 border-green-500/30'
-}
-
-type Lead = typeof pipelineColumns[0]['leads'][0];
+const leadExample = { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/101/40/40' };
+type Lead = typeof leadExample;
 
 const LeadDetailSidebar = ({ lead, onClose }: { lead: Lead | null; onClose: () => void }) => {
     if (!lead) return null;
-    const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
 
     return (
         <Sheet open={!!lead} onOpenChange={(open) => !open && onClose()}>
@@ -114,8 +94,7 @@ const LeadDetailSidebar = ({ lead, onClose }: { lead: Lead | null; onClose: () =
 
                 <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
                     <div className='flex items-center gap-2'>
-                        <Badge className={`${priorityStyles[lead.priority as keyof typeof priorityStyles]}`}>{`Prioridad ${lead.priority}`}</Badge>
-                        <Badge variant="secondary">Estado: Nuevo</Badge>
+                        <Badge variant="secondary">Estado: Nuevo Cliente</Badge>
                     </div>
 
                     <Card>
@@ -134,10 +113,10 @@ const LeadDetailSidebar = ({ lead, onClose }: { lead: Lead | null; onClose: () =
                     <div>
                         <h3 className="text-sm font-semibold mb-2">Próxima Acción</h3>
                         <div className="flex items-center text-sm p-3 bg-muted rounded-md">
-                            <Video className="h-5 w-5 mr-3 text-primary" />
+                            <Phone className="h-5 w-5 mr-3 text-primary" />
                             <div>
-                                <p className="font-medium">Visita comercial</p>
-                                <p className="text-muted-foreground">Mañana, 10:00 AM</p>
+                                <p className="font-medium">Primer Contacto</p>
+                                <p className="text-muted-foreground">Pendiente</p>
                             </div>
                         </div>
                     </div>
@@ -146,12 +125,6 @@ const LeadDetailSidebar = ({ lead, onClose }: { lead: Lead | null; onClose: () =
                         <h3 className="text-sm font-semibold mb-2">Actividad Reciente</h3>
                         <div className="space-y-4 text-xs">
                              <div className="flex items-start gap-3">
-                                <div className="bg-muted p-2 rounded-full mt-1">
-                                    <Phone className="h-3 w-3" />
-                                </div>
-                                <p><span className="font-semibold">Llamada inicial</span> con 'Carlos Ruiz'. Cliente interesado en energía solar. <span className="text-muted-foreground">Hace 2h</span></p>
-                            </div>
-                            <div className="flex items-start gap-3">
                                 <div className="bg-muted p-2 rounded-full mt-1">
                                     <Contact className="h-3 w-3" />
                                 </div>
@@ -183,31 +156,41 @@ const LeadDetailSidebar = ({ lead, onClose }: { lead: Lead | null; onClose: () =
     )
 }
 
-const LeadCard = ({ lead, onClick }: { lead: Lead, onClick: () => void }) => {
-    return (
-      <Card className="mb-2 cursor-pointer hover:shadow-lg transition-shadow" onClick={onClick}>
-        <CardContent className="p-3">
-          <div className="flex justify-between items-start">
-            <h4 className="font-semibold text-sm">{lead.name}</h4>
-            <Badge variant="outline" className={`text-xs ${priorityStyles[lead.priority as keyof typeof priorityStyles]}`}>
-              {lead.priority}
-            </Badge>
-          </div>
-          <p className="text-xs text-muted-foreground mb-2">{lead.city}</p>
-          <div className="flex justify-between items-center mt-2">
-            <div className="flex items-center gap-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={lead.ownerAvatar} />
-                <AvatarFallback>CR</AvatarFallback>
-              </Avatar>
-              <span className="text-xs text-muted-foreground">{lead.lastContact}</span>
-            </div>
-            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-};
+const LeadStageCard = ({ title, description, icon, leadCount, isActive, onClick }: { title: string, description: string, icon: React.ReactNode, leadCount?: number, isActive?: boolean, onClick?: () => void }) => (
+  <Card className={cn("w-64 h-40 flex flex-col hover:shadow-lg transition-shadow cursor-pointer", isActive && "border-primary shadow-lg")}>
+    <CardHeader className="pb-2" onClick={onClick}>
+      <div className="flex items-center gap-3">
+        <div className={cn("h-8 w-8 flex items-center justify-center rounded-full bg-primary/10 text-primary", isActive && "bg-primary text-primary-foreground")}>
+          {icon}
+        </div>
+        <CardTitle className="text-base font-semibold">{title}</CardTitle>
+      </div>
+    </CardHeader>
+    <CardContent className="flex-1 pb-4 text-sm text-muted-foreground" onClick={onClick}>
+      {description}
+    </CardContent>
+    {leadCount !== undefined && (
+      <CardContent className="py-2 border-t text-xs font-medium">
+        {leadCount} leads en esta etapa
+      </CardContent>
+    )}
+  </Card>
+);
+
+const DecisionNode = () => (
+  <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-full transform rotate-45">
+    <GitMerge className="h-6 w-6 text-gray-600 dark:text-gray-300 transform -rotate-45" />
+  </div>
+);
+
+const FlowConnector = ({ label, isDashed }: { label?: string, isDashed?: boolean }) => (
+  <div className="relative w-20 h-full flex items-center justify-center">
+    <div className={cn("w-full h-0.5", isDashed ? "bg-none border-t-2 border-dashed border-gray-300" : "bg-gray-300")}></div>
+    <ArrowRight className="absolute right-[-10px] h-5 w-5 text-gray-400" />
+    {label && <span className="absolute -top-5 text-xs font-medium text-muted-foreground">{label}</span>}
+  </div>
+);
+
 
 export default function LeadsPage() {
   const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
@@ -219,7 +202,7 @@ export default function LeadsPage() {
         <SidebarHeader className="flex items-center gap-2.5 p-4">
           <SolYCieloLogo className="h-8 w-8" />
           <h2 className="text-xl font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
-            Sol & Cielo
+            Sol &amp; Cielo
           </h2>
         </SidebarHeader>
         <SidebarContent className="p-2">
@@ -329,9 +312,9 @@ export default function LeadsPage() {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col bg-muted/40">
+        <main className="flex-1 flex flex-col bg-muted/40 p-4 lg:p-6">
             {/* KPIs */}
-            <div className="p-4 lg:p-6 border-b">
+            <div className="pb-6 border-b">
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 {kpis.map((kpi) => (
                     <Card key={kpi.title}>
@@ -347,29 +330,60 @@ export default function LeadsPage() {
                 </div>
             </div>
 
-            {/* Kanban Board */}
-            <div className="flex-1 flex overflow-x-auto">
-                <div className="flex gap-4 p-4 lg:p-6 min-w-max">
-                    {pipelineColumns.map((column) => (
-                        <div key={column.id} className="w-72 bg-card rounded-lg flex flex-col">
-                            <div className="p-3 font-semibold text-sm border-b flex items-center justify-between">
-                                <span>{column.title}</span>
-                                <GripVertical className="h-4 w-4 text-muted-foreground"/>
-                            </div>
-                            <div className="p-2 flex-1 overflow-y-auto">
-                                {column.leads.map((lead) => (
-                                    <LeadCard key={lead.id} lead={lead} onClick={() => setSelectedLead(lead)} />
-                                ))}
-                                {column.leads.length === 0 && (
-                                    <div className="p-4 text-center text-xs text-muted-foreground">
-                                        No hay leads en esta etapa.
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    ))}
+            {/* Flowchart */}
+            <div className="flex-1 flex items-center justify-center overflow-x-auto py-8">
+              <div className="flex items-center gap-4">
+                {/* Stage 1 */}
+                <LeadStageCard 
+                  title="Nuevo Cliente" 
+                  description="Lead recién ingresado al sistema." 
+                  icon={<Plus />}
+                  leadCount={8}
+                  isActive
+                  onClick={() => setSelectedLead(leadExample)}
+                />
+                <FlowConnector />
+                {/* Stage 2 */}
+                <LeadStageCard 
+                  title="Por Contactar" 
+                  description="Llamada o correo de primer contacto." 
+                  icon={<Phone />}
+                  leadCount={5}
+                />
+                <FlowConnector />
+                {/* Decision 1 */}
+                <div className="flex flex-col items-center gap-4">
+                    <DecisionNode />
+                    <div className="flex items-center">
+                        <FlowConnector label="Sí" />
+                        <LeadStageCard 
+                          title="Por Visitar" 
+                          description="Agendar y realizar visita comercial." 
+                          icon={<Video />}
+                          leadCount={3}
+                        />
+                        <FlowConnector />
+                        <LeadStageCard 
+                          title="Por Cotizar" 
+                          description="Preparar y enviar la cotización." 
+                          icon={<FileText />}
+                          leadCount={12}
+                        />
+                    </div>
+                     <div className="flex items-center self-start ml-24 mt-4">
+                         <div className="h-10 w-0.5 bg-gray-300"></div>
+                         <FlowConnector label="No" isDashed/>
+                         <LeadStageCard
+                          title="Recaptura BD"
+                          description="Leads fríos para seguimiento futuro."
+                          icon={<RefreshCcw />}
+                          leadCount={150}
+                        />
+                     </div>
                 </div>
+              </div>
             </div>
+            
             <LeadDetailSidebar lead={selectedLead} onClose={() => setSelectedLead(null)} />
         </main>
       </SidebarInset>
