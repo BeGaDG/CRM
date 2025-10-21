@@ -7,6 +7,7 @@ import {
   BarChart,
   Bell,
   Building,
+  Calendar as CalendarIcon,
   ChevronDown,
   ChevronRight,
   ClipboardList,
@@ -69,6 +70,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const leadExample = { 
   id: 'lead-1', 
@@ -89,11 +97,12 @@ const stages = [
   { name: 'Por Visitar', count: 3, color: 'bg-blue-500' },
   { name: 'Por Cotizar', count: 12, color: 'bg-indigo-500' },
   { name: 'Por Presentar Cotización', count: 4, color: 'bg-violet-500' },
-  { name: 'Por Recotizar', count: 2, color: 'bg-purple-500' },
-  { name: 'Por Seguimiento', count: 7, color: 'bg-fuchsia-500' },
+  { name: 'Ajustar Cotización', count: 2, color: 'bg-purple-500' },
+  { name: 'Seguimiento a la Cotización', count: 7, color: 'bg-fuchsia-500' },
   { name: 'Por Contratar', count: 1, color: 'bg-pink-500' },
   { name: 'Recaptura BD', count: 150, color: 'bg-rose-500' },
   { name: 'Finalizados', count: 320, color: 'bg-green-500' },
+  { name: 'No', count: 50, color: 'bg-gray-500'}
 ];
 
 const leadsData: Lead[] = [
@@ -133,7 +142,7 @@ const LeadCard = ({ lead, isSelected, onClick }: { lead: Lead, isSelected: boole
     );
 };
 
-const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null; onClose: () => void; onUpdateStatus: () => void; }) => {
+const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null; onClose: () => void; onUpdateStatus: (stage: string) => void; }) => {
     if (!lead) return <Card className="hidden lg:block"><CardContent className='p-6 flex flex-col items-center justify-center h-full text-center text-muted-foreground'><Contact className="h-12 w-12 mb-4" /> <p className='font-medium'>Selecciona un lead</p><p className='text-sm'>Elige un lead de la lista para ver sus detalles completos aquí.</p></CardContent></Card>;
 
     return (
@@ -159,10 +168,22 @@ const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null;
                     <div className='overflow-y-auto flex-1'>
                         <TabsContent value="resumen" className="p-4 space-y-4 text-sm">
                             <div className='flex items-center gap-2'>
-                                <Button onClick={onUpdateStatus} size="sm" variant="outline" className="flex-1">
-                                    <GitMerge className="mr-2 h-4 w-4"/>
-                                    Actualizar Estado
-                                </Button>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button size="sm" variant="outline" className="flex-1">
+                                            <GitMerge className="mr-2 h-4 w-4"/>
+                                            Actualizar Estado
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        {stages.map(stage => (
+                                            <DropdownMenuItem key={stage.name} onClick={() => onUpdateStatus(stage.name)}>
+                                                <span className={cn("h-2 w-2 rounded-full mr-2", stage.color)}></span>
+                                                {stage.name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
                             <Separator/>
                              <p><strong>Teléfono:</strong> {lead.phone}</p>
@@ -204,39 +225,282 @@ const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null;
     )
 }
 
-const UpdateStatusSheet = ({ isOpen, onOpenChange }: { isOpen: boolean, onOpenChange: (open: boolean) => void }) => (
-    <Sheet open={isOpen} onOpenChange={onOpenChange}>
-        <SheetContent>
-            <SheetHeader>
-                <SheetTitle>Actualizar Estado del Lead</SheetTitle>
-                <SheetDescription>
-                    Selecciona la nueva etapa para este lead. Esto moverá el lead en el pipeline y registrará la actividad.
-                </SheetDescription>
-            </SheetHeader>
-            <div className="py-4">
-                <p className="text-sm text-muted-foreground mb-2">Etapas disponibles</p>
-                <ul className="space-y-2">
-                    {stages.map(stage => (
-                        <li key={stage.name}>
-                            <button className="w-full text-left p-3 rounded-md border hover:bg-muted transition-colors flex items-center gap-3">
-                                <span className={cn("h-3 w-3 rounded-full", stage.color)}></span>
-                                <span className="font-medium text-sm">{stage.name}</span>
-                                <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground"/>
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+const DatePicker = ({ date, setDate }: { date?: Date, setDate: (date?: Date) => void }) => {
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                <Button
+                    variant={"outline"}
+                    className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                    )}
+                >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "PPP") : <span>Seleccionar fecha</span>}
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+                <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                />
+            </PopoverContent>
+        </Popover>
+    )
+}
+
+const StageForm = ({ stageName, onOpenChange }: { stageName: string | null; onOpenChange: (open: boolean) => void }) => {
+    const [date, setDate] = useState<Date>()
+    const [date2, setDate2] = useState<Date>()
+     const [date3, setDate3] = useState<Date>()
+
+    const forms: { [key: string]: React.ReactNode } = {
+        'Nuevo Cliente': (
+            <div className="space-y-4">
+                <div>
+                    <Label htmlFor="nombre">Nombre <span className='text-destructive'>*</span></Label>
+                    <Input id="nombre" placeholder="Nombre completo del cliente" />
+                </div>
+                <div>
+                    <Label htmlFor="direccion">Dirección</Label>
+                    <Input id="direccion" placeholder="Dirección del cliente" />
+                </div>
+                <div>
+                    <Label htmlFor="telefono">Número de teléfono <span className='text-destructive'>*</span></Label>
+                    <Input id="telefono" type="tel" placeholder="Ej: 3101234567" />
+                </div>
+                <div>
+                    <Label htmlFor="email">Correo electrónico</Label>
+                    <Input id="email" type="email" placeholder="ejemplo@correo.com" />
+                </div>
             </div>
-        </SheetContent>
-    </Sheet>
-)
+        ),
+        'Por Visitar': (
+            <div className="space-y-4">
+                 <div className="space-y-2">
+                    <Label>Tipo de Interés <span className='text-destructive'>*</span></Label>
+                     <div className='flex items-center space-x-2'>
+                        <Checkbox id="planta_solar"/>
+                        <Label htmlFor="planta_solar" className='font-normal'>Planta Solar</Label>
+                    </div>
+                     <div className='flex items-center space-x-2'>
+                        <Checkbox id="comercializadora"/>
+                        <Label htmlFor="comercializadora" className='font-normal'>Comercializadora</Label>
+                    </div>
+                </div>
+                <div>
+                    <Label>Día de la visita <span className='text-destructive'>*</span></Label>
+                    <DatePicker date={date} setDate={setDate}/>
+                </div>
+                <div><Label htmlFor="nic">NIC</Label><Input id="nic"/></div>
+                <div><Label htmlFor="factura">Factura (File)</Label><Input id="factura" type="file"/></div>
+                <div><Label>Fecha de emisión de la factura</Label><DatePicker date={date2} setDate={setDate2}/></div>
+                <div><Label htmlFor="consumo">Consumo mensual</Label><Input id="consumo"/></div>
+                <div><Label htmlFor="pago">Promedio de pago por consumo $</Label><Input id="pago" type="number" /></div>
+                <div><Label htmlFor="departamento">Departamento <span className='text-destructive'>*</span></Label><Input id="departamento"/></div>
+                <div><Label htmlFor="ciudad">Ciudad <span className='text-destructive'>*</span></Label><Input id="ciudad"/></div>
+                <div><Label htmlFor="operador">Operador de red</Label><Input id="operador"/></div>
+                <div><Label htmlFor="comercializador">Comercializador actual</Label><Input id="comercializador"/></div>
+                <div className='space-y-2'>
+                    <Label>Tipo de mercado</Label>
+                    <RadioGroup defaultValue="regulado" className='flex gap-4'>
+                        <div className="flex items-center space-x-2"><RadioGroupItem value="regulado" id="regulado" /><Label htmlFor="regulado" className='font-normal'>Regulado</Label></div>
+                        <div className="flex items-center space-x-2"><RadioGroupItem value="no_regulado" id="no_regulado" /><Label htmlFor="no_regulado" className='font-normal'>No Regulado</Label></div>
+                    </RadioGroup>
+                </div>
+                 <div><Label htmlFor="tension">Nivel de tensión</Label><Input id="tension"/></div>
+                 <div><Label htmlFor="direccion_visita">Dirección <span className='text-destructive'>*</span></Label><Input id="direccion_visita"/></div>
+                 <div><Label htmlFor="email_visita">Correo electrónico</Label><Input id="email_visita" type="email"/></div>
+            </div>
+        ),
+        'Por Cotizar': (
+            <div className="space-y-4">
+                 <div><Label htmlFor="nic_cotizar">NIC <span className='text-destructive'>*</span></Label><Input id="nic_cotizar"/></div>
+                <div><Label htmlFor="factura_cotizar">Factura (File) <span className='text-destructive'>*</span></Label><Input id="factura_cotizar" type="file"/></div>
+                <div><Label>Fecha de emisión de la factura <span className='text-destructive'>*</span></Label><DatePicker date={date} setDate={setDate}/></div>
+                <div><Label htmlFor="consumo_cotizar">Consumo mensual <span className='text-destructive'>*</span></Label><Input id="consumo_cotizar"/></div>
+                <div><Label htmlFor="pago_cotizar">Promedio de pago por consumo $ <span className='text-destructive'>*</span></Label><Input id="pago_cotizar" type="number"/></div>
+                <div><Label htmlFor="email_cotizar">Correo electrónico</Label><Input id="email_cotizar" type="email"/></div>
+                <div><Label htmlFor="operador_cotizar">Operador de red <span className='text-destructive'>*</span></Label><Input id="operador_cotizar"/></div>
+                <div><Label htmlFor="comercializador_cotizar">Comercializador actual <span className='text-destructive'>*</span></Label><Input id="comercializador_cotizar"/></div>
+                <div><Label htmlFor="tension_cotizar">Nivel de tensión <span className='text-destructive'>*</span></Label><Input id="tension_cotizar"/></div>
+                 <div className='space-y-2'>
+                    <Label>Tipo de mercado <span className='text-destructive'>*</span></Label>
+                    <RadioGroup defaultValue="regulado" className='flex gap-4'>
+                        <div className="flex items-center space-x-2"><RadioGroupItem value="regulado" id="regulado_cotizar" /><Label htmlFor="regulado_cotizar" className='font-normal'>Regulado</Label></div>
+                        <div className="flex items-center space-x-2"><RadioGroupItem value="no_regulado" id="no_regulado_cotizar" /><Label htmlFor="no_regulado_cotizar" className='font-normal'>No Regulado</Label></div>
+                    </RadioGroup>
+                </div>
+            </div>
+        ),
+         'Por Presentar Cotización': (
+            <div className="space-y-6">
+                <div>
+                    <Label>Fecha de cotización <span className='text-destructive'>*</span></Label>
+                    <DatePicker date={date} setDate={setDate}/>
+                </div>
+                 <div><Label htmlFor="cotizacion_file">Cotización (File) <span className='text-destructive'>*</span></Label><Input id="cotizacion_file" type="file"/></div>
+                 <div><Label htmlFor="valor_cotizacion">Valor de cotización <span className='text-destructive'>*</span></Label><Input id="valor_cotizacion" type="number"/></div>
+
+                 <Separator/>
+                 <h4 className='font-semibold'>Planta Solar</h4>
+                 <div className="grid grid-cols-2 gap-4">
+                    <div><Label htmlFor="ref_inversor">Ref. Inversor <span className='text-destructive'>*</span></Label><Input id="ref_inversor"/></div>
+                    <div><Label htmlFor="cant_inversores">Cantidad <span className='text-destructive'>*</span></Label><Input id="cant_inversores" type="number"/></div>
+                    <div><Label htmlFor="ref_panel">Ref. Panel <span className='text-destructive'>*</span></Label><Input id="ref_panel"/></div>
+                    <div><Label htmlFor="cant_paneles">Cantidad <span className='text-destructive'>*</span></Label><Input id="cant_paneles" type="number"/></div>
+                    <div className='col-span-2'><Label htmlFor="potencia">Potencia pico ofrecida <span className='text-destructive'>*</span></Label><Input id="potencia"/></div>
+                 </div>
+
+                 <Separator/>
+                 <h4 className='font-semibold'>Comercializadora</h4>
+                 <div><Label htmlFor="tipo_medidor">Tipo de Medidor <span className='text-destructive'>*</span></Label><Input id="tipo_medidor"/></div>
+                 <div className="space-y-2">
+                    <Label>Telemedida <span className='text-destructive'>*</span></Label>
+                     <div className='flex items-center space-x-2'><Checkbox id="telemedida"/><Label htmlFor="telemedida" className='font-normal'>Incluir</Label></div>
+                </div>
+                 <div className="space-y-2">
+                    <Label>Monitoreo <span className='text-destructive'>*</span> (Condicionado a si tiene proyecto solar)</Label>
+                     <div className='flex items-center space-x-2'><Checkbox id="monitoreo"/><Label htmlFor="monitoreo" className='font-normal'>Incluir</Label></div>
+                </div>
+            </div>
+        ),
+         'Por Contratar': (
+             <div className='space-y-4'>
+                 <div><Label htmlFor="contrato_file">Contrato firmado (File) <span className='text-destructive'>*</span></Label><Input id="contrato_file" type="file"/></div>
+                 <div><Label htmlFor="pago_file">Comprobante de pago (File)</Label><Input id="pago_file" type="file"/></div>
+                 <div><Label htmlFor="valor_contrato">Valor <span className='text-destructive'>*</span></Label><Input id="valor_contrato" type="number"/></div>
+                 <div><Label htmlFor="financiacion">Tipo de financiación <span className='text-destructive'>*</span></Label><Input id="financiacion"/></div>
+                 <div><Label htmlFor="email_contrato">Correo electrónico <span className='text-destructive'>*</span></Label><Input id="email_contrato" type="email"/></div>
+             </div>
+         ),
+         'Ajustar Cotización': (
+             <div className="space-y-6">
+                <div>
+                    <Label>Fecha de cotización <span className='text-destructive'>*</span></Label>
+                    <DatePicker date={date} setDate={setDate}/>
+                </div>
+                 <div><Label htmlFor="cotizacion_file_aj">Cotización (File) <span className='text-destructive'>*</span></Label><Input id="cotizacion_file_aj" type="file"/></div>
+                 <div><Label htmlFor="valor_cotizacion_aj">Valor de cotización <span className='text-destructive'>*</span></Label><Input id="valor_cotizacion_aj" type="number"/></div>
+
+                 <Separator/>
+                 <h4 className='font-semibold'>Planta Solar</h4>
+                 <div className="grid grid-cols-2 gap-4">
+                    <div><Label htmlFor="ref_inversor_aj">Ref. Inversor <span className='text-destructive'>*</span></Label><Input id="ref_inversor_aj"/></div>
+                    <div><Label htmlFor="cant_inversores_aj">Cantidad <span className='text-destructive'>*</span></Label><Input id="cant_inversores_aj" type="number"/></div>
+                    <div><Label htmlFor="ref_panel_aj">Ref. Panel <span className='text-destructive'>*</span></Label><Input id="ref_panel_aj"/></div>
+                    <div><Label htmlFor="cant_paneles_aj">Cantidad <span className='text-destructive'>*</span></Label><Input id="cant_paneles_aj" type="number"/></div>
+                    <div className='col-span-2'><Label htmlFor="potencia_aj">Potencia pico ofrecida <span className='text-destructive'>*</span></Label><Input id="potencia_aj"/></div>
+                 </div>
+
+                 <Separator/>
+                 <h4 className='font-semibold'>Comercializadora</h4>
+                 <div><Label htmlFor="tipo_medidor_aj">Tipo de Medidor <span className='text-destructive'>*</span></Label><Input id="tipo_medidor_aj"/></div>
+                 <div className="space-y-2">
+                    <Label>Telemedida <span className='text-destructive'>*</span></Label>
+                     <div className='flex items-center space-x-2'><Checkbox id="telemedida_aj"/><Label htmlFor="telemedida_aj" className='font-normal'>Incluir</Label></div>
+                </div>
+                 <div className="space-y-2">
+                    <Label>Monitoreo <span className='text-destructive'>*</span> (Condicionado a si tiene proyecto solar)</Label>
+                     <div className='flex items-center space-x-2'><Checkbox id="monitoreo_aj"/><Label htmlFor="monitoreo_aj" className='font-normal'>Incluir</Label></div>
+                </div>
+            </div>
+         ),
+         'Seguimiento a la Cotización': (
+             <div className='space-y-4'>
+                <div>
+                    <Label>Fecha de próximo acercamiento <span className='text-destructive'>*</span></Label>
+                    <DatePicker date={date} setDate={setDate} />
+                </div>
+                 <div>
+                     <Label>Acción a realizar <span className='text-destructive'>*</span></Label>
+                    <Select>
+                        <SelectTrigger><SelectValue placeholder="Seleccionar acción..." /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="llamada">Llamada</SelectItem>
+                            <SelectItem value="visita">Visita</SelectItem>
+                            <SelectItem value="correo">Correo</SelectItem>
+                        </SelectContent>
+                    </Select>
+                 </div>
+                 <div>
+                     <Label>Comentarios / notas del comercial</Label>
+                     <Textarea placeholder="Añadir notas..."/>
+                 </div>
+                 <div>
+                    <Label>Estado de la cotización</Label>
+                     <RadioGroup defaultValue="sin_cambios" className='flex gap-4'>
+                        <div className="flex items-center space-x-2"><RadioGroupItem value="ajustada" id="ajustada" /><Label htmlFor="ajustada" className='font-normal'>Ajustada</Label></div>
+                        <div className="flex items-center space-x-2"><RadioGroupItem value="sin_cambios" id="sin_cambios" /><Label htmlFor="sin_cambios" className='font-normal'>Sin Cambios</Label></div>
+                    </RadioGroup>
+                 </div>
+             </div>
+         ),
+        'No': (
+            <div className='space-y-4'>
+                 <div>
+                     <Label>Motivo del rechazo <span className='text-destructive'>*</span></Label>
+                    <Select>
+                        <SelectTrigger><SelectValue placeholder="Seleccionar motivo..." /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="precio">Precio</SelectItem>
+                            <SelectItem value="tiempo">Tiempo</SelectItem>
+                            <SelectItem value="otro_proveedor">Contrató con otro</SelectItem>
+                            <SelectItem value="sin_interes">Falta de interés</SelectItem>
+                             <SelectItem value="otro">Otro</SelectItem>
+                        </SelectContent>
+                    </Select>
+                 </div>
+                 <div>
+                     <Label>Observaciones</Label>
+                     <Textarea placeholder="Añadir observaciones..."/>
+                 </div>
+                 <div>
+                    <Label>Fecha sugerida para recaptura (si aplica)</Label>
+                    <DatePicker date={date3} setDate={setDate3} />
+                </div>
+            </div>
+        )
+    };
+
+    const formContent = stageName ? forms[stageName] : null;
+
+    return (
+        <Sheet open={!!stageName} onOpenChange={onOpenChange}>
+            <SheetContent className='overflow-y-auto w-full max-w-lg'>
+                <SheetHeader>
+                    <SheetTitle>Avanzar a: {stageName}</SheetTitle>
+                    <SheetDescription>
+                        Completa los siguientes campos para continuar con el proceso. Los campos marcados con <span className='text-destructive'>*</span> son obligatorios.
+                    </SheetDescription>
+                </SheetHeader>
+                <div className="py-6">
+                    {formContent || <p>No se requiere información adicional para esta etapa.</p>}
+                </div>
+                {formContent && (
+                    <div className='flex justify-end gap-2 mt-4'>
+                        <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+                        <Button>Guardar y Avanzar</Button>
+                    </div>
+                )}
+            </SheetContent>
+        </Sheet>
+    );
+};
 
 
 export default function LeadsPage() {
   const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(leadsData[0]);
   const [activeStage, setActiveStage] = useState('Por Visitar');
-  const [isSheetOpen, setSheetOpen] = useState(false);
+  const [formStage, setFormStage] = useState<string | null>(null);
+
+  const handleUpdateStatus = (stage: string) => {
+    setFormStage(stage);
+  };
 
   return (
     <SidebarProvider>
@@ -319,7 +583,7 @@ export default function LeadsPage() {
                 Filtros
                 <ChevronDown className="h-4 w-4" />
               </Button>
-             <Button size="sm" className="gap-1.5">
+             <Button size="sm" className="gap-1.5" onClick={() => handleUpdateStatus('Nuevo Cliente')}>
                 <PlusCircle className="h-4 w-4" />
                 Crear Lead
               </Button>
@@ -422,7 +686,7 @@ export default function LeadsPage() {
             {/* Right Column: Lead Detail */}
             <div className={cn("xl:col-span-1", !selectedLead && "hidden lg:block")}>
                  {selectedLead ? (
-                    <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} onUpdateStatus={() => setSheetOpen(true)} />
+                    <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} onUpdateStatus={handleUpdateStatus} />
                 ) : (
                     <div className='hidden xl:block'>
                         <LeadDetailPanel lead={null} onClose={() => {}} onUpdateStatus={() => {}} />
@@ -430,7 +694,7 @@ export default function LeadsPage() {
                 )}
             </div>
             {/* This Sheet is used to update the lead status */}
-            <UpdateStatusSheet isOpen={isSheetOpen} onOpenChange={setSheetOpen} />
+            <StageForm stageName={formStage} onOpenChange={(isOpen) => !isOpen && setFormStage(null)} />
         </main>
       </SidebarInset>
     </SidebarProvider>
