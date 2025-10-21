@@ -60,141 +60,144 @@ import {
 } from '@/components/ui/sidebar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
-
-const kpis = [
-  { title: "Leads Nuevos (Semana)", value: "28", delta: "+12%", trend: "up" },
-  { title: "Leads por Visitar", value: "15", delta: "3 Prioridad Alta", trend: "stale" },
-  { title: "Cotizaciones Activas", value: "42", delta: "Valor: $82.5M", trend: "up" },
-  { title: "Cierres del Mes", value: "12", delta: "+2 vs mes anterior", trend: "up" },
-];
-
-const leadExample = { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/101/40/40' };
+const leadExample = { 
+  id: 'lead-1', 
+  name: 'Constructora S.A.S', 
+  city: 'Bogotá D.C.', 
+  lastContact: 'Hace 2h', 
+  priority: 'alta', 
+  ownerAvatar: 'https://picsum.photos/seed/101/40/40',
+  status: 'Por Visitar',
+  phone: '310 123 4567',
+  email: 'contacto@constructora.com'
+};
 type Lead = typeof leadExample;
 
-const LeadDetailSidebar = ({ lead, onClose }: { lead: Lead | null; onClose: () => void }) => {
-    if (!lead) return null;
+const stages = [
+  { name: 'Nuevo Cliente', count: 8, color: 'bg-sky-500' },
+  { name: 'Por Contactar', count: 5, color: 'bg-cyan-500' },
+  { name: 'Por Visitar', count: 3, color: 'bg-blue-500' },
+  { name: 'Por Cotizar', count: 12, color: 'bg-indigo-500' },
+  { name: 'Por Presentar Cotización', count: 4, color: 'bg-violet-500' },
+  { name: 'Por Recotizar', count: 2, color: 'bg-purple-500' },
+  { name: 'Por Seguimiento', count: 7, color: 'bg-fuchsia-500' },
+  { name: 'Por Contratar', count: 1, color: 'bg-pink-500' },
+  { name: 'Recaptura BD', count: 150, color: 'bg-rose-500' },
+  { name: 'Finalizados', count: 320, color: 'bg-green-500' },
+];
 
+const leadsData: Lead[] = [
+    { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/101/40/40', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com' },
+    { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/102/40/40', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co' },
+    { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/103/40/40', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com' },
+];
+
+const LeadCard = ({ lead, isSelected, onClick }: { lead: Lead, isSelected: boolean, onClick: () => void}) => {
+    const priorityColors = {
+        alta: 'bg-red-500',
+        media: 'bg-yellow-500',
+        baja: 'bg-green-500',
+    };
     return (
-        <Sheet open={!!lead} onOpenChange={(open) => !open && onClose()}>
-            <SheetContent className="w-full sm:max-w-md p-0 flex flex-col" side="right">
-                <SheetHeader className="p-6 pb-2">
-                    <div className='flex items-center gap-4'>
-                         <Avatar className="h-12 w-12 border-2 border-primary">
+        <Card onClick={onClick} className={cn("cursor-pointer hover:shadow-md transition-shadow", isSelected && "border-primary ring-2 ring-primary")}>
+            <CardContent className="p-4 flex gap-4">
+                <div className={`w-1.5 rounded-full ${priorityColors[lead.priority as keyof typeof priorityColors]}`}></div>
+                <div className='flex-1'>
+                    <div className='flex justify-between items-start'>
+                        <div>
+                            <p className="font-semibold text-sm">{lead.name}</p>
+                            <p className="text-xs text-muted-foreground">{lead.city}</p>
+                        </div>
+                         <Avatar className="h-8 w-8">
                             <AvatarImage src={lead.ownerAvatar} />
                             <AvatarFallback>{lead.name.substring(0,2)}</AvatarFallback>
                         </Avatar>
-                        <div>
-                             <SheetTitle className="text-2xl font-bold font-headline">{lead.name}</SheetTitle>
-                            <p className="text-muted-foreground">{lead.city}</p>
-                        </div>
                     </div>
-                </SheetHeader>
-
-                <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
-                    <div className='flex items-center gap-2'>
-                        <Badge variant="secondary">Estado: Nuevo Cliente</Badge>
+                    <div className='flex justify-between items-center mt-3 text-xs'>
+                        <span className='text-muted-foreground'>Últ. contacto: {lead.lastContact}</span>
+                        <Badge variant="secondary" className='font-normal'>{lead.status}</Badge>
                     </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
 
-                    <Card>
-                        <CardHeader className='pb-2'>
-                            <CardTitle className='text-sm font-semibold'>Información de Contacto</CardTitle>
-                        </CardHeader>
-                        <CardContent className='text-sm space-y-2'>
-                            <p><strong>Teléfono:</strong> 310 123 4567</p>
-                             <p><strong>Email:</strong> contacto@constructora.com</p>
+const LeadDetailPanel = ({ lead, onClose }: { lead: Lead | null; onClose: () => void }) => {
+    if (!lead) return <Card className="hidden lg:block"><CardContent className='p-6 flex flex-col items-center justify-center h-full text-center text-muted-foreground'><Contact className="h-12 w-12 mb-4" /> <p className='font-medium'>Selecciona un lead</p><p className='text-sm'>Elige un lead de la lista para ver sus detalles completos aquí.</p></CardContent></Card>;
+
+    return (
+        <Card className="flex flex-col h-full relative">
+            <Button variant="ghost" size="icon" className="lg:hidden absolute top-2 right-2 z-10" onClick={onClose}><X className="h-4 w-4"/></Button>
+            <CardHeader className="flex-row items-center gap-4">
+                <Avatar className="h-12 w-12 border-2 border-primary">
+                    <AvatarImage src={lead.ownerAvatar} />
+                    <AvatarFallback>{lead.name.substring(0,2)}</AvatarFallback>
+                </Avatar>
+                <div>
+                     <CardTitle className="text-xl font-bold font-headline">{lead.name}</CardTitle>
+                    <p className="text-muted-foreground">{lead.city}</p>
+                </div>
+            </CardHeader>
+            <CardContent className="flex-1 overflow-hidden p-0">
+                <Tabs defaultValue="resumen" className="h-full flex flex-col">
+                    <TabsList className="mx-4 mt-2">
+                        <TabsTrigger value="resumen">Resumen</TabsTrigger>
+                        <TabsTrigger value="actividad">Actividad</TabsTrigger>
+                        <TabsTrigger value="documentos">Documentos</TabsTrigger>
+                    </TabsList>
+                    <div className='overflow-y-auto flex-1'>
+                        <TabsContent value="resumen" className="p-4 space-y-4 text-sm">
+                             <div className='flex items-center gap-2'>
+                                <Badge variant="secondary">Estado: {lead.status}</Badge>
+                                <Badge variant="destructive" className={cn(lead.priority !== 'alta' && 'hidden')}>Prioridad Alta</Badge>
+                             </div>
+                             <p><strong>Teléfono:</strong> {lead.phone}</p>
+                             <p><strong>Email:</strong> {lead.email}</p>
                              <p><strong>Fuente:</strong> Referido</p>
-                        </CardContent>
-                    </Card>
-
-                    <Separator />
-
-                    <div>
-                        <h3 className="text-sm font-semibold mb-2">Próxima Acción</h3>
-                        <div className="flex items-center text-sm p-3 bg-muted rounded-md">
-                            <Phone className="h-5 w-5 mr-3 text-primary" />
-                            <div>
-                                <p className="font-medium">Primer Contacto</p>
-                                <p className="text-muted-foreground">Pendiente</p>
+                             <Separator/>
+                             <h3 className="text-sm font-semibold">Próxima Acción</h3>
+                             <div className="flex items-center text-sm p-3 bg-muted rounded-md">
+                                <Phone className="h-5 w-5 mr-3 text-primary" />
+                                <div>
+                                    <p className="font-medium">Primer Contacto</p>
+                                    <p className="text-muted-foreground">Pendiente</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h3 className="text-sm font-semibold mb-2">Actividad Reciente</h3>
-                        <div className="space-y-4 text-xs">
+                        </TabsContent>
+                        <TabsContent value="actividad" className="p-4 space-y-4 text-xs">
                              <div className="flex items-start gap-3">
                                 <div className="bg-muted p-2 rounded-full mt-1">
                                     <Contact className="h-3 w-3" />
                                 </div>
                                 <p><span className="font-semibold">Lead creado</span> por 'Admin'. Asignado a 'Carlos Ruiz'. <span className="text-muted-foreground">Hace 3h</span></p>
                             </div>
-                        </div>
-                    </div>
-
-                    <Separator />
-
-                     <div>
-                        <h3 className="text-sm font-semibold mb-2">Documentos</h3>
-                        <div className="space-y-2">
+                        </TabsContent>
+                        <TabsContent value="documentos" className="p-4 space-y-2">
                              <a href="#" className="flex items-center text-sm p-3 bg-muted rounded-md hover:bg-primary/10 transition-colors">
                                 <FileText className="h-5 w-5 mr-3 text-primary" />
                                 <span>RUT_Constructora_SAS.pdf</span>
                                 <ChevronRight className="h-4 w-4 ml-auto"/>
                             </a>
-                        </div>
+                        </TabsContent>
                     </div>
-
-                </div>
-                <div className="p-4 border-t bg-background flex gap-2">
-                    <Button variant="outline" className="flex-1"><Phone className="mr-2 h-4 w-4"/> Llamar</Button>
-                    <Button className="flex-1"><Plus className="mr-2 h-4 w-4"/> Agendar Visita</Button>
-                </div>
-            </SheetContent>
-        </Sheet>
+                </Tabs>
+            </CardContent>
+            <div className="p-4 border-t bg-background flex gap-2">
+                <Button variant="outline" className="flex-1"><Phone className="mr-2 h-4 w-4"/> Llamar</Button>
+                <Button className="flex-1"><Plus className="mr-2 h-4 w-4"/> Agendar Visita</Button>
+            </div>
+        </Card>
     )
 }
-
-const LeadStageCard = ({ title, description, icon, leadCount, isActive, onClick }: { title: string, description: string, icon: React.ReactNode, leadCount?: number, isActive?: boolean, onClick?: () => void }) => (
-  <Card className={cn("w-64 h-40 flex flex-col hover:shadow-lg transition-shadow cursor-pointer", isActive && "border-primary shadow-lg")}>
-    <CardHeader className="pb-2" onClick={onClick}>
-      <div className="flex items-center gap-3">
-        <div className={cn("h-8 w-8 flex items-center justify-center rounded-full bg-primary/10 text-primary", isActive && "bg-primary text-primary-foreground")}>
-          {icon}
-        </div>
-        <CardTitle className="text-base font-semibold">{title}</CardTitle>
-      </div>
-    </CardHeader>
-    <CardContent className="flex-1 pb-4 text-sm text-muted-foreground" onClick={onClick}>
-      {description}
-    </CardContent>
-    {leadCount !== undefined && (
-      <CardContent className="py-2 border-t text-xs font-medium">
-        {leadCount} leads en esta etapa
-      </CardContent>
-    )}
-  </Card>
-);
-
-const DecisionNode = () => (
-  <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-full transform rotate-45">
-    <GitMerge className="h-6 w-6 text-gray-600 dark:text-gray-300 transform -rotate-45" />
-  </div>
-);
-
-const FlowConnector = ({ label, isDashed }: { label?: string, isDashed?: boolean }) => (
-  <div className="relative w-20 h-full flex items-center justify-center">
-    <div className={cn("w-full h-0.5", isDashed ? "bg-none border-t-2 border-dashed border-gray-300" : "bg-gray-300")}></div>
-    <ArrowRight className="absolute right-[-10px] h-5 w-5 text-gray-400" />
-    {label && <span className="absolute -top-5 text-xs font-medium text-muted-foreground">{label}</span>}
-  </div>
-);
-
 
 export default function LeadsPage() {
   const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [activeStage, setActiveStage] = useState('Por Visitar');
 
   return (
     <SidebarProvider>
@@ -202,7 +205,7 @@ export default function LeadsPage() {
         <SidebarHeader className="flex items-center gap-2.5 p-4">
           <SolYCieloLogo className="h-8 w-8" />
           <h2 className="text-xl font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
-            Sol &amp; Cielo
+            Sol & Cielo
           </h2>
         </SidebarHeader>
         <SidebarContent className="p-2">
@@ -312,81 +315,66 @@ export default function LeadsPage() {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col bg-muted/40 p-4 lg:p-6">
-            {/* KPIs */}
-            <div className="pb-6 border-b">
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                {kpis.map((kpi) => (
-                    <Card key={kpi.title}>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{kpi.value}</div>
-                        <p className={`text-xs ${kpi.trend === 'up' ? 'text-green-600' : 'text-muted-foreground'}`}>{kpi.delta}</p>
-                    </CardContent>
-                    </Card>
-                ))}
+        <main className="flex-1 grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
+            {/* Left Column: Stages */}
+            <Card className="hidden lg:flex flex-col">
+                <CardHeader>
+                    <CardTitle className="text-lg">Etapas del Flujo</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 overflow-y-auto -mt-2">
+                    <ul className='space-y-1'>
+                        {stages.map(stage => (
+                            <li key={stage.name}>
+                                <button
+                                    onClick={() => setActiveStage(stage.name)}
+                                    className={cn(
+                                        "w-full text-left p-2 rounded-md text-sm flex justify-between items-center transition-colors",
+                                        activeStage === stage.name
+                                            ? "bg-primary/10 text-primary font-semibold"
+                                            : "hover:bg-muted/80"
+                                    )}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
+                                        <span>{stage.name}</span>
+                                    </div>
+                                    <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", activeStage === stage.name ? "bg-primary/20" : "bg-muted")}>{stage.count}</span>
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </CardContent>
+            </Card>
+
+            {/* Center Column: Leads List */}
+            <div className={cn("lg:col-span-2 xl:col-span-2 flex flex-col gap-4", selectedLead && "hidden lg:flex")}>
+                <h2 className='text-lg font-semibold'>Leads en: {activeStage} ({leadsData.length})</h2>
+                <div className='space-y-3 overflow-y-auto'>
+                    {leadsData.map(lead => (
+                       <LeadCard 
+                        key={lead.id} 
+                        lead={lead} 
+                        isSelected={selectedLead?.id === lead.id}
+                        onClick={() => setSelectedLead(lead)} 
+                       />
+                    ))}
                 </div>
             </div>
 
-            {/* Flowchart */}
-            <div className="flex-1 flex items-center justify-center overflow-x-auto py-8">
-              <div className="flex items-center gap-4">
-                {/* Stage 1 */}
-                <LeadStageCard 
-                  title="Nuevo Cliente" 
-                  description="Lead recién ingresado al sistema." 
-                  icon={<Plus />}
-                  leadCount={8}
-                  isActive
-                  onClick={() => setSelectedLead(leadExample)}
-                />
-                <FlowConnector />
-                {/* Stage 2 */}
-                <LeadStageCard 
-                  title="Por Contactar" 
-                  description="Llamada o correo de primer contacto." 
-                  icon={<Phone />}
-                  leadCount={5}
-                />
-                <FlowConnector />
-                {/* Decision 1 */}
-                <div className="flex flex-col items-center gap-4">
-                    <DecisionNode />
-                    <div className="flex items-center">
-                        <FlowConnector label="Sí" />
-                        <LeadStageCard 
-                          title="Por Visitar" 
-                          description="Agendar y realizar visita comercial." 
-                          icon={<Video />}
-                          leadCount={3}
-                        />
-                        <FlowConnector />
-                        <LeadStageCard 
-                          title="Por Cotizar" 
-                          description="Preparar y enviar la cotización." 
-                          icon={<FileText />}
-                          leadCount={12}
-                        />
+            {/* Right Column: Lead Detail */}
+            <div className={cn("xl:col-span-1", !selectedLead && "hidden lg:block")}>
+                 {selectedLead ? (
+                    <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} />
+                ) : (
+                    <div className='hidden xl:block'>
+                        <LeadDetailPanel lead={null} onClose={() => {}} />
                     </div>
-                     <div className="flex items-center self-start ml-24 mt-4">
-                         <div className="h-10 w-0.5 bg-gray-300"></div>
-                         <FlowConnector label="No" isDashed/>
-                         <LeadStageCard
-                          title="Recaptura BD"
-                          description="Leads fríos para seguimiento futuro."
-                          icon={<RefreshCcw />}
-                          leadCount={150}
-                        />
-                     </div>
-                </div>
-              </div>
+                )}
             </div>
-            
-            <LeadDetailSidebar lead={selectedLead} onClose={() => setSelectedLead(null)} />
         </main>
       </SidebarInset>
     </SidebarProvider>
   );
 }
+
+    
