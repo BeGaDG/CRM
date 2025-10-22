@@ -3,7 +3,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Info, Contact } from 'lucide-react';
+import { ArrowRight, Info, Contact, Sun, Zap, Layers } from 'lucide-react';
 import type { Lead } from './lead-card';
 import { StageForm } from './stage-form';
 import { stages } from '@/app/leads/page';
@@ -73,6 +72,13 @@ const InfoItem = ({ label, value }: { label: string; value?: string | number | n
     );
 }
 
+const interestTypeIcons = {
+  'planta-solar': { icon: Sun, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
+  'comercializadora': { icon: Zap, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Comercializadora' },
+  'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Ambos' },
+};
+
+
 export const LeadDetailPanel = ({ lead, onUpdateStatus, onSaveStageData }: { lead: Lead | null; onUpdateStatus: (stage: string) => void; onSaveStageData: (stage: string, data: any) => void; }) => {
     if (!lead) return null;
 
@@ -82,15 +88,17 @@ export const LeadDetailPanel = ({ lead, onUpdateStatus, onSaveStageData }: { lea
     // A simple check if required fields for the CURRENT stage are filled.
     // In a real app, this logic would be much more robust.
     const canAdvance = true; 
+    
+    const interest = interestTypeIcons[lead.interestType];
+    const Icon = interest.icon;
 
     return (
         <>
             <SheetHeader className="text-left p-4">
                  <div className="flex items-center gap-4">
-                    <Avatar className="h-16 w-16 border-4 border-primary">
-                        <AvatarImage src={lead.ownerAvatar} />
-                        <AvatarFallback>{lead.name.substring(0,2)}</AvatarFallback>
-                    </Avatar>
+                    <div className={cn("h-16 w-16 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
+                        <Icon className={cn("h-8 w-8", interest.color)} />
+                    </div>
                     <div>
                         <SheetTitle className="text-2xl font-bold font-headline">{lead.name}</SheetTitle>
                         <p className="text-muted-foreground">{lead.city}</p>
@@ -109,6 +117,13 @@ export const LeadDetailPanel = ({ lead, onUpdateStatus, onSaveStageData }: { lea
                             <p><strong>Teléfono:</strong> <a href={`tel:${lead.phone}`} className='text-primary hover:underline'>{lead.phone}</a></p>
                             <p><strong>Email:</strong> <a href={`mailto:${lead.email}`} className='text-primary hover:underline'>{lead.email}</a></p>
                             <p><strong>Fuente:</strong> Referido</p>
+                            <div className='flex items-center gap-2'>
+                                <strong>Interés:</strong>
+                                <Badge variant="secondary" className={cn('font-medium', interest.bgColor, interest.color, 'border-none')}>
+                                    <Icon className="h-3 w-3 mr-1.5" />
+                                    {interest.label}
+                                </Badge>
+                            </div>
                             {currentStage && (
                                 <div className='flex items-center gap-2'>
                                     <strong>Estado:</strong>
@@ -155,7 +170,8 @@ export const LeadDetailPanel = ({ lead, onUpdateStatus, onSaveStageData }: { lea
                                     </p>
                                     <StageForm 
                                         stageName={stage.name} 
-                                        onSave={() => onSaveStageData(stage.name, {})} // Replace {} with actual form data
+                                        onSave={(data) => onSaveStageData(stage.name, data)} // Pass data up on save
+                                        initialData={lead.collectedData}
                                         onDataChange={(data) => { /* Handle data change for validation */}}
                                     />
                                 </AccordionContent>

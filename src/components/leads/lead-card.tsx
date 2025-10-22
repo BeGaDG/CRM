@@ -1,8 +1,8 @@
 'use client';
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { Sun, Zap, Layers } from 'lucide-react';
 
 export const stages = [
   { name: 'Nuevo Cliente', color: 'bg-sky-500' },
@@ -23,8 +23,8 @@ const leadExample = {
   name: 'Constructora S.A.S',
   city: 'Bogotá D.C.',
   lastContact: 'Hace 2h',
-  priority: 'alta',
-  ownerAvatar: 'https://picsum.photos/seed/101/40/40',
+  priority: 'alta' as const,
+  interestType: 'planta-solar' as const,
   status: 'Por Visitar',
   phone: '310 123 4567',
   email: 'contacto@constructora.com',
@@ -37,6 +37,12 @@ const leadExample = {
 };
 export type Lead = typeof leadExample;
 
+const interestTypeIcons = {
+  'planta-solar': { icon: Sun, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10' },
+  'comercializadora': { icon: Zap, color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
+  'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10' },
+};
+
 export const LeadCard = ({ lead, onClick }: { lead: Lead, onClick: () => void }) => {
   const priorityColors = {
     alta: 'bg-red-500',
@@ -44,16 +50,17 @@ export const LeadCard = ({ lead, onClick }: { lead: Lead, onClick: () => void })
     baja: 'bg-green-500',
   };
   const currentStage = stages.find(s => s.name === lead.status);
+  const interest = interestTypeIcons[lead.interestType];
+  const Icon = interest.icon;
 
   return (
     <Card onClick={onClick} className="cursor-pointer hover:shadow-lg transition-shadow duration-200">
       <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex items-center gap-4 flex-1">
-          <div className={`w-1.5 h-12 sm:h-8 rounded-full ${priorityColors[lead.priority as keyof typeof priorityColors]}`}></div>
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={lead.ownerAvatar} />
-            <AvatarFallback>{lead.name.substring(0, 2)}</AvatarFallback>
-          </Avatar>
+          <div className={`w-1.5 h-12 sm:h-8 rounded-full ${priorityColors[lead.priority]}`}></div>
+          <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
+            <Icon className={cn("h-6 w-6", interest.color)} />
+          </div>
           <div className="flex-1">
             <p className="font-semibold text-base">{lead.name}</p>
             <p className="text-sm text-muted-foreground">{lead.city}</p>

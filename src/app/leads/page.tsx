@@ -12,6 +12,9 @@ import {
   Users,
   BarChart,
   Bell,
+  Sun,
+  Zap,
+  Layers,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -69,14 +72,14 @@ export const stages = [
 ];
 
 const initialLeads: Lead[] = [
-  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/101/40/40', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', collectedData: { 'nic': '123456-7', 'consumo': '15000 kWh', 'valor_cotizacion': 0, 'potencia_pico': '' } },
-  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/102/40/40', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', collectedData: {} },
-  { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/103/40/40', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com', collectedData: {} },
-  { id: 'lead-4', name: 'Nuevo Cliente Alfa', city: 'Barranquilla', lastContact: 'Hace 1h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/104/40/40', status: 'Nuevo Cliente', phone: '318 111 2233', email: 'alfa@cliente.com', collectedData: {} },
-  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/105/40/40', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', collectedData: {} },
-  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/106/40/40', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', collectedData: {'nic': '987654-3', 'consumo': '8000 kWh'} },
-  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/107/40/40', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', collectedData: {'nic': '555444-1', 'consumo': '25000 kWh', 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' } },
-  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/108/40/40', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', collectedData: {} },
+  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', interestType: 'planta-solar', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', collectedData: { 'nic': '123456-7', 'consumo': '15000 kWh', 'valor_cotizacion': 0, 'potencia_pico': '' } },
+  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', interestType: 'comercializadora', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', collectedData: {} },
+  { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', interestType: 'ambos', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com', collectedData: {} },
+  { id: 'lead-4', name: 'Nuevo Cliente Alfa', city: 'Barranquilla', lastContact: 'Hace 1h', priority: 'alta', interestType: 'planta-solar', status: 'Nuevo Cliente', phone: '318 111 2233', email: 'alfa@cliente.com', collectedData: {} },
+  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', priority: 'media', interestType: 'comercializadora', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', collectedData: {} },
+  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', priority: 'baja', interestType: 'planta-solar', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', collectedData: {'nic': '987654-3', 'consumo': '8000 kWh'} },
+  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', priority: 'alta', interestType: 'ambos', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', collectedData: {'nic': '555444-1', 'consumo': '25000 kWh', 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' } },
+  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', priority: 'alta', interestType: 'comercializadora', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', collectedData: {} },
 ];
 
 
@@ -113,7 +116,7 @@ export default function LeadsPage() {
         city: 'Por definir',
         lastContact: 'Ahora',
         priority: 'media',
-        ownerAvatar: 'https://picsum.photos/seed/999/40/40',
+        interestType: 'planta-solar', // Default value
         status: 'Nuevo Cliente',
         phone: 'N/A',
         email: 'N/A',
@@ -124,7 +127,30 @@ export default function LeadsPage() {
   };
 
   const handleSaveStageData = (stage: string, data: any) => {
-    // Here you would save the partial data to the lead object.
+    if (selectedLead) {
+      const updatedLeads = leads.map(l => {
+        if (l.id === selectedLead.id) {
+          return {
+            ...l,
+            collectedData: {
+              ...l.collectedData,
+              ...data,
+            },
+          };
+        }
+        return l;
+      });
+      setLeads(updatedLeads);
+
+      const updatedSelectedLead = {
+        ...selectedLead,
+        collectedData: {
+          ...selectedLead.collectedData,
+          ...data,
+        },
+      };
+      setSelectedLead(updatedSelectedLead);
+    }
     console.log(`Saving draft data for stage "${stage}"`, data);
   };
   
