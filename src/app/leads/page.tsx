@@ -151,7 +151,7 @@ const LeadCard = ({ lead, isSelected, onClick }: { lead: Lead, isSelected: boole
 };
 
 const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null; onClose: () => void; onUpdateStatus: (stage: string) => void; }) => {
-    if (!lead) return <Card className="hidden lg:block"><CardContent className='p-6 flex flex-col items-center justify-center h-full text-center text-muted-foreground'><Contact className="h-12 w-12 mb-4" /> <p className='font-medium'>Selecciona un lead</p><p className='text-sm'>Elige un lead de la lista para ver sus detalles completos aquí.</p></CardContent></Card>;
+    if (!lead) return <Card className="hidden lg:flex flex-col h-full items-center justify-center border-dashed shadow-none"><CardContent className='p-6 flex flex-col items-center justify-center h-full text-center text-muted-foreground'><Contact className="h-12 w-12 mb-4 opacity-50" /> <p className='font-semibold'>Selecciona un lead</p><p className='text-sm'>Elige un lead de la lista para ver sus detalles completos aquí.</p></CardContent></Card>;
 
     const currentStage = stages.find(s => s.name === lead.status);
 
@@ -534,7 +534,6 @@ export default function LeadsPage() {
 
   const handleSelectLead = (lead: Lead) => {
     setSelectedLead(lead);
-    setActiveStage(lead.status);
   };
 
   const handleSaveStage = (newStage: string) => {
@@ -548,7 +547,7 @@ export default function LeadsPage() {
       setSelectedLead(updatedSelectedLead);
       setActiveStage(newStage);
     }
-     // Logic to create a new lead
+    // Logic to create a new lead
     else if (newStage === 'Nuevo Cliente') {
         // This is where you would handle creating a new lead.
         // For now, let's just close the form.
@@ -559,34 +558,45 @@ export default function LeadsPage() {
   
   const handleStageChange = (stage: string) => {
     setActiveStage(stage);
-    setSelectedLead(leads.find(l => l.status === stage) ?? null);
   }
+  
+  useEffect(() => {
+    if (selectedLead) {
+      setActiveStage(selectedLead.status);
+    }
+  }, [selectedLead]);
+
+  // Effect to manage lead selection based on active stage and screen size
+  useEffect(() => {
+    const leadsInCurrentStage = leads.filter(lead => lead.status === activeStage);
+    // On desktop, if the selected lead is not in the current stage,
+    // or no lead is selected, select the first one from the current stage.
+    if (!isMobile) {
+      if (!selectedLead || selectedLead.status !== activeStage) {
+        setSelectedLead(leadsInCurrentStage.length > 0 ? leadsInCurrentStage[0] : null);
+      }
+    } else {
+      // On mobile, clear selection when changing stages via the dropdown
+      // This ensures the list is shown, not a stale detail view
+      setSelectedLead(null);
+    }
+  }, [activeStage, isMobile]);
+
+  // Initial load selection for desktop
+  useEffect(() => {
+    if (!isMobile && !selectedLead) {
+      const leadsInCurrentStage = leads.filter(lead => lead.status === activeStage);
+      setSelectedLead(leadsInCurrentStage.length > 0 ? leadsInCurrentStage[0] : null);
+    }
+  }, [isMobile, leads, activeStage]);
 
   const filteredLeads = leads.filter(lead => lead.status === activeStage);
 
-  useEffect(() => {
-    // If no lead is selected, or the selected lead is not in the active stage,
-    // select the first lead of the active stage.
-    // This handles the initial load and stage changes from the left column.
-    if (!isMobile && (!selectedLead || selectedLead.status !== activeStage)) {
-      setSelectedLead(filteredLeads.length > 0 ? filteredLeads[0] : null);
-    }
-    
-    // On mobile, if a lead is selected, we don't want to clear it when changing stages.
-    // The detail view is a sheet, so the user manages its state separately.
-    // However, if we switch TO mobile, clear selection to show the list.
-    if (isMobile) {
-        setSelectedLead(null);
-    }
+  const handleDetailClose = () => {
+    setSelectedLead(null);
+  }
 
-  }, [activeStage, isMobile]);
-
-  // This effect handles the initial lead selection on desktop
-  useEffect(() => {
-    if(!isMobile && !selectedLead) {
-        handleStageChange(activeStage);
-    }
-  }, [isMobile, selectedLead, activeStage]);
+  const isDetailViewVisible = !!selectedLead;
 
 
   return (
@@ -707,43 +717,45 @@ export default function LeadsPage() {
           </div>
         </header>
 
-        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[280px_1fr] xl:grid-cols-[320px_1fr_400px] gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
+        <main className="flex-1 grid grid-cols-1 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr_400px] gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
             {/* Left Column: Stages */}
-            <Card className="hidden lg:flex flex-col">
-                <CardHeader>
-                    <CardTitle className="text-lg">Etapas del Flujo</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 overflow-y-auto -mt-2">
-                    <ul className='space-y-1'>
-                        {stages.map(stage => (
-                            <li key={stage.name}>
-                                <button
-                                    onClick={() => handleStageChange(stage.name)}
-                                    className={cn(
-                                        "w-full text-left p-2 rounded-md text-sm flex justify-between items-center transition-colors",
-                                        activeStage === stage.name
-                                            ? "bg-primary/10 text-primary font-semibold"
-                                            : "hover:bg-muted/80"
-                                    )}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
-                                        <span>{stage.name}</span>
-                                    </div>
-                                    <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", activeStage === stage.name ? "bg-primary/20" : "bg-muted")}>{leads.filter(l => l.status === stage.name).length}</span>
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                </CardContent>
-            </Card>
+             <div className={cn("hidden md:flex flex-col", isMobile && isDetailViewVisible && 'hidden')}>
+                <Card className="flex-1 flex flex-col">
+                  <CardHeader>
+                      <CardTitle className="text-lg">Etapas del Flujo</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 overflow-y-auto -mt-2">
+                      <ul className='space-y-1'>
+                          {stages.map(stage => (
+                              <li key={stage.name}>
+                                  <button
+                                      onClick={() => handleStageChange(stage.name)}
+                                      className={cn(
+                                          "w-full text-left p-2 rounded-md text-sm flex justify-between items-center transition-colors",
+                                          activeStage === stage.name
+                                              ? "bg-primary/10 text-primary font-semibold"
+                                              : "hover:bg-muted/80"
+                                      )}
+                                  >
+                                      <div className="flex items-center gap-2">
+                                          <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
+                                          <span>{stage.name}</span>
+                                      </div>
+                                      <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", activeStage === stage.name ? "bg-primary/20" : "bg-muted")}>{leads.filter(l => l.status === stage.name).length}</span>
+                                  </button>
+                              </li>
+                          ))}
+                      </ul>
+                  </CardContent>
+                </Card>
+            </div>
 
             {/* Center Column: Leads List */}
-             <div className={cn("flex flex-col gap-4", isMobile && selectedLead && "hidden")}>
+             <div className={cn("flex flex-col gap-4", isMobile && isDetailViewVisible && 'hidden')}>
                 <div className='flex items-center justify-between'>
                     <h2 className='text-lg font-semibold'>Leads en: {activeStage} ({filteredLeads.length})</h2>
                 </div>
-                <div className="lg:hidden">
+                <div className="md:hidden">
                     <Select value={activeStage} onValueChange={handleStageChange}>
                         <SelectTrigger>
                             <SelectValue placeholder="Seleccionar etapa..." />
@@ -771,7 +783,7 @@ export default function LeadsPage() {
                     ))}
                     {filteredLeads.length === 0 && (
                         <div className="text-center text-muted-foreground py-10">
-                            <Contact className="h-12 w-12 mx-auto mb-4" />
+                            <Contact className="h-12 w-12 mx-auto mb-4 opacity-50" />
                             <p className="font-medium">No hay leads en esta etapa.</p>
                         </div>
                     )}
@@ -779,23 +791,25 @@ export default function LeadsPage() {
             </div>
 
             {/* Right Column: Lead Detail */}
-            <div className={cn("hidden xl:block", !selectedLead && "hidden xl:block", selectedLead && "lg:col-start-2 xl:col-start-3")}>
-                 {selectedLead ? (
-                    <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} onUpdateStatus={handleUpdateStatus} />
-                ) : (
-                    <div className='hidden xl:block'>
-                        <LeadDetailPanel lead={null} onClose={() => {}} onUpdateStatus={() => {}} />
-                    </div>
-                )}
+            <div className={cn("hidden lg:block", isMobile && "hidden")}>
+                <LeadDetailPanel 
+                    lead={selectedLead} 
+                    onClose={handleDetailClose} 
+                    onUpdateStatus={handleUpdateStatus} 
+                />
             </div>
             
             {/* Sheet for stage forms */}
             <StageForm stageName={formStage} onOpenChange={(isOpen) => !isOpen && setFormStage(null)} onSave={handleSaveStage} />
             
             {/* Sheet for mobile/tablet lead detail */}
-            <Sheet open={!!selectedLead && isMobile} onOpenChange={(isOpen) => {if (!isOpen) setSelectedLead(null)}}>
+            <Sheet open={isDetailViewVisible && isMobile} onOpenChange={(isOpen) => {if (!isOpen) handleDetailClose()}}>
                 <SheetContent className="p-0 sm:max-w-lg w-full">
-                    <LeadDetailPanel lead={selectedLead} onClose={() => setSelectedLead(null)} onUpdateStatus={handleUpdateStatus}/>
+                   <LeadDetailPanel 
+                      lead={selectedLead} 
+                      onClose={handleDetailClose} 
+                      onUpdateStatus={handleUpdateStatus}
+                    />
                 </SheetContent>
             </Sheet>
 
