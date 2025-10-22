@@ -16,7 +16,8 @@ import {
   X,
   Calendar as CalendarIcon,
   UserPlus,
-  Save
+  Save,
+  Info
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -83,7 +84,14 @@ const leadExample = {
   ownerAvatar: 'https://picsum.photos/seed/101/40/40',
   status: 'Por Visitar',
   phone: '310 123 4567',
-  email: 'contacto@constructora.com'
+  email: 'contacto@constructora.com',
+  // Example of collected data
+  collectedData: {
+    'nic': '1234567',
+    'consumo': '5000 kWh',
+    'valor_cotizacion': 15000000,
+    'potencia_pico': '10 kWp'
+  }
 };
 type Lead = typeof leadExample;
 
@@ -102,14 +110,14 @@ const stages = [
 ];
 
 const initialLeads: Lead[] = [
-  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/101/40/40', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com' },
-  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/102/40/40', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co' },
-  { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/103/40/40', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com' },
-  { id: 'lead-4', name: 'Nuevo Cliente Alfa', city: 'Barranquilla', lastContact: 'Hace 1h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/104/40/40', status: 'Nuevo Cliente', phone: '318 111 2233', email: 'alfa@cliente.com' },
-  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/105/40/40', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com' },
-  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/106/40/40', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com' },
-  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/107/40/40', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com' },
-  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/108/40/40', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com' },
+  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/101/40/40', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', collectedData: { 'nic': '123456-7', 'consumo': '15000 kWh', 'valor_cotizacion': 0, 'potencia_pico': '' } },
+  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/102/40/40', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', collectedData: {} },
+  { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/103/40/40', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com', collectedData: {} },
+  { id: 'lead-4', name: 'Nuevo Cliente Alfa', city: 'Barranquilla', lastContact: 'Hace 1h', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/104/40/40', status: 'Nuevo Cliente', phone: '318 111 2233', email: 'alfa@cliente.com', collectedData: {} },
+  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', priority: 'media', ownerAvatar: 'https://picsum.photos/seed/105/40/40', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', collectedData: {} },
+  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', priority: 'baja', ownerAvatar: 'https://picsum.photos/seed/106/40/40', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', collectedData: {'nic': '987654-3', 'consumo': '8000 kWh'} },
+  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/107/40/40', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', collectedData: {'nic': '555444-1', 'consumo': '25000 kWh', 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' } },
+  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/108/40/40', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', collectedData: {} },
 ];
 
 const LeadCard = ({ lead, onClick }: { lead: Lead, onClick: () => void }) => {
@@ -467,6 +475,16 @@ const LeadDetailPanel = ({ lead, onUpdateStatus, onSaveStageData }: { lead: Lead
     // In a real app, this logic would be much more robust.
     const canAdvance = true; 
 
+    const InfoItem = ({ label, value }: { label: string; value?: string | number | null }) => {
+      if (!value) return null;
+      return (
+        <div>
+          <p className="text-xs text-muted-foreground">{label}</p>
+          <p className="font-medium">{value}</p>
+        </div>
+      );
+    }
+
     return (
         <>
             <SheetHeader className="text-left p-4">
@@ -503,6 +521,28 @@ const LeadDetailPanel = ({ lead, onUpdateStatus, onSaveStageData }: { lead: Lead
                                 </div>
                             )}
                         </div>
+                        
+                        <Separator/>
+
+                        <div className='space-y-4'>
+                          <h3 className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                            <Info className="h-4 w-4" />
+                            Información Clave Recopilada
+                          </h3>
+                          {Object.keys(lead.collectedData).length > 0 ? (
+                            <div className="grid grid-cols-2 gap-4 text-sm p-4 bg-muted/50 rounded-lg border">
+                              <InfoItem label="NIC" value={lead.collectedData.nic} />
+                              <InfoItem label="Consumo" value={lead.collectedData.consumo} />
+                              <InfoItem label="Potencia Pico" value={lead.collectedData.potencia_pico} />
+                              <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : ''} />
+                            </div>
+                          ) : (
+                             <p className="text-muted-foreground text-center text-xs p-4 bg-muted/50 rounded-lg border">
+                              Aún no se ha recopilado información adicional para este lead.
+                            </p>
+                          )}
+                        </div>
+                        
                         <Separator/>
                         <NextStageSelector currentStage={lead.status} onUpdateStatus={onUpdateStatus} canAdvance={canAdvance} />
                     </TabsContent>
@@ -610,6 +650,7 @@ export default function LeadsPage() {
         status: 'Nuevo Cliente',
         phone: 'N/A',
         email: 'N/A',
+        collectedData: {},
       };
       setLeads([newLead, ...leads]);
     }
