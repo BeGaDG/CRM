@@ -195,7 +195,7 @@ const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null;
                             <div className='flex items-center gap-2'>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button size="sm" variant="outline" className="flex-1">
+                                        <Button size="sm" className="flex-1">
                                             <GitMerge className="mr-2 h-4 w-4"/>
                                             Actualizar Estado
                                         </Button>
@@ -239,7 +239,6 @@ const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null;
                 </Tabs>
             </CardContent>
             <div className="p-4 border-t bg-background flex gap-2">
-                <Button variant="outline" className="flex-1"><Phone className="mr-2 h-4 w-4"/> Llamar</Button>
                 <Button className="flex-1"><Plus className="mr-2 h-4 w-4"/> Agendar Visita</Button>
             </div>
         </Card>
@@ -818,5 +817,7 @@ export default function LeadsPage() {
     </SidebarProvider>
   );
 }
+
+    
 
     
