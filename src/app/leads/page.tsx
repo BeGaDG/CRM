@@ -15,7 +15,8 @@ import {
   Bell,
   X,
   Calendar as CalendarIcon,
-  UserPlus
+  UserPlus,
+  Save
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -163,7 +164,7 @@ const getNextStages = (currentStage: string): string[] => {
   return stageMap[currentStage] || [];
 };
 
-const NextStageSelector = ({ currentStage, onUpdateStatus }: { currentStage: string; onUpdateStatus: (stage: string) => void; }) => {
+const NextStageSelector = ({ currentStage, onUpdateStatus, canAdvance }: { currentStage: string; onUpdateStatus: (stage: string) => void; canAdvance: boolean; }) => {
   const nextStages = getNextStages(currentStage);
 
   if (nextStages.length === 0) {
@@ -176,7 +177,7 @@ const NextStageSelector = ({ currentStage, onUpdateStatus }: { currentStage: str
   return (
     <div className="space-y-3">
       <h3 className="text-sm font-semibold text-muted-foreground">Próximo Paso</h3>
-      <Button onClick={() => onUpdateStatus(mainAction)} size="lg" className="w-full font-bold">
+      <Button onClick={() => onUpdateStatus(mainAction)} size="lg" className="w-full font-bold" disabled={!canAdvance} title={!canAdvance ? "Completa los campos obligatorios de la etapa actual para avanzar" : ""}>
         <ArrowRight className="mr-2 h-4 w-4" />
         Avanzar a: {mainAction}
       </Button>
@@ -192,75 +193,6 @@ const NextStageSelector = ({ currentStage, onUpdateStatus }: { currentStage: str
     </div>
   );
 };
-
-const LeadDetailPanel = ({ lead, onUpdateStatus }: { lead: Lead | null; onUpdateStatus: (stage: string) => void; }) => {
-    if (!lead) return null;
-
-    const currentStage = stages.find(s => s.name === lead.status);
-
-    return (
-        <>
-            <SheetHeader className="text-left">
-                 <div className="flex items-center gap-4 pt-4">
-                    <Avatar className="h-16 w-16 border-4 border-primary">
-                        <AvatarImage src={lead.ownerAvatar} />
-                        <AvatarFallback>{lead.name.substring(0,2)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <SheetTitle className="text-2xl font-bold font-headline">{lead.name}</SheetTitle>
-                        <p className="text-muted-foreground">{lead.city}</p>
-                    </div>
-                </div>
-            </SheetHeader>
-            <div className="flex-1 overflow-y-auto p-1">
-                <Tabs defaultValue="resumen" className="flex flex-col h-full">
-                    <TabsList className="mx-4 mt-4 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-                        <TabsTrigger value="resumen">Resumen</TabsTrigger>
-                        <TabsTrigger value="actividad">Actividad</TabsTrigger>
-                        <TabsTrigger value="documentos">Documentos</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="resumen" className="p-4 space-y-6 text-sm">
-                        <div className='space-y-3'>
-                            <p><strong>Teléfono:</strong> <a href={`tel:${lead.phone}`} className='text-primary hover:underline'>{lead.phone}</a></p>
-                            <p><strong>Email:</strong> <a href={`mailto:${lead.email}`} className='text-primary hover:underline'>{lead.email}</a></p>
-                            <p><strong>Fuente:</strong> Referido</p>
-                            {currentStage && (
-                                <div className='flex items-center gap-2'>
-                                    <strong>Estado:</strong>
-                                    <Badge variant="secondary" className='font-medium'>
-                                        <span className={cn("h-2 w-2 rounded-full mr-2", currentStage.color)}></span>
-                                        {lead.status}
-                                    </Badge>
-                                </div>
-                            )}
-                        </div>
-                        <Separator/>
-                        <NextStageSelector currentStage={lead.status} onUpdateStatus={onUpdateStatus} />
-                    </TabsContent>
-                    <TabsContent value="actividad" className="p-4 space-y-4 text-xs">
-                         <div className="flex items-start gap-3">
-                            <div className="bg-muted p-2 rounded-full mt-1">
-                                <Contact className="h-3 w-3" />
-                            </div>
-                            <p><span className="font-semibold">Lead creado</span> por 'Admin'. Asignado a 'Carlos Ruiz'. <span className="text-muted-foreground">Hace 3h</span></p>
-                        </div>
-                    </TabsContent>
-                    <TabsContent value="documentos" className="p-4 space-y-2">
-                         <a href="#" className="flex items-center text-sm p-3 bg-muted rounded-md hover:bg-primary/10 transition-colors">
-                            <FileText className="h-5 w-5 mr-3 text-primary" />
-                            <span>RUT_Constructora_SAS.pdf</span>
-                            <ChevronRight className="h-4 w-4 ml-auto"/>
-                        </a>
-                    </TabsContent>
-                </Tabs>
-            </div>
-             <div className="p-4 border-t bg-background/80 backdrop-blur-sm flex gap-2 sticky bottom-0">
-                <Input placeholder='Escribe una nota rápida...'/>
-                <Button>Guardar</Button>
-            </div>
-        </>
-    )
-}
 
 const DatePicker = ({ date, setDate }: { date?: Date, setDate: (date?: Date) => void }) => {
   return (
@@ -289,17 +221,10 @@ const DatePicker = ({ date, setDate }: { date?: Date, setDate: (date?: Date) => 
   )
 }
 
-const StageForm = ({ stageName, onOpenChange, onSave }: { stageName: string | null; onOpenChange: (open: boolean) => void; onSave: (newStage: string) => void; }) => {
+const StageForm = ({ stageName, onSave, onDataChange }: { stageName: string | null; onSave: () => void; onDataChange: (data: any) => void; }) => {
   const [date, setDate] = useState<Date>()
   const [date2, setDate2] = useState<Date>()
   const [date3, setDate3] = useState<Date>()
-
-  const handleSave = () => {
-    if (stageName) {
-      onSave(stageName);
-    }
-    onOpenChange(false);
-  }
 
   const forms: { [key: string]: React.ReactNode } = {
     'Nuevo Cliente': (
@@ -512,64 +437,181 @@ const StageForm = ({ stageName, onOpenChange, onSave }: { stageName: string | nu
 
   const formContent = stageName ? forms[stageName] : null;
 
+  if (!formContent) return null;
+
   return (
-    <Sheet open={!!stageName} onOpenChange={onOpenChange}>
-      <SheetContent className='w-full max-w-lg overflow-y-auto'>
-        <SheetHeader>
-          <SheetTitle>Avanzar a: {stageName}</SheetTitle>
-          <SheetDescription>
-            Completa los siguientes campos para continuar con el proceso. Los campos marcados con <span className='text-destructive'>*</span> son obligatorios.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="py-6">
-          {formContent || <p>No se requiere información adicional para esta etapa.</p>}
-        </div>
-        {formContent && (
-          <div className='flex justify-end gap-2 mt-4 sticky bottom-0 bg-background py-4'>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-            <Button onClick={handleSave}>Guardar y Avanzar</Button>
-          </div>
-        )}
-      </SheetContent>
-    </Sheet>
+    <div className='space-y-4'>
+      {formContent}
+      <Button onClick={onSave} className='w-full'>
+        <Save className="mr-2 h-4 w-4" />
+        Guardar Borrador
+      </Button>
+    </div>
   );
 };
+
+
+const LeadDetailPanel = ({ lead, onUpdateStatus, onSaveStageData }: { lead: Lead | null; onUpdateStatus: (stage: string) => void; onSaveStageData: (stage: string, data: any) => void; }) => {
+    if (!lead) return null;
+
+    const currentStage = stages.find(s => s.name === lead.status);
+    const stageForms = stages.filter(s => s.name !== 'Finalizados' && s.name !== 'Recaptura BD');
+    
+    // A simple check if required fields for the CURRENT stage are filled.
+    // In a real app, this logic would be much more robust.
+    const canAdvance = true; 
+
+    return (
+        <>
+            <SheetHeader className="text-left p-4">
+                 <div className="flex items-center gap-4">
+                    <Avatar className="h-16 w-16 border-4 border-primary">
+                        <AvatarImage src={lead.ownerAvatar} />
+                        <AvatarFallback>{lead.name.substring(0,2)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <SheetTitle className="text-2xl font-bold font-headline">{lead.name}</SheetTitle>
+                        <p className="text-muted-foreground">{lead.city}</p>
+                    </div>
+                </div>
+            </SheetHeader>
+            <div className="flex-1 overflow-y-auto p-1">
+                <Tabs defaultValue="resumen" className="flex flex-col h-full">
+                    <TabsList className="mx-4 mt-2 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
+                        <TabsTrigger value="resumen">Resumen</TabsTrigger>
+                        <TabsTrigger value="formularios">Formularios</TabsTrigger>
+                        <TabsTrigger value="actividad">Actividad</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="resumen" className="p-4 space-y-6 text-sm">
+                        <div className='space-y-3'>
+                            <p><strong>Teléfono:</strong> <a href={`tel:${lead.phone}`} className='text-primary hover:underline'>{lead.phone}</a></p>
+                            <p><strong>Email:</strong> <a href={`mailto:${lead.email}`} className='text-primary hover:underline'>{lead.email}</a></p>
+                            <p><strong>Fuente:</strong> Referido</p>
+                            {currentStage && (
+                                <div className='flex items-center gap-2'>
+                                    <strong>Estado:</strong>
+                                    <Badge variant="secondary" className='font-medium'>
+                                        <span className={cn("h-2 w-2 rounded-full mr-2", currentStage.color)}></span>
+                                        {lead.status}
+                                    </Badge>
+                                </div>
+                            )}
+                        </div>
+                        <Separator/>
+                        <NextStageSelector currentStage={lead.status} onUpdateStatus={onUpdateStatus} canAdvance={canAdvance} />
+                    </TabsContent>
+                    <TabsContent value="formularios" className='p-4'>
+                        <Accordion type="single" collapsible defaultValue={`item-${lead.status}`}>
+                            {stageForms.map(stage => (
+                                <AccordionItem value={`item-${stage.name}`} key={stage.name}>
+                                <AccordionTrigger>{stage.name}</AccordionTrigger>
+                                <AccordionContent>
+                                    <p className="text-xs text-muted-foreground mb-4">
+                                        Completa la información para esta etapa. Puedes guardar un borrador en cualquier momento.
+                                    </p>
+                                    <StageForm 
+                                        stageName={stage.name} 
+                                        onSave={() => onSaveStageData(stage.name, {})} // Replace {} with actual form data
+                                        onDataChange={(data) => { /* Handle data change for validation */}}
+                                    />
+                                </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                    </TabsContent>
+                    <TabsContent value="actividad" className="p-4 space-y-4 text-xs">
+                         <div className="flex items-start gap-3">
+                            <div className="bg-muted p-2 rounded-full mt-1">
+                                <Contact className="h-3 w-3" />
+                            </div>
+                            <p><span className="font-semibold">Lead creado</span> por 'Admin'. Asignado a 'Carlos Ruiz'. <span className="text-muted-foreground">Hace 3h</span></p>
+                        </div>
+                    </TabsContent>
+                </Tabs>
+            </div>
+             <div className="p-4 border-t bg-background/80 backdrop-blur-sm flex gap-2 sticky bottom-0">
+                <Input placeholder='Escribe una nota rápida...'/>
+                <Button>Guardar</Button>
+            </div>
+        </>
+    )
+}
+
+const NewLeadForm = ({ onOpenChange, onSave }: { onOpenChange: (open: boolean) => void; onSave: (newStage: string) => void; }) => {
+    
+      const handleSave = () => {
+        onSave("Nuevo Cliente");
+        onOpenChange(false);
+      }
+
+    return (
+         <Sheet open={true} onOpenChange={onOpenChange}>
+            <SheetContent className='w-full max-w-lg overflow-y-auto'>
+                <SheetHeader>
+                <SheetTitle>Crear Nuevo Lead</SheetTitle>
+                <SheetDescription>
+                    Completa los siguientes campos para registrar un nuevo lead. Los campos marcados con <span className='text-destructive'>*</span> son obligatorios.
+                </SheetDescription>
+                </SheetHeader>
+                <div className="py-6">
+                    <StageForm stageName="Nuevo Cliente" onSave={() => {}} onDataChange={() => {}} />
+                </div>
+                 <div className='flex justify-end gap-2 mt-4 sticky bottom-0 bg-background py-4'>
+                    <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+                    <Button onClick={handleSave}>Crear Lead</Button>
+                </div>
+            </SheetContent>
+        </Sheet>
+    )
+}
 
 
 export default function LeadsPage() {
   const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [formStage, setFormStage] = useState<string | null>(null);
+  const [isNewLeadFormOpen, setIsNewLeadFormOpen] = useState(false);
+  const [stageToAdvance, setStageToAdvance] = useState<string | null>(null);
 
   const [filterStage, setFilterStage] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleUpdateStatus = (stage: string) => {
-    setFormStage(stage);
+     if (selectedLead) {
+      const updatedLeads = leads.map(lead =>
+        lead.id === selectedLead.id ? { ...lead, status: stage } : lead
+      );
+      setLeads(updatedLeads);
+
+      const updatedSelectedLead = { ...selectedLead, status: stage };
+      setSelectedLead(updatedSelectedLead);
+    }
   };
 
   const handleSelectLead = (lead: Lead) => {
     setSelectedLead(lead);
   };
 
-  const handleSaveStage = (newStage: string) => {
-    if (selectedLead) {
-      const updatedLeads = leads.map(lead =>
-        lead.id === selectedLead.id ? { ...lead, status: newStage } : lead
-      );
-      setLeads(updatedLeads);
+  const handleSaveLead = (newStage: string) => {
+    if (newStage === 'Nuevo Cliente') {
+      const newLead: Lead = {
+        id: `lead-${Date.now()}`,
+        name: 'Nuevo Lead', // Placeholder, should come from form
+        city: 'Por definir',
+        lastContact: 'Ahora',
+        priority: 'media',
+        ownerAvatar: 'https://picsum.photos/seed/999/40/40',
+        status: 'Nuevo Cliente',
+        phone: 'N/A',
+        email: 'N/A',
+      };
+      setLeads([newLead, ...leads]);
+    }
+  };
 
-      const updatedSelectedLead = { ...selectedLead, status: newStage };
-      setSelectedLead(updatedSelectedLead);
-    }
-    // Logic to create a new lead
-    else if (newStage === 'Nuevo Cliente') {
-      // This is where you would handle creating a new lead.
-      // For now, let's just close the form.
-      console.log("Creating new lead...");
-    }
-    setFormStage(null);
+  const handleSaveStageData = (stage: string, data: any) => {
+    // Here you would save the partial data to the lead object.
+    console.log(`Saving draft data for stage "${stage}"`, data);
   };
   
   const handleDetailClose = () => {
@@ -657,7 +699,7 @@ export default function LeadsPage() {
             <span className="font-semibold text-foreground">Gestión de Leads</span>
           </div>
           <div className="ml-auto flex items-center gap-4">
-            <Button size="sm" className="gap-1.5" onClick={() => handleUpdateStatus('Nuevo Cliente')}>
+            <Button size="sm" className="gap-1.5" onClick={() => setIsNewLeadFormOpen(true)}>
               <PlusCircle className="h-4 w-4" />
               Crear Lead
             </Button>
@@ -741,15 +783,16 @@ export default function LeadsPage() {
           </div>
         </main>
 
-        {/* Sheet for stage forms */}
-        <StageForm stageName={formStage} onOpenChange={(isOpen) => !isOpen && setFormStage(null)} onSave={handleSaveStage} />
+        {/* Sheet for new lead form */}
+        {isNewLeadFormOpen && <NewLeadForm onOpenChange={setIsNewLeadFormOpen} onSave={handleSaveLead} />}
 
         {/* Sheet for lead detail */}
         <Sheet open={!!selectedLead} onOpenChange={(isOpen) => { if (!isOpen) handleDetailClose() }}>
-          <SheetContent className="p-0 sm:max-w-xl w-full flex flex-col">
+          <SheetContent className="p-0 sm:max-w-2xl w-full flex flex-col">
             <LeadDetailPanel
               lead={selectedLead}
               onUpdateStatus={handleUpdateStatus}
+              onSaveStageData={handleSaveStageData}
             />
           </SheetContent>
         </Sheet>
