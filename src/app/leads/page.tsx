@@ -625,7 +625,7 @@ export default function LeadsPage() {
       const leadsInCurrentStage = leads.filter(lead => lead.status === activeStage);
       setSelectedLead(leadsInCurrentStage.length > 0 ? leadsInCurrentStage[0] : null);
     }
-  }, [isMobile, leads, activeStage]);
+  }, [isMobile, leads, activeStage, selectedLead]);
 
   const filteredLeads = leads.filter(lead => lead.status === activeStage);
 
