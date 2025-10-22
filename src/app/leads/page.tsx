@@ -675,6 +675,14 @@ export default function LeadsPage() {
     });
   }, [leads, filterStage, searchTerm]);
 
+  const stageCounts = useMemo(() => {
+    const counts: { [key: string]: number } = {};
+    stages.forEach(stage => {
+      counts[stage.name] = leads.filter(lead => lead.status === stage.name).length;
+    });
+    return counts;
+  }, [leads]);
+
 
   return (
     <SidebarProvider>
@@ -795,13 +803,15 @@ export default function LeadsPage() {
               />
             </div>
             <Select value={filterStage} onValueChange={setFilterStage}>
-              <SelectTrigger className="w-full md:w-[180px]">
+              <SelectTrigger className="w-full md:w-[220px]">
                 <SelectValue placeholder="Filtrar por etapa" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas las etapas</SelectItem>
+                <SelectItem value="all">Todas las etapas ({leads.length})</SelectItem>
                 {stages.map(stage => (
-                    <SelectItem key={stage.name} value={stage.name}>{stage.name}</SelectItem>
+                    <SelectItem key={stage.name} value={stage.name}>
+                      {stage.name} ({stageCounts[stage.name] || 0})
+                    </SelectItem>
                 ))}
               </SelectContent>
             </Select>
