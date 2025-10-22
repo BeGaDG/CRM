@@ -3,7 +3,6 @@ import { useState } from 'react';
 import {
   ChevronRight,
   FileText,
-  Filter,
   LayoutDashboard,
   MoreHorizontal,
   PlusCircle,
@@ -13,7 +12,8 @@ import {
   Contact,
   BarChart,
   Upload,
-  UserPlus
+  UserPlus,
+  X
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -71,12 +71,12 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 
 const usersData = [
@@ -135,22 +135,22 @@ const usersData = [
 type User = typeof usersData[0];
 
 const roleColors: { [key: string]: string } = {
-  Comercial: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
-  Supervisor: 'bg-purple-500/10 text-purple-700 border-purple-500/20',
-  Administrador: 'bg-primary-500/10 text-primary-700 border-primary-500/20',
-  Contabilidad: 'bg-green-500/10 text-green-700 border-green-500/20',
-  Operaciones: 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20',
+  Comercial: 'bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-300 dark:bg-blue-900/50',
+  Supervisor: 'bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-300 dark:bg-purple-900/50',
+  Administrador: 'bg-primary/10 text-primary border-primary/20 dark:text-primary dark:bg-primary/20',
+  Contabilidad: 'bg-green-500/10 text-green-700 border-green-500/20 dark:text-green-300 dark:bg-green-900/50',
+  Operaciones: 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20 dark:text-yellow-300 dark:bg-yellow-900/50',
 };
 
 
 const UserDetailPanel = ({ user, onClose }: { user: User | null, onClose: () => void }) => {
     if (!user) {
         return (
-            <Card className="hidden lg:flex h-full items-center justify-center">
-                <CardContent className="text-center text-muted-foreground">
-                    <Users className="h-12 w-12 mx-auto mb-4" />
+            <Card className="hidden lg:flex h-full items-center justify-center border-dashed shadow-none">
+                <CardContent className="text-center text-muted-foreground p-6">
+                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p className="font-semibold">Selecciona un usuario</p>
-                    <p className="text-sm">Elige un usuario de la tabla para ver sus detalles.</p>
+                    <p className="text-sm">Elige un usuario de la tabla para ver sus detalles aquí.</p>
                 </CardContent>
             </Card>
         );
@@ -158,8 +158,8 @@ const UserDetailPanel = ({ user, onClose }: { user: User | null, onClose: () => 
     
     return (
         <Card className="h-full flex flex-col relative">
-           <Button variant="ghost" size="icon" className="lg:hidden absolute top-2 right-2 z-10" onClick={onClose}><UserPlus className="h-4 w-4"/></Button>
-           <CardHeader className="text-center items-center gap-4">
+           <Button variant="ghost" size="icon" className="lg:hidden absolute top-2 right-2 z-10" onClick={onClose}><X className="h-4 w-4"/></Button>
+           <CardHeader className="text-center items-center gap-4 pt-8">
                 <Avatar className="h-24 w-24 border-4 border-primary">
                     <AvatarImage src={user.avatar} />
                     <AvatarFallback>{user.name.substring(0, 2)}</AvatarFallback>
@@ -177,19 +177,22 @@ const UserDetailPanel = ({ user, onClose }: { user: User | null, onClose: () => 
                         <TabsTrigger value="config">Configuración</TabsTrigger>
                     </TabsList>
                     <div className='overflow-y-auto flex-1 p-4 text-sm space-y-4'>
-                        <TabsContent value="perfil">
+                        <TabsContent value="perfil" className="space-y-4">
                             <div className="space-y-3">
-                                <div className="flex justify-between"><strong>Rol:</strong> <Badge variant="secondary" className={roleColors[user.role]}>{user.role}</Badge></div>
+                                <div className="flex justify-between items-center"><strong>Rol:</strong> <Badge variant="secondary" className={cn("font-medium", roleColors[user.role])}>{user.role}</Badge></div>
+                                <Separator />
                                 <div className="flex justify-between"><strong>Sede:</strong> <span>{user.sede}</span></div>
-                                <div className="flex justify-between items-center"><strong>Estado:</strong> <Badge variant={user.status ? 'default' : 'destructive'} className={user.status ? 'bg-green-500/10 text-green-700' : 'bg-red-500/10 text-red-700'}>{user.status ? 'Activo' : 'Inactivo'}</Badge></div>
-                                <div className="flex justify-between"><strong>Último acceso:</strong> <span>{new Date(user.last_login).toLocaleDateString()}</span></div>
+                                <Separator />
+                                <div className="flex justify-between items-center"><strong>Estado:</strong> <Badge variant={user.status ? 'default' : 'destructive'} className={cn("font-medium", user.status ? 'bg-green-500/10 text-green-700 dark:text-green-300 dark:bg-green-900/50' : 'bg-red-500/10 text-red-700 dark:text-red-300 dark:bg-red-900/50')}>{user.status ? 'Activo' : 'Inactivo'}</Badge></div>
+                                <Separator />
+                                <div className="flex justify-between"><strong>Último acceso:</strong> <span>{new Date(user.last_login).toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' })}</span></div>
                             </div>
                             <Separator className="my-4" />
                             <h4 className="font-semibold mb-2">Permisos</h4>
                              <div className="space-y-2 text-muted-foreground">
-                                <p>✓ Acceso a Gestión de Leads</p>
-                                <p>✓ Acceso a Gestión de Usuarios</p>
-                                <p>✕ Acceso a Reportes y Análisis</p>
+                                <p className="flex items-center gap-2">✓ <span className="flex-1">Acceso a Gestión de Leads</span></p>
+                                <p className="flex items-center gap-2">✓ <span className="flex-1">Acceso a Gestión de Usuarios</span></p>
+                                <p className="flex items-center gap-2">✕ <span className="flex-1">Acceso a Reportes y Análisis</span></p>
                             </div>
                         </TabsContent>
                          <TabsContent value="actividad">
@@ -218,59 +221,61 @@ const UserDetailPanel = ({ user, onClose }: { user: User | null, onClose: () => 
     );
 }
 
-const UserModalForm = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
+const UserModalForm = ({ open, onOpenChange, user }: { open: boolean, onOpenChange: (open: boolean) => void, user?: User | null }) => {
+    const title = user ? "Editar Usuario" : "Crear Nuevo Usuario";
+    const description = user ? "Actualiza los datos del miembro del equipo." : "Completa los datos para registrar un nuevo miembro en el equipo.";
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className="w-full max-w-md">
                 <SheetHeader>
-                    <SheetTitle>Crear Nuevo Usuario</SheetTitle>
+                    <SheetTitle>{title}</SheetTitle>
                     <SheetDescription>
-                        Completa los datos para registrar un nuevo miembro en el equipo.
+                        {description}
                     </SheetDescription>
                 </SheetHeader>
                 <div className="py-6 space-y-4">
                     <div>
                         <Label htmlFor="fullName">Nombre completo</Label>
-                        <Input id="fullName" placeholder="Ej: Juanita Pérez" />
+                        <Input id="fullName" placeholder="Ej: Juanita Pérez" defaultValue={user?.name}/>
                     </div>
                     <div>
                         <Label htmlFor="email">Correo electrónico</Label>
-                        <Input id="email" type="email" placeholder="ejemplo@sol-cielo.com" />
+                        <Input id="email" type="email" placeholder="ejemplo@sol-cielo.com" defaultValue={user?.email} />
                     </div>
                     <div>
                         <Label htmlFor="role">Rol</Label>
-                        <Select>
+                        <Select defaultValue={user?.role}>
                             <SelectTrigger id="role"><SelectValue placeholder="Seleccionar rol..." /></SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="comercial">Comercial</SelectItem>
-                                <SelectItem value="supervisor">Supervisor</SelectItem>
-                                <SelectItem value="administrador">Administrador</SelectItem>
-                                <SelectItem value="contabilidad">Contabilidad</SelectItem>
+                                <SelectItem value="Comercial">Comercial</SelectItem>
+                                <SelectItem value="Supervisor">Supervisor</SelectItem>
+                                <SelectItem value="Administrador">Administrador</SelectItem>
+                                <SelectItem value="Contabilidad">Contabilidad</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                     <div>
                         <Label htmlFor="sede">Sede</Label>
-                        <Select>
+                        <Select defaultValue={user?.sede}>
                             <SelectTrigger id="sede"><SelectValue placeholder="Seleccionar sede..." /></SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="monteria">Montería</SelectItem>
-                                <SelectItem value="sincelejo">Sincelejo</SelectItem>
-                                <SelectItem value="otros">Otros</SelectItem>
+                                <SelectItem value="Montería">Montería</SelectItem>
+                                <SelectItem value="Sincelejo">Sincelejo</SelectItem>
+                                <SelectItem value="Otros">Otros</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                      <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
-                            <Label htmlFor="status-switch">Estado inicial</Label>
+                            <Label htmlFor="status-switch">Usuario Activo</Label>
                             <p className="text-xs text-muted-foreground">Define si el usuario podrá iniciar sesión.</p>
                         </div>
-                        <Switch id="status-switch" defaultChecked />
+                        <Switch id="status-switch" defaultChecked={user ? user.status : true} />
                     </div>
                 </div>
                  <div className="flex justify-end gap-2">
                     <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-                    <Button>Guardar Usuario</Button>
+                    <Button>Guardar Cambios</Button>
                 </div>
             </SheetContent>
         </Sheet>
@@ -279,24 +284,35 @@ const UserModalForm = ({ open, onOpenChange }: { open: boolean, onOpenChange: (o
 
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>(usersData);
+  const [users] = useState<User[]>(usersData);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const isMobile = useIsMobile();
   
   const handleSelectUser = (user: User) => {
     setSelectedUser(user);
-    if(isMobile){
-        setIsModalOpen(true);
-    }
+  }
+
+  const handleOpenForm = (user?: User | null) => {
+    setSelectedUser(user || null);
+    setIsFormOpen(true);
   }
 
   const handleCloseDetail = () => {
     setSelectedUser(null);
-    if(isMobile){
-        setIsModalOpen(false);
-    }
   }
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setSelectedUser(null); // Deselect user when closing form
+  }
+
+  // Effect to handle view changes on mobile
+  useState(() => {
+    if (isMobile) {
+      setSelectedUser(null);
+    }
+  });
 
 
   return (
@@ -377,16 +393,16 @@ export default function UsersPage() {
                 className="w-full rounded-lg bg-background pl-10 h-10"
                 />
             </div>
-             <Button size="sm" className="gap-1.5" onClick={() => setIsModalOpen(true)}>
+             <Button size="sm" className="gap-1.5" onClick={() => handleOpenForm(null)}>
                 <UserPlus className="h-4 w-4" />
                 <span className="hidden sm:inline">Nuevo Usuario</span>
               </Button>
           </div>
         </header>
 
-        <main className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
+        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
             {/* Main Column: User Table */}
-            <div className="lg:col-span-2 flex flex-col gap-4">
+            <div className={cn("lg:col-span-1 flex flex-col gap-4", isMobile && selectedUser ? "hidden" : "flex")}>
                 <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4'>
                     <h2 className='text-lg font-semibold'>Usuarios del Sistema ({users.length})</h2>
                     <div className="flex gap-2 w-full sm:w-auto">
@@ -394,9 +410,9 @@ export default function UsersPage() {
                             <SelectTrigger className="w-full sm:w-[120px]"><SelectValue placeholder="Rol" /></SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Todos los roles</SelectItem>
-                                <SelectItem value="comercial">Comercial</SelectItem>
-                                <SelectItem value="supervisor">Supervisor</SelectItem>
-                                <SelectItem value="administrador">Admin</SelectItem>
+                                <SelectItem value="Comercial">Comercial</SelectItem>
+                                <SelectItem value="Supervisor">Supervisor</SelectItem>
+                                <SelectItem value="Administrador">Admin</SelectItem>
                             </SelectContent>
                         </Select>
                          <Select>
@@ -413,7 +429,7 @@ export default function UsersPage() {
                     </div>
                 </div>
                 
-                 <Card>
+                 <Card className="flex-1">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -426,7 +442,12 @@ export default function UsersPage() {
                         </TableHeader>
                         <TableBody>
                              {users.length > 0 ? users.map((user) => (
-                                <TableRow key={user.id} onClick={() => handleSelectUser(user)} className="cursor-pointer">
+                                <TableRow 
+                                  key={user.id} 
+                                  onClick={() => handleSelectUser(user)} 
+                                  className="cursor-pointer"
+                                  data-state={selectedUser?.id === user.id ? 'selected' : ''}
+                                >
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <Avatar className="h-9 w-9">
@@ -440,7 +461,7 @@ export default function UsersPage() {
                                         </div>
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell">
-                                        <Badge variant="secondary" className={roleColors[user.role]}>{user.role}</Badge>
+                                        <Badge variant="secondary" className={cn('font-medium', roleColors[user.role])}>{user.role}</Badge>
                                     </TableCell>
                                     <TableCell className="hidden lg:table-cell">{user.sede}</TableCell>
                                     <TableCell className="hidden md:table-cell">
@@ -458,7 +479,7 @@ export default function UsersPage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem onClick={() => handleSelectUser(user)}>Ver detalles</DropdownMenuItem>
-                                                <DropdownMenuItem>Editar</DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleOpenForm(user)}>Editar</DropdownMenuItem>
                                                 <DropdownMenuSeparator />
                                                 <DropdownMenuItem className="text-destructive">Desactivar</DropdownMenuItem>
                                             </DropdownMenuContent>
@@ -469,10 +490,10 @@ export default function UsersPage() {
                                 <TableRow>
                                     <TableCell colSpan={5} className="h-24 text-center">
                                          <div className="text-center text-muted-foreground py-10">
-                                            <Users className="h-12 w-12 mx-auto mb-4" />
+                                            <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
                                             <p className="font-medium">No hay usuarios registrados.</p>
                                             <p className="text-sm mb-4">Crea el primero para comenzar a gestionar tu equipo.</p>
-                                            <Button size="sm" onClick={() => setIsModalOpen(true)}>
+                                            <Button size="sm" onClick={() => handleOpenForm()}>
                                                 <UserPlus className="mr-2 h-4 w-4" />
                                                 Crear Usuario
                                             </Button>
@@ -486,21 +507,12 @@ export default function UsersPage() {
             </div>
             
             {/* Right Column: User Detail */}
-            <div className="hidden lg:block">
+            <div className={cn("hidden lg:block", isMobile && !selectedUser ? "hidden" : "", isMobile && selectedUser ? "fixed inset-0 bg-background z-50" : "")}>
                 <UserDetailPanel user={selectedUser} onClose={handleCloseDetail} />
             </div>
 
             {/* Modal for new/edit user */}
-            <UserModalForm open={isModalOpen && !isMobile} onOpenChange={setIsModalOpen} />
-            
-            {/* Sheet for mobile detail view */}
-            {isMobile && (
-                <Sheet open={isModalOpen} onOpenChange={(open) => {if(!open) handleCloseDetail()}}>
-                    <SheetContent className="p-0 sm:max-w-lg w-full">
-                        <UserDetailPanel user={selectedUser} onClose={handleCloseDetail} />
-                    </SheetContent>
-                </Sheet>
-            )}
+            <UserModalForm open={isFormOpen} onOpenChange={handleCloseForm} user={selectedUser} />
 
         </main>
       </SidebarInset>
