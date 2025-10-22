@@ -2,7 +2,9 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Sun, Zap, Layers } from 'lucide-react';
+import { Sun, Zap, Layers, AlertCircle } from 'lucide-react';
+import { differenceInDays } from 'date-fns';
+
 
 export const stages = [
   { name: 'Nuevo Cliente', color: 'bg-sky-500' },
@@ -28,6 +30,7 @@ const leadExample = {
   status: 'Por Visitar',
   phone: '310 123 4567',
   email: 'contacto@constructora.com',
+  creationDate: new Date().toISOString(),
   collectedData: {
     'nic': '1234567',
     'consumo': '5000 kWh',
@@ -43,7 +46,7 @@ const interestTypeIcons = {
   'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10' },
 };
 
-export const LeadCard = ({ lead, onClick }: { lead: Lead, onClick: () => void }) => {
+export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: () => void, isSelected: boolean }) => {
   const priorityColors = {
     alta: 'bg-red-500',
     media: 'bg-yellow-500',
@@ -53,8 +56,18 @@ export const LeadCard = ({ lead, onClick }: { lead: Lead, onClick: () => void })
   const interest = interestTypeIcons[lead.interestType];
   const Icon = interest.icon;
 
+  const isOverdue = ['Nuevo Cliente', 'Por Contactar'].includes(lead.status) &&
+                    differenceInDays(new Date(), new Date(lead.creationDate)) > 2;
+
   return (
-    <Card onClick={onClick} className="cursor-pointer hover:shadow-lg transition-shadow duration-200">
+    <Card 
+      onClick={onClick} 
+      className={cn(
+        "cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4",
+        isOverdue ? "border-l-red-500" : "border-l-transparent",
+        isSelected && "ring-2 ring-primary border-primary"
+      )}
+    >
       <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex items-center gap-4 flex-1">
           <div className={`w-1.5 h-12 sm:h-8 rounded-full ${priorityColors[lead.priority]}`}></div>
@@ -68,16 +81,19 @@ export const LeadCard = ({ lead, onClick }: { lead: Lead, onClick: () => void })
         </div>
 
         <div className="w-full sm:w-auto flex items-center justify-between mt-3 sm:mt-0 gap-4">
-            <div className="flex flex-col items-start sm:items-end text-sm text-muted-foreground">
+            <div className="flex flex-col items-start sm:items-end text-sm">
                 <span className='font-medium text-foreground'>{lead.phone}</span>
-                <span>Últ. contacto: {lead.lastContact}</span>
+                <span className='text-muted-foreground'>Últ. contacto: {lead.lastContact}</span>
             </div>
-            {currentStage && (
-              <Badge variant="secondary" className='font-medium text-xs sm:text-sm whitespace-nowrap h-fit'>
-                <span className={cn("h-2 w-2 rounded-full mr-2", currentStage.color)}></span>
-                {lead.status}
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {isOverdue && <AlertCircle className="h-5 w-5 text-red-500" title="Este lead no ha sido contactado en más de 2 días"/>}
+              {currentStage && (
+                <Badge variant="secondary" className='font-medium text-xs sm:text-sm whitespace-nowrap h-fit'>
+                  <span className={cn("h-2 w-2 rounded-full mr-2", currentStage.color)}></span>
+                  {lead.status}
+                </Badge>
+              )}
+            </div>
         </div>
       </CardContent>
     </Card>

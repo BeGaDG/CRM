@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -8,16 +9,20 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { StageForm } from './stage-form';
+import type { Lead } from './lead-card';
 
-export const NewLeadForm = ({ onOpenChange, onSave }: { onOpenChange: (open: boolean) => void; onSave: (newStage: string) => void; }) => {
+export const NewLeadForm = ({ open, onOpenChange, onSave }: { open: boolean; onOpenChange: (open: boolean) => void; onSave: (data: Partial<Lead>) => void; }) => {
     
+      const [formData, setFormData] = useState<Partial<Lead>>({});
+
       const handleSave = () => {
-        onSave("Nuevo Cliente");
+        onSave(formData);
         onOpenChange(false);
+        setFormData({});
       }
 
     return (
-         <Sheet open={true} onOpenChange={onOpenChange}>
+         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className='w-full max-w-lg overflow-y-auto'>
                 <SheetHeader>
                 <SheetTitle>Crear Nuevo Lead</SheetTitle>
@@ -26,7 +31,12 @@ export const NewLeadForm = ({ onOpenChange, onSave }: { onOpenChange: (open: boo
                 </SheetDescription>
                 </SheetHeader>
                 <div className="py-6">
-                    <StageForm stageName="Nuevo Cliente" onSave={() => {}} onDataChange={() => {}} />
+                    <StageForm 
+                      stageName="Nuevo Cliente" 
+                      onSave={() => {}} 
+                      onDataChange={(data) => setFormData(data)}
+                      initialData={formData}
+                    />
                 </div>
                  <div className='flex justify-end gap-2 mt-4 sticky bottom-0 bg-background py-4'>
                     <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>

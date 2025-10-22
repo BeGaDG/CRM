@@ -12,9 +12,6 @@ import {
   Users,
   BarChart,
   Bell,
-  Sun,
-  Zap,
-  Layers,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -32,13 +29,6 @@ import { Input } from '@/components/ui/input';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { SolYCieloLogo } from '@/components/icons';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -51,10 +41,14 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { LeadCard } from '@/components/leads/lead-card';
 import { LeadDetailPanel } from '@/components/leads/lead-detail-panel';
 import { NewLeadForm } from '@/components/leads/new-lead-form';
 import type { Lead } from '@/components/leads/lead-card';
+import { Card, CardContent } from '@/components/ui/card';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
 
 export const stages = [
@@ -71,15 +65,19 @@ export const stages = [
   { name: 'No', color: 'bg-gray-500' }
 ];
 
+const today = new Date();
+const threeDaysAgo = new Date();
+threeDaysAgo.setDate(today.getDate() - 3);
+
 const initialLeads: Lead[] = [
-  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', interestType: 'planta-solar', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', collectedData: { 'nic': '123456-7', 'consumo': '15000 kWh', 'valor_cotizacion': 0, 'potencia_pico': '' } },
-  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', interestType: 'comercializadora', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', collectedData: {} },
-  { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', interestType: 'ambos', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com', collectedData: {} },
-  { id: 'lead-4', name: 'Nuevo Cliente Alfa', city: 'Barranquilla', lastContact: 'Hace 1h', priority: 'alta', interestType: 'planta-solar', status: 'Nuevo Cliente', phone: '318 111 2233', email: 'alfa@cliente.com', collectedData: {} },
-  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', priority: 'media', interestType: 'comercializadora', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', collectedData: {} },
-  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', priority: 'baja', interestType: 'planta-solar', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', collectedData: {'nic': '987654-3', 'consumo': '8000 kWh'} },
-  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', priority: 'alta', interestType: 'ambos', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', collectedData: {'nic': '555444-1', 'consumo': '25000 kWh', 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' } },
-  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', priority: 'alta', interestType: 'comercializadora', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', collectedData: {} },
+  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', interestType: 'planta-solar', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', creationDate: new Date().toISOString(), collectedData: { 'nic': '123456-7', 'consumo': '15000 kWh', 'valor_cotizacion': 0, 'potencia_pico': '' } },
+  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', interestType: 'comercializadora', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', creationDate: new Date().toISOString(), collectedData: {} },
+  { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', interestType: 'ambos', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com', creationDate: new Date().toISOString(), collectedData: {} },
+  { id: 'lead-4', name: 'Nuevo Cliente Alfa (Urgente)', city: 'Barranquilla', lastContact: 'Hace 4 días', priority: 'alta', interestType: 'planta-solar', status: 'Nuevo Cliente', phone: '318 111 2233', email: 'alfa@cliente.com', creationDate: threeDaysAgo.toISOString(), collectedData: {} },
+  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', priority: 'media', interestType: 'comercializadora', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', creationDate: new Date().toISOString(), collectedData: {} },
+  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', priority: 'baja', interestType: 'planta-solar', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '987654-3', 'consumo': '8000 kWh'} },
+  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', priority: 'alta', interestType: 'ambos', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '555444-1', 'consumo': '25000 kWh', 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' } },
+  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', priority: 'alta', interestType: 'comercializadora', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', creationDate: new Date().toISOString(), collectedData: {} },
 ];
 
 
@@ -95,11 +93,11 @@ export default function LeadsPage() {
   const handleUpdateStatus = (stage: string) => {
      if (selectedLead) {
       const updatedLeads = leads.map(lead =>
-        lead.id === selectedLead.id ? { ...lead, status: stage } : lead
+        lead.id === selectedLead.id ? { ...lead, status: stage, lastContact: 'Ahora' } : lead
       );
       setLeads(updatedLeads);
 
-      const updatedSelectedLead = { ...selectedLead, status: stage };
+      const updatedSelectedLead = { ...selectedLead, status: stage, lastContact: 'Ahora' };
       setSelectedLead(updatedSelectedLead);
     }
   };
@@ -108,22 +106,21 @@ export default function LeadsPage() {
     setSelectedLead(lead);
   };
 
-  const handleSaveLead = (newStage: string) => {
-    if (newStage === 'Nuevo Cliente') {
+  const handleSaveLead = (newLeadData: Partial<Lead>) => {
       const newLead: Lead = {
         id: `lead-${Date.now()}`,
-        name: 'Nuevo Lead', // Placeholder, should come from form
-        city: 'Por definir',
+        name: newLeadData.name || 'Nuevo Lead',
+        city: newLeadData.city || 'Por definir',
         lastContact: 'Ahora',
         priority: 'media',
-        interestType: 'planta-solar', // Default value
+        interestType: newLeadData.interestType || 'planta-solar',
         status: 'Nuevo Cliente',
-        phone: 'N/A',
-        email: 'N/A',
+        phone: newLeadData.phone || 'N/A',
+        email: newLeadData.email || 'N/A',
+        creationDate: new Date().toISOString(),
         collectedData: {},
       };
       setLeads([newLead, ...leads]);
-    }
   };
 
   const handleSaveStageData = (stage: string, data: any) => {
@@ -169,7 +166,7 @@ export default function LeadsPage() {
   }, [leads, filterStage, searchTerm]);
 
   const stageCounts = useMemo(() => {
-    const counts: { [key: string]: number } = {};
+    const counts: { [key: string]: number } = { all: leads.length };
     stages.forEach(stage => {
       counts[stage.name] = leads.filter(lead => lead.status === stage.name).length;
     });
@@ -282,9 +279,9 @@ export default function LeadsPage() {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-y-auto">
+        <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
           {/* Top Filters */}
-          <div className='flex flex-col md:flex-row gap-2'>
+           <div className='flex flex-col md:flex-row gap-4'>
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -295,32 +292,57 @@ export default function LeadsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Select value={filterStage} onValueChange={setFilterStage}>
-              <SelectTrigger className="w-full md:w-[220px]">
-                <SelectValue placeholder="Filtrar por etapa" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas las etapas ({leads.length})</SelectItem>
-                {stages.map(stage => (
-                    <SelectItem key={stage.name} value={stage.name}>
-                      {stage.name} ({stageCounts[stage.name] || 0})
-                    </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="icon" className="gap-1.5">
+             <Button variant="outline" className="gap-1.5 h-10">
               <Filter className="h-4 w-4" />
-              <span className='sr-only'>Filtros</span>
+              <span className=''>Más Filtros</span>
             </Button>
           </div>
 
+           {/* Pipeline Stage Cards */}
+          <ScrollArea className="w-full whitespace-nowrap">
+            <div className="flex w-max space-x-3 pb-3">
+              <Card
+                className={cn(
+                  "cursor-pointer shrink-0 hover:border-primary",
+                  filterStage === 'all' && 'border-primary bg-primary/5'
+                )}
+                onClick={() => setFilterStage('all')}
+              >
+                <CardContent className="p-3">
+                  <p className="text-sm font-semibold">Todos los Leads</p>
+                  <p className="text-2xl font-bold">{stageCounts['all'] || 0}</p>
+                </CardContent>
+              </Card>
+              {stages.map((stage) => (
+                <Card
+                  key={stage.name}
+                  className={cn(
+                    "cursor-pointer shrink-0 hover:border-primary",
+                    filterStage === stage.name && 'border-primary bg-primary/5'
+                  )}
+                  onClick={() => setFilterStage(stage.name)}
+                >
+                  <CardContent className="p-3">
+                    <p className="text-sm font-semibold flex items-center gap-2">
+                       <span className={cn("h-2.5 w-2.5 rounded-full", stage.color)}></span>
+                       {stage.name}
+                    </p>
+                    <p className="text-2xl font-bold text-center">{stageCounts[stage.name] || 0}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+
           {/* Leads List */}
-          <div className='flex-1 space-y-3'>
+          <div className='flex-1 space-y-3 overflow-y-auto'>
               {filteredLeads.map(lead => (
                 <LeadCard
                   key={lead.id}
                   lead={lead}
                   onClick={() => handleSelectLead(lead)}
+                  isSelected={selectedLead?.id === lead.id}
                 />
               ))}
               {filteredLeads.length === 0 && (
@@ -334,7 +356,7 @@ export default function LeadsPage() {
         </main>
 
         {/* Sheet for new lead form */}
-        {isNewLeadFormOpen && <NewLeadForm onOpenChange={setIsNewLeadFormOpen} onSave={handleSaveLead} />}
+        <NewLeadForm open={isNewLeadFormOpen} onOpenChange={setIsNewLeadFormOpen} onSave={handleSaveLead} />
 
         {/* Sheet for lead detail */}
         <Sheet open={!!selectedLead} onOpenChange={(isOpen) => { if (!isOpen) handleDetailClose() }}>
