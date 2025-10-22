@@ -1,34 +1,20 @@
 'use client';
 import { useState, useEffect } from 'react';
 import {
-  Activity,
-  AlertTriangle,
   ArrowRight,
-  BarChart,
-  Bell,
-  Building,
-  Calendar as CalendarIcon,
-  ChevronDown,
-  ChevronRight,
-  ClipboardList,
   Contact,
-  CreditCard,
+  ChevronRight,
   FileText,
   Filter,
-  GitMerge,
-  GripVertical,
   LayoutDashboard,
-  MoreHorizontal,
-  Phone,
-  Plus,
   PlusCircle,
-  RefreshCcw,
   Search,
   Settings,
-  Star,
   Users,
-  Video,
+  BarChart,
+  Bell,
   X,
+  Calendar as CalendarIcon,
   UserPlus
 } from 'lucide-react';
 import Link from 'next/link';
@@ -36,7 +22,7 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -95,17 +81,17 @@ const leadExample = {
 type Lead = typeof leadExample;
 
 const stages = [
-  { name: 'Nuevo Cliente', count: 8, color: 'bg-sky-500' },
-  { name: 'Por Contactar', count: 5, color: 'bg-cyan-500' },
-  { name: 'Por Visitar', count: 3, color: 'bg-blue-500' },
-  { name: 'Por Cotizar', count: 12, color: 'bg-indigo-500' },
-  { name: 'Por Presentar Cotización', count: 4, color: 'bg-violet-500' },
-  { name: 'Ajustar Cotización', count: 2, color: 'bg-purple-500' },
-  { name: 'Seguimiento a la Cotización', count: 7, color: 'bg-fuchsia-500' },
-  { name: 'Por Contratar', count: 1, color: 'bg-pink-500' },
-  { name: 'Recaptura BD', count: 150, color: 'bg-rose-500' },
-  { name: 'Finalizados', count: 320, color: 'bg-green-500' },
-  { name: 'No', count: 50, color: 'bg-gray-500'}
+  { name: 'Nuevo Cliente', color: 'bg-sky-500' },
+  { name: 'Por Contactar', color: 'bg-cyan-500' },
+  { name: 'Por Visitar', color: 'bg-blue-500' },
+  { name: 'Por Cotizar', color: 'bg-indigo-500' },
+  { name: 'Por Presentar Cotización', color: 'bg-violet-500' },
+  { name: 'Ajustar Cotización', color: 'bg-purple-500' },
+  { name: 'Seguimiento a la Cotización', color: 'bg-fuchsia-500' },
+  { name: 'Por Contratar', color: 'bg-pink-500' },
+  { name: 'Recaptura BD', color: 'bg-rose-500' },
+  { name: 'Finalizados', color: 'bg-green-500' },
+  { name: 'No', color: 'bg-gray-500'}
 ];
 
 const initialLeads: Lead[] = [
@@ -118,6 +104,36 @@ const initialLeads: Lead[] = [
     { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/107/40/40', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com' },
     { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', priority: 'alta', ownerAvatar: 'https://picsum.photos/seed/108/40/40', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com' },
 ];
+
+const Pipeline = ({ stages, leads, activeStage, onStageChange }: { stages: { name: string, color: string }[], leads: Lead[], activeStage: string, onStageChange: (stage: string) => void }) => {
+    return (
+        <div className="w-full overflow-x-auto pb-4">
+            <div className="flex space-x-2">
+                {stages.map((stage, index) => {
+                    const leadCount = leads.filter(l => l.status === stage.name).length;
+                    const isActive = activeStage === stage.name;
+                    return (
+                        <div key={stage.name} className="flex items-center">
+                            <button
+                                onClick={() => onStageChange(stage.name)}
+                                className={cn(
+                                    "flex items-center gap-2 text-sm font-medium p-3 rounded-lg transition-colors min-w-max",
+                                    isActive ? "bg-primary/10 text-primary" : "hover:bg-muted/80 text-muted-foreground"
+                                )}
+                            >
+                                <span className={cn("h-2.5 w-2.5 rounded-full", stage.color)}></span>
+                                <span>{stage.name}</span>
+                                <span className={cn("px-2 py-0.5 rounded-full text-xs", isActive ? "bg-primary/20" : "bg-muted text-foreground")}>{leadCount}</span>
+                            </button>
+                            {index < stages.length - 1 && <ChevronRight className="h-5 w-5 text-muted-foreground/50" />}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
 
 const LeadCard = ({ lead, isSelected, onClick }: { lead: Lead, isSelected: boolean, onClick: () => void}) => {
     const priorityColors = {
@@ -261,7 +277,7 @@ const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null;
                 </Tabs>
             </CardContent>
             <div className="p-4 border-t bg-background flex gap-2">
-                <Button variant="outline" className="flex-1"><Plus className="mr-2 h-4 w-4"/> Agendar Visita</Button>
+                <Button variant="outline" className="flex-1"><PlusCircle className="mr-2 h-4 w-4"/> Agendar Visita</Button>
             </div>
         </Card>
     )
@@ -701,7 +717,6 @@ export default function LeadsPage() {
             <Button variant="outline" size="sm" className="gap-1.5 hidden sm:flex">
                 <Filter className="h-4 w-4" />
                 Filtros
-                <ChevronDown className="h-4 w-4" />
               </Button>
              <Button size="sm" className="gap-1.5" onClick={() => handleUpdateStatus('Nuevo Cliente')}>
                 <PlusCircle className="h-4 w-4" />
@@ -738,86 +753,47 @@ export default function LeadsPage() {
           </div>
         </header>
 
-        <main className="flex-1 grid grid-cols-1 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr_400px] gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
-            {/* Left Column: Stages */}
-             <div className={cn("hidden md:flex flex-col", isMobile && isDetailViewVisible && 'hidden')}>
-                <Card className="flex-1 flex flex-col">
-                  <CardHeader>
-                      <CardTitle className="text-lg">Etapas del Flujo</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-1 overflow-y-auto -mt-2">
-                      <ul className='space-y-1'>
-                          {stages.map(stage => (
-                              <li key={stage.name}>
-                                  <button
-                                      onClick={() => handleStageChange(stage.name)}
-                                      className={cn(
-                                          "w-full text-left p-2 rounded-md text-sm flex justify-between items-center transition-colors",
-                                          activeStage === stage.name
-                                              ? "bg-primary/10 text-primary font-semibold"
-                                              : "hover:bg-muted/80"
-                                      )}
-                                  >
-                                      <div className="flex items-center gap-2">
-                                          <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
-                                          <span>{stage.name}</span>
-                                      </div>
-                                      <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", activeStage === stage.name ? "bg-primary/20" : "bg-muted")}>{leads.filter(l => l.status === stage.name).length}</span>
-                                  </button>
-                              </li>
-                          ))}
-                      </ul>
-                  </CardContent>
-                </Card>
-            </div>
-
-            {/* Center Column: Leads List */}
-             <div className={cn("flex flex-col gap-4", isMobile && isDetailViewVisible && 'hidden')}>
-                <div className='flex items-center justify-between'>
-                    <h2 className='text-lg font-semibold'>Leads en: {activeStage} ({filteredLeads.length})</h2>
-                </div>
-                <div className="md:hidden">
-                    <Select value={activeStage} onValueChange={handleStageChange}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Seleccionar etapa..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {stages.map(stage => (
-                                <SelectItem key={stage.name} value={stage.name}>
-                                    <div className="flex items-center gap-2">
-                                        <span className={cn("h-2 w-2 rounded-full", stage.color)}></span>
-                                        <span>{stage.name} ({leads.filter(l => l.status === stage.name).length})</span>
-                                    </div>
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className='space-y-3 overflow-y-auto'>
-                    {filteredLeads.map(lead => (
-                       <LeadCard 
-                        key={lead.id} 
-                        lead={lead} 
-                        isSelected={selectedLead?.id === lead.id}
-                        onClick={() => handleSelectLead(lead)} 
-                       />
-                    ))}
-                    {filteredLeads.length === 0 && (
-                        <div className="text-center text-muted-foreground py-10">
-                            <Contact className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                            <p className="font-medium">No hay leads en esta etapa.</p>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Right Column: Lead Detail */}
-            <div className={cn("hidden lg:block", isMobile && "hidden")}>
-                <LeadDetailPanel 
-                    lead={selectedLead} 
-                    onClose={handleDetailClose} 
-                    onUpdateStatus={handleUpdateStatus} 
+        <main className="flex-1 flex flex-col gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
+             {/* Top Section: Pipeline */}
+            <div className='flex-shrink-0'>
+                <Pipeline
+                    stages={stages}
+                    leads={leads}
+                    activeStage={activeStage}
+                    onStageChange={handleStageChange}
                 />
+            </div>
+
+             <div className="flex-1 grid grid-cols-1 md:grid-cols-[1fr_400px] gap-6 overflow-hidden">
+                {/* Center Column: Leads List */}
+                 <div className={cn("flex flex-col gap-4 overflow-hidden", isMobile && isDetailViewVisible && 'hidden')}>
+                    <h2 className='text-lg font-semibold flex-shrink-0'>Leads en: {activeStage} ({filteredLeads.length})</h2>
+                    <div className='space-y-3 overflow-y-auto'>
+                        {filteredLeads.map(lead => (
+                           <LeadCard 
+                            key={lead.id} 
+                            lead={lead} 
+                            isSelected={selectedLead?.id === lead.id}
+                            onClick={() => handleSelectLead(lead)} 
+                           />
+                        ))}
+                        {filteredLeads.length === 0 && (
+                            <div className="text-center text-muted-foreground py-10">
+                                <Contact className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                <p className="font-medium">No hay leads en esta etapa.</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Right Column: Lead Detail */}
+                <div className={cn("hidden md:block overflow-y-auto", isMobile && "hidden")}>
+                    <LeadDetailPanel 
+                        lead={selectedLead} 
+                        onClose={handleDetailClose} 
+                        onUpdateStatus={handleUpdateStatus} 
+                    />
+                </div>
             </div>
             
             {/* Sheet for stage forms */}
