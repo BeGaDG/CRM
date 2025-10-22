@@ -150,6 +150,54 @@ const LeadCard = ({ lead, isSelected, onClick }: { lead: Lead, isSelected: boole
     );
 };
 
+const getNextStages = (currentStage: string): string[] => {
+    const stageMap: { [key: string]: string[] } = {
+        'Nuevo Cliente': ['Por Contactar'],
+        'Por Contactar': ['Por Visitar', 'No'],
+        'Por Visitar': ['Por Cotizar'],
+        'Por Cotizar': ['Por Presentar Cotización'],
+        'Por Presentar Cotización': ['Ajustar Cotización', 'Seguimiento a la Cotización', 'Por Contratar', 'No'],
+        'Ajustar Cotización': ['Por Presentar Cotización'],
+        'Seguimiento a la Cotización': ['Por Contratar', 'Ajustar Cotización', 'No'],
+        'Por Contratar': ['Finalizados'],
+        'Finalizados': [],
+        'No': ['Recaptura BD'],
+        'Recaptura BD': ['Por Contactar'],
+    };
+    return stageMap[currentStage] || [];
+};
+
+const NextStageSelector = ({ currentStage, onUpdateStatus }: { currentStage: string; onUpdateStatus: (stage: string) => void; }) => {
+    const nextStages = getNextStages(currentStage);
+
+    if (nextStages.length === 0) {
+        return <p className="text-sm text-muted-foreground text-center p-4 bg-muted rounded-md">Este es el final del flujo.</p>;
+    }
+
+    const mainAction = nextStages[0];
+    const otherActions = nextStages.slice(1);
+
+    return (
+        <div className="space-y-3">
+            <h3 className="text-sm font-semibold">Próximo Paso</h3>
+             <Button onClick={() => onUpdateStatus(mainAction)} className="w-full">
+                <ArrowRight className="mr-2 h-4 w-4"/>
+                Avanzar a: {mainAction}
+             </Button>
+             {otherActions.length > 0 && (
+                <div className="flex gap-2">
+                    {otherActions.map(stage => (
+                        <Button key={stage} onClick={() => onUpdateStatus(stage)} variant="outline" size="sm" className="flex-1">
+                           {stage}
+                        </Button>
+                    ))}
+                </div>
+             )}
+        </div>
+    );
+};
+
+
 const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null; onClose: () => void; onUpdateStatus: (stage: string) => void; }) => {
     if (!lead) return <Card className="hidden lg:flex flex-col h-full items-center justify-center border-dashed shadow-none"><CardContent className='p-6 flex flex-col items-center justify-center h-full text-center text-muted-foreground'><Contact className="h-12 w-12 mb-4 opacity-50" /> <p className='font-semibold'>Selecciona un lead</p><p className='text-sm'>Elige un lead de la lista para ver sus detalles completos aquí.</p></CardContent></Card>;
 
@@ -191,34 +239,8 @@ const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null;
                                     </div>
                                 )}
                             </div>
-                             <Separator/>
-                            <div className='flex items-center gap-2'>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button size="sm" className="flex-1">
-                                            <GitMerge className="mr-2 h-4 w-4"/>
-                                            Actualizar Estado
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        {stages.map(stage => (
-                                            <DropdownMenuItem key={stage.name} onClick={() => onUpdateStatus(stage.name)}>
-                                                <span className={cn("h-2 w-2 rounded-full mr-2", stage.color)}></span>
-                                                {stage.name}
-                                            </DropdownMenuItem>
-                                        ))}
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
                             <Separator/>
-                             <h3 className="text-sm font-semibold">Próxima Acción</h3>
-                             <div className="flex items-center text-sm p-3 bg-muted rounded-md">
-                                <Phone className="h-5 w-5 mr-3 text-primary" />
-                                <div>
-                                    <p className="font-medium">Primer Contacto</p>
-                                    <p className="text-muted-foreground">Pendiente</p>
-                                </div>
-                            </div>
+                            <NextStageSelector currentStage={lead.status} onUpdateStatus={onUpdateStatus} />
                         </TabsContent>
                         <TabsContent value="actividad" className="p-4 space-y-4 text-xs">
                              <div className="flex items-start gap-3">
@@ -239,7 +261,7 @@ const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null;
                 </Tabs>
             </CardContent>
             <div className="p-4 border-t bg-background flex gap-2">
-                <Button className="flex-1"><Plus className="mr-2 h-4 w-4"/> Agendar Visita</Button>
+                <Button variant="outline" className="flex-1"><Plus className="mr-2 h-4 w-4"/> Agendar Visita</Button>
             </div>
         </Card>
     )
@@ -817,7 +839,3 @@ export default function LeadsPage() {
     </SidebarProvider>
   );
 }
-
-    
-
-    
