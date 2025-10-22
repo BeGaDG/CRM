@@ -29,6 +29,7 @@ import {
   Users,
   Video,
   X,
+  UserPlus
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -616,10 +617,12 @@ export default function LeadsPage() {
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Users />
-                <span className="truncate">Gestión de Usuarios</span>
-              </SidebarMenuButton>
+              <Link href="/users">
+                <SidebarMenuButton>
+                  <Users />
+                  <span className="truncate">Gestión de Usuarios</span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton>

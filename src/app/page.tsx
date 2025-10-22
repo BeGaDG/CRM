@@ -18,6 +18,7 @@ import {
   Search,
   Settings,
   Users,
+  UserPlus
 } from 'lucide-react';
 import Link from 'next/link';
 import { ConversionRateChart } from '@/components/dashboard/conversion-rate-chart';
@@ -98,7 +99,7 @@ const quickAccess = [
     title: 'Gestión de Usuarios',
     description: 'Clientes y equipo administrativo.',
     icon: <Users className="h-8 w-8" />,
-    href: '#',
+    href: '/users',
   },
   {
     title: 'Gestión de Facturas',
@@ -192,10 +193,12 @@ export default function Dashboard() {
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Users />
-                <span className="truncate">Gestión de Usuarios</span>
-              </SidebarMenuButton>
+              <Link href="/users">
+                <SidebarMenuButton>
+                  <Users />
+                  <span className="truncate">Gestión de Usuarios</span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton>
