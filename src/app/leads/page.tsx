@@ -152,6 +152,8 @@ const LeadCard = ({ lead, isSelected, onClick }: { lead: Lead, isSelected: boole
 const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null; onClose: () => void; onUpdateStatus: (stage: string) => void; }) => {
     if (!lead) return <Card className="hidden lg:block"><CardContent className='p-6 flex flex-col items-center justify-center h-full text-center text-muted-foreground'><Contact className="h-12 w-12 mb-4" /> <p className='font-medium'>Selecciona un lead</p><p className='text-sm'>Elige un lead de la lista para ver sus detalles completos aquí.</p></CardContent></Card>;
 
+    const currentStage = stages.find(s => s.name === lead.status);
+
     return (
         <Card className="flex flex-col h-full relative">
             <Button variant="ghost" size="icon" className="lg:hidden absolute top-2 right-2 z-10" onClick={onClose}><X className="h-4 w-4"/></Button>
@@ -174,6 +176,21 @@ const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null;
                     </TabsList>
                     <div className='overflow-y-auto flex-1'>
                         <TabsContent value="resumen" className="p-4 space-y-4 text-sm">
+                            <div className='space-y-2'>
+                                <p><strong>Teléfono:</strong> {lead.phone}</p>
+                                <p><strong>Email:</strong> {lead.email}</p>
+                                <p><strong>Fuente:</strong> Referido</p>
+                                {currentStage && (
+                                    <div className='flex items-center gap-2'>
+                                        <strong>Estado:</strong>
+                                        <Badge variant="secondary" className='font-medium'>
+                                            <span className={cn("h-2 w-2 rounded-full mr-2", currentStage.color)}></span>
+                                            {lead.status}
+                                        </Badge>
+                                    </div>
+                                )}
+                            </div>
+                             <Separator/>
                             <div className='flex items-center gap-2'>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
@@ -193,10 +210,6 @@ const LeadDetailPanel = ({ lead, onClose, onUpdateStatus }: { lead: Lead | null;
                                 </DropdownMenu>
                             </div>
                             <Separator/>
-                             <p><strong>Teléfono:</strong> {lead.phone}</p>
-                             <p><strong>Email:</strong> {lead.email}</p>
-                             <p><strong>Fuente:</strong> Referido</p>
-                             <Separator/>
                              <h3 className="text-sm font-semibold">Próxima Acción</h3>
                              <div className="flex items-center text-sm p-3 bg-muted rounded-md">
                                 <Phone className="h-5 w-5 mr-3 text-primary" />
@@ -788,3 +801,5 @@ export default function LeadsPage() {
     </SidebarProvider>
   );
 }
+
+    
