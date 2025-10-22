@@ -52,6 +52,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 
 export const stages = [
@@ -353,5 +354,3 @@ export default function LeadsPage() {
     </SidebarProvider>
   );
 }
-
-    
