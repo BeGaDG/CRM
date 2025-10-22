@@ -41,14 +41,17 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { LeadCard } from '@/components/leads/lead-card';
 import { LeadDetailPanel } from '@/components/leads/lead-detail-panel';
 import { NewLeadForm } from '@/components/leads/new-lead-form';
 import type { Lead } from '@/components/leads/lead-card';
-import { Card, CardContent } from '@/components/ui/card';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 
 export const stages = [
@@ -164,7 +167,7 @@ export default function LeadsPage() {
         return stageMatch && searchMatch;
     });
   }, [leads, filterStage, searchTerm]);
-
+  
   const stageCounts = useMemo(() => {
     const counts: { [key: string]: number } = { all: leads.length };
     stages.forEach(stage => {
@@ -292,48 +295,26 @@ export default function LeadsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-             <Button variant="outline" className="gap-1.5 h-10">
-              <Filter className="h-4 w-4" />
-              <span className=''>Más Filtros</span>
-            </Button>
-          </div>
-
-           {/* Pipeline Stage Cards */}
-          <ScrollArea className="w-full whitespace-nowrap">
-            <div className="flex w-max space-x-3 pb-3">
-              <Card
-                className={cn(
-                  "cursor-pointer shrink-0 hover:border-primary",
-                  filterStage === 'all' && 'border-primary bg-primary/5'
-                )}
-                onClick={() => setFilterStage('all')}
-              >
-                <CardContent className="p-3">
-                  <p className="text-sm font-semibold">Todos los Leads</p>
-                  <p className="text-2xl font-bold">{stageCounts['all'] || 0}</p>
-                </CardContent>
-              </Card>
-              {stages.map((stage) => (
-                <Card
-                  key={stage.name}
-                  className={cn(
-                    "cursor-pointer shrink-0 hover:border-primary",
-                    filterStage === stage.name && 'border-primary bg-primary/5'
-                  )}
-                  onClick={() => setFilterStage(stage.name)}
-                >
-                  <CardContent className="p-3">
-                    <p className="text-sm font-semibold flex items-center gap-2">
-                       <span className={cn("h-2.5 w-2.5 rounded-full", stage.color)}></span>
-                       {stage.name}
-                    </p>
-                    <p className="text-2xl font-bold text-center">{stageCounts[stage.name] || 0}</p>
-                  </CardContent>
-                </Card>
-              ))}
+            <div className='flex gap-2'>
+              <Select value={filterStage} onValueChange={setFilterStage}>
+                <SelectTrigger className="h-10 w-full md:w-[200px]">
+                  <SelectValue placeholder="Filtrar por etapa..." />
+                </SelectTrigger>
+                <SelectContent>
+                   <SelectItem value="all">Todos los Leads ({stageCounts['all'] || 0})</SelectItem>
+                  {stages.map((stage) => (
+                    <SelectItem key={stage.name} value={stage.name}>
+                       {stage.name} ({stageCounts[stage.name] || 0})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+               <Button variant="outline" className="gap-1.5 h-10">
+                <Filter className="h-4 w-4" />
+                <span className='hidden sm:inline'>Más Filtros</span>
+              </Button>
             </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+          </div>
 
           {/* Leads List */}
           <div className='flex-1 space-y-3 overflow-y-auto'>
@@ -372,3 +353,5 @@ export default function LeadsPage() {
     </SidebarProvider>
   );
 }
+
+    
