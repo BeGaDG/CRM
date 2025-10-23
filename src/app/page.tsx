@@ -4,15 +4,16 @@ import {
   Activity,
   ArrowDownRight,
   ArrowUpRight,
-  ChevronRight,
   ClipboardList,
   Contact,
-  CreditCard,
+  DollarSign,
   FileText,
   LayoutDashboard,
   MoreHorizontal,
+  Percent,
   Search,
   Settings,
+  Target,
   Users,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -59,84 +60,76 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { SalesAnalyticsChart } from '@/components/dashboard/sales-analytics-chart';
-import { InvoiceStats } from '@/components/dashboard/invoice-stats';
+import { LeadFunnelStats } from '@/components/dashboard/lead-funnel-stats';
+import { cn } from '@/lib/utils';
 
 
 const kpis = [
   {
-    title: 'Total de Clientes',
-    value: '1.456',
-    delta: '+6,5% desde la semana pasada',
+    title: 'Nuevos Leads (Mes)',
+    value: '124',
+    delta: '+15.2% vs mes anterior',
     deltaType: 'positive',
     icon: <Users className="h-6 w-6 text-muted-foreground" />,
   },
   {
-    title: 'Ingresos',
-    value: '$3.345',
-    delta: '-0,10% desde la semana pasada',
-    deltaType: 'negative',
-    icon: <FileText className="h-6 w-6 text-muted-foreground" />,
-  },
-  {
-    title: 'Beneficio',
-    value: '60%',
-    delta: '-0,2% desde la semana pasada',
-    deltaType: 'negative',
-    icon: <Activity className="h-6 w-6 text-muted-foreground" />,
-  },
-  {
-    title: 'Facturas',
-    value: '1.135',
-    delta: '+11,5% desde la semana pasada',
+    title: 'Valor del Pipeline',
+    value: '$1.2M',
+    delta: '+8.1% vs mes anterior',
     deltaType: 'positive',
-    icon: <ClipboardList className="h-6 w-6 text-muted-foreground" />,
+    icon: <DollarSign className="h-6 w-6 text-muted-foreground" />,
+  },
+  {
+    title: 'Tasa de Conversión',
+    value: '23.5%',
+    delta: '-1.2% vs mes anterior',
+    deltaType: 'negative',
+    icon: <Percent className="h-6 w-6 text-muted-foreground" />,
+  },
+  {
+    title: 'Leads por Contactar',
+    value: '18',
+    delta: '2 vencidos',
+    deltaType: 'negative',
+    icon: <Target className="h-6 w-6 text-muted-foreground" />,
   },
 ];
 
-const recentActivities = [
+const recentLeads = [
   {
-    id: '#065499',
+    id: 'lead-1',
     customer: 'Constructora S.A.S',
-    items: '1x Contrato Comercializadora',
+    interest: 'Planta Solar',
     date: '2024-07-23 08:21',
-    status: 'Pagado',
-    price: '$2.500.000',
-    statusVariant: 'success',
+    status: 'Por Visitar',
+    statusColor: 'bg-blue-500',
   },
   {
-    id: '#065498',
+    id: 'lead-2',
     customer: 'Inversiones XYZ',
-    items: '1x Instalación Planta Solar',
+    interest: 'Comercializadora',
     date: '2024-07-22 14:45',
-    status: 'Pendiente',
-    statusVariant: 'warning',
-    price: '$15.000.000',
+    status: 'Por Cotizar',
+    statusColor: 'bg-indigo-500',
   },
   {
-    id: '#065497',
+    id: 'lead-3',
     customer: 'Logística Total',
-    items: '1x Mantenimiento',
+    interest: 'Ambos',
     date: '2024-07-22 10:10',
-    status: 'Pagado',
-    statusVariant: 'success',
-    price: '$800.000',
+    status: 'Por Contactar',
+    statusColor: 'bg-cyan-500',
   },
   {
-    id: '#065496',
+    id: 'lead-4',
     customer: 'Nuevo Cliente Alfa',
-    items: '1x Asesoría Energética',
+    interest: 'Planta Solar',
     date: '2024-07-21 18:30',
-    status: 'Vencido',
-    statusVariant: 'destructive',
-    price: '$300.000',
+    status: 'Nuevo Cliente',
+    statusColor: 'bg-sky-500',
   },
 ];
 
-const statusBadgeVariants: { [key: string]: string } = {
-  success: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
-  warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
-  destructive: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
-};
 
 export default function Dashboard() {
   const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
@@ -267,15 +260,15 @@ export default function Dashboard() {
             
             {/* Right Column */}
             <div className="space-y-6">
-              <InvoiceStats />
+              <LeadFunnelStats />
             </div>
           </div>
           
-          {/* Recent Invoices Table */}
+          {/* Recent Leads Table */}
           <Card>
             <CardHeader className='flex-row items-center justify-between'>
               <CardTitle className="font-headline text-lg">
-                Facturas Recientes
+                Leads Recientes
               </CardTitle>
               <Button variant="ghost" size="icon"><MoreHorizontal className='h-4 w-4'/></Button>
             </CardHeader>
@@ -283,25 +276,24 @@ export default function Dashboard() {
                <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className='w-[100px]'>No</TableHead>
                     <TableHead>Cliente</TableHead>
-                    <TableHead>Items</TableHead>
+                    <TableHead>Interés</TableHead>
                     <TableHead>Fecha</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead className='text-right'>Precio</TableHead>
+                    <TableHead className='text-right'>Estado</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {recentActivities.map((activity) => (
-                    <TableRow key={activity.id}>
-                      <TableCell className='font-medium'>{activity.id}</TableCell>
-                      <TableCell>{activity.customer}</TableCell>
-                      <TableCell>{activity.items}</TableCell>
-                      <TableCell>{activity.date}</TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className={statusBadgeVariants[activity.statusVariant]}>{activity.status}</Badge>
+                  {recentLeads.map((lead) => (
+                    <TableRow key={lead.id}>
+                      <TableCell className='font-medium'>{lead.customer}</TableCell>
+                      <TableCell>{lead.interest}</TableCell>
+                      <TableCell>{lead.date}</TableCell>
+                      <TableCell className='text-right'>
+                        <div className="flex items-center justify-end gap-2">
+                            <span className={cn("h-2 w-2 rounded-full", lead.statusColor)}></span>
+                            <span>{lead.status}</span>
+                        </div>
                       </TableCell>
-                      <TableCell className='text-right'>{activity.price}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
