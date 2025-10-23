@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect } from 'react';
 import {
   SheetHeader,
   SheetTitle,
@@ -98,17 +99,29 @@ export const LeadDetailPanel = ({
   advisors: Advisor[];
   onAssignLead: (advisorId: string) => void;
 }) => {
+    const [selectedAdvisorId, setSelectedAdvisorId] = useState(lead?.advisorId || '');
+    
+    useEffect(() => {
+        if (lead) {
+            setSelectedAdvisorId(lead.advisorId);
+        }
+    }, [lead]);
+
     if (!lead) return null;
 
     const currentStage = stages.find(s => s.name === lead.status);
     const stageForms = stages.filter(s => s.name !== 'Finalizados' && s.name !== 'Recaptura BD');
     
-    // A simple check if required fields for the CURRENT stage are filled.
-    // In a real app, this logic would be much more robust.
     const canAdvance = true; 
     
     const interest = interestTypeIcons[lead.interestType];
     const Icon = interest.icon;
+
+    const handleAssignClick = () => {
+        onAssignLead(selectedAdvisorId);
+    };
+
+    const isReassignDisabled = selectedAdvisorId === lead.advisorId;
 
     return (
         <>
@@ -160,8 +173,9 @@ export const LeadDetailPanel = ({
                             <UserCircle className="h-4 w-4" />
                             Asesor Asignado
                           </h3>
-                           <Select value={lead.advisorId} onValueChange={onAssignLead}>
-                                <SelectTrigger>
+                          <div className='flex items-center gap-2'>
+                           <Select value={selectedAdvisorId} onValueChange={setSelectedAdvisorId}>
+                                <SelectTrigger className="flex-1">
                                     <SelectValue placeholder="Seleccionar asesor..." />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -172,6 +186,10 @@ export const LeadDetailPanel = ({
                                     ))}
                                 </SelectContent>
                             </Select>
+                            <Button onClick={handleAssignClick} disabled={isReassignDisabled}>
+                                Asignar
+                            </Button>
+                           </div>
                         </div>
                         
                         <Separator/>
