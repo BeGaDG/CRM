@@ -1,5 +1,8 @@
 'use client';
 import { useState, useMemo } from 'react';
+import type { DateRange } from "react-day-picker";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import {
   ChevronRight,
   Contact,
@@ -10,6 +13,7 @@ import {
   Users,
   BarChart,
   Bell,
+  Calendar as CalendarIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -42,6 +46,12 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 
 export const stages = [
@@ -82,6 +92,7 @@ export default function LeadsPage() {
 
   const [filterStage, setFilterStage] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
   const handleUpdateStatus = (stage: string) => {
      if (selectedLead) {
@@ -239,28 +250,54 @@ export default function LeadsPage() {
         
         {/* Sheet for advanced filters */}
         <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-          <SheetContent className="w-full max-w-sm">
+          <SheetContent className="w-full max-w-sm flex flex-col">
             <SheetHeader>
               <SheetTitle>Filtros Avanzados</SheetTitle>
               <SheetDescription>
                 Refina tu búsqueda de leads con estas opciones.
               </SheetDescription>
             </SheetHeader>
-            <div className="py-6 space-y-6">
+            <div className="py-6 space-y-6 flex-1 overflow-y-auto">
+              
               <div className='space-y-3'>
-                <Label>Prioridad</Label>
-                <div className='flex items-center space-x-2'>
-                  <Checkbox id="priority-alta"/>
-                  <Label htmlFor="priority-alta" className='font-normal'>Alta</Label>
-                </div>
-                 <div className='flex items-center space-x-2'>
-                  <Checkbox id="priority-media"/>
-                  <Label htmlFor="priority-media" className='font-normal'>Media</Label>
-                </div>
-                 <div className='flex items-center space-x-2'>
-                  <Checkbox id="priority-baja"/>
-                  <Label htmlFor="priority-baja" className='font-normal'>Baja</Label>
-                </div>
+                <Label>Fecha de Creación</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id="date"
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !dateRange && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dateRange?.from ? (
+                        dateRange.to ? (
+                          <>
+                            {format(dateRange.from, "LLL dd, y", { locale: es })} -{" "}
+                            {format(dateRange.to, "LLL dd, y", { locale: es })}
+                          </>
+                        ) : (
+                          format(dateRange.from, "LLL dd, y", { locale: es })
+                        )
+                      ) : (
+                        <span>Selecciona un rango de fechas</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      initialFocus
+                      mode="range"
+                      defaultMonth={dateRange?.from}
+                      selected={dateRange}
+                      onSelect={setDateRange}
+                      numberOfMonths={1}
+                      locale={es}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <Separator />
@@ -285,7 +322,7 @@ export default function LeadsPage() {
               </div>
 
             </div>
-            <div className='flex justify-end gap-2 mt-4'>
+            <div className='flex justify-end gap-2 mt-4 border-t pt-4'>
               <Button variant="outline" onClick={() => setIsFilterSheetOpen(false)}>Limpiar</Button>
               <Button onClick={() => setIsFilterSheetOpen(false)}>Aplicar Filtros</Button>
             </div>
@@ -295,3 +332,5 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
+
+    
