@@ -61,17 +61,17 @@ export type Stage = {
 }
 
 export const stages: Stage[] = [
-  { name: 'Nuevo Cliente', color: 'bg-sky-500' },
+  { name: 'Nuevo Cliente', color: 'bg-blue-500' },
   { name: 'Por Contactar', color: 'bg-cyan-500' },
-  { name: 'Por Visitar', color: 'bg-blue-500' },
-  { name: 'Por Cotizar', color: 'bg-indigo-500' },
-  { name: 'Por Presentar Cotización', color: 'bg-violet-500' },
-  { name: 'Ajustar Cotización', color: 'bg-purple-500' },
-  { name: 'Seguimiento a la Cotización', color: 'bg-fuchsia-500' },
-  { name: 'Por Contratar', color: 'bg-pink-500' },
-  { name: 'Recaptura BD', color: 'bg-rose-500' },
-  { name: 'Finalizados', color: 'bg-green-500' },
-  { name: 'No', color: 'bg-gray-500' }
+  { name: 'Por Visitar', color: 'bg-teal-500' },
+  { name: 'Por Cotizar', color: 'bg-yellow-500' },
+  { name: 'Por Presentar Cotización', color: 'bg-amber-500' },
+  { name: 'Ajustar Cotización', color: 'bg-orange-500' },
+  { name: 'Seguimiento a la Cotización', color: 'bg-lime-500' },
+  { name: 'Por Contratar', color: 'bg-emerald-500' },
+  { name: 'Recaptura BD', color: 'bg-indigo-500' },
+  { name: 'Finalizados', color: 'bg-green-600' },
+  { name: 'No', color: 'bg-slate-500' }
 ];
 
 const today = new Date();
