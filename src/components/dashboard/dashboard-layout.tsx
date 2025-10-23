@@ -8,6 +8,7 @@ import {
   Contact,
   FileText,
   LayoutDashboard,
+  PlusCircle,
   Search,
   Settings,
   Users
@@ -94,18 +95,16 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <SidebarInset className="flex flex-col bg-muted/40">
         <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 sm:px-6">
           <SidebarTrigger className="md:hidden" />
-          <h1 className="text-lg font-semibold md:text-xl">
-            Bienvenido de nuevo, Equipo
-          </h1>
-          <div className="ml-auto flex items-center gap-4">
-            <div className="relative hidden md:block">
+          <div className="relative flex-1 md:grow-0">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Buscar cualquier cosa..."
-                className="w-full rounded-md bg-background pl-9 md:w-[200px] lg:w-[320px] h-9"
+                placeholder="Buscar en todo el CRM..."
+                className="w-full rounded-md bg-muted pl-9 md:w-[200px] lg:w-[320px] h-9"
               />
-            </div>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="rounded-full h-10 w-10 p-0">

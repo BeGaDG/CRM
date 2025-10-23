@@ -14,6 +14,7 @@ import {
   BarChart,
   Bell,
   Calendar as CalendarIcon,
+  Upload,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -52,6 +53,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 
 
 export const stages = [
@@ -98,6 +100,7 @@ export default function LeadsPage() {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isNewLeadFormOpen, setIsNewLeadFormOpen] = useState(false);
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
+  const [isImportSheetOpen, setIsImportSheetOpen] = useState(false);
 
   const [filterStage, setFilterStage] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -151,6 +154,23 @@ export default function LeadsPage() {
         advisorName: 'Carlos Ruiz',
       };
       setLeads([newLead, ...leads]);
+  };
+  
+  const handleImportLeads = (importedLeads: Lead[]) => {
+    // NOTE: This is a placeholder. In a real app, you would parse the Excel file
+    // and create new lead objects.
+    const newLeads: Lead[] = importedLeads.map((lead, index) => ({
+      ...lead,
+      id: `imported-lead-${Date.now()}-${index}`,
+      lastContact: 'Ahora',
+      status: 'Nuevo Cliente',
+      creationDate: new Date().toISOString(),
+      collectedData: {},
+      advisorId: 'user-1', // Default assignment
+      advisorName: 'Carlos Ruiz',
+    }));
+    setLeads([...newLeads, ...leads]);
+    setIsImportSheetOpen(false);
   };
 
   const handleSaveStageData = (stage: string, data: any) => {
@@ -213,8 +233,8 @@ export default function LeadsPage() {
   return (
     <DashboardLayout>
       <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
-          {/* Top Filters */}
-           <div className='flex flex-col md:flex-row gap-4'>
+          {/* Top Bar: Search, Filters and Actions */}
+           <div className='flex flex-col sm:flex-row gap-4'>
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -225,9 +245,27 @@ export default function LeadsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className='flex gap-2'>
+            <div className='flex items-center gap-2'>
+              <Button variant="outline" className="gap-1.5 h-10" onClick={() => setIsFilterSheetOpen(true)}>
+                <Filter className="h-4 w-4" />
+                <span className='hidden sm:inline'>Filtros</span>
+              </Button>
+              <Button variant="outline" className="gap-1.5 h-10" onClick={() => setIsImportSheetOpen(true)}>
+                <Upload className="h-4 w-4" />
+                <span className='hidden sm:inline'>Importar</span>
+              </Button>
+              <Button className="gap-1.5 h-10" onClick={() => setIsNewLeadFormOpen(true)}>
+                  <PlusCircle className="h-4 w-4" />
+                  <span>Nuevo Lead</span>
+              </Button>
+            </div>
+          </div>
+
+          {/* Filters Pills */}
+           <div className='flex items-center gap-2'>
+            <p className='text-sm font-medium text-muted-foreground'>Etapas:</p>
               <Select value={filterStage} onValueChange={setFilterStage}>
-                <SelectTrigger className="h-10 w-full md:w-[200px]">
+                <SelectTrigger className="h-9 w-auto min-w-[150px] border-dashed">
                   <SelectValue placeholder="Filtrar por etapa..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -239,15 +277,10 @@ export default function LeadsPage() {
                   ))}
                 </SelectContent>
               </Select>
-               <Button variant="outline" className="gap-1.5 h-10" onClick={() => setIsFilterSheetOpen(true)}>
-                <Filter className="h-4 w-4" />
-                <span className='hidden sm:inline'>Más Filtros</span>
-              </Button>
-            </div>
           </div>
 
           {/* Leads List */}
-          <div className='flex-1 space-y-3 overflow-y-auto'>
+          <div className='flex-1 space-y-3 overflow-y-auto pr-2'>
               {filteredLeads.map(lead => (
                 <LeadCard
                   key={lead.id}
@@ -268,6 +301,9 @@ export default function LeadsPage() {
 
         {/* Sheet for new lead form */}
         <NewLeadForm open={isNewLeadFormOpen} onOpenChange={setIsNewLeadFormOpen} onSave={handleSaveLead} />
+
+        {/* Sheet for importing leads */}
+        <ImportLeadsSheet open={isImportSheetOpen} onOpenChange={setIsImportSheetOpen} onImport={handleImportLeads} />
 
         {/* Sheet for lead detail */}
         <Sheet open={!!selectedLead} onOpenChange={(isOpen) => { if (!isOpen) handleDetailClose() }}>
