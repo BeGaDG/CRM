@@ -11,7 +11,7 @@ const reportData = [
   { id: 'lead-2', lead_name: 'Inversiones XYZ', assigned_to: 'Ana Gómez', status: 'Cotizado', last_update: '2024-07-27', value: 15000000, sede: 'Sincelejo' },
   { id: 'lead-3', lead_name: 'Logística Total', assigned_to: 'Carlos Ruiz', status: 'Visitado', last_update: '2024-07-25', value: 0, sede: 'Montería' },
   { id: 'lead-4', lead_name: 'Nuevo Cliente Alfa', assigned_to: 'Luisa Fernández', status: 'Contactado', last_update: '2024-07-28', value: 0, sede: 'Otros' },
-  { id: 'lead-5', lead_name Tiendas La Rebaja', assigned_to: 'Ana Gómez', status: 'Contratado', last_update: '2024-07-22', value: 85000000, sede: 'Sincelejo' },
+  { id: 'lead-5', lead_name: 'Tiendas La Rebaja', assigned_to: 'Ana Gómez', status: 'Contratado', last_update: '2024-07-22', value: 85000000, sede: 'Sincelejo' },
 ];
 
 const statusColors: { [key: string]: string } = {
