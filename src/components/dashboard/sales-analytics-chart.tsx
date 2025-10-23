@@ -28,54 +28,54 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export function SalesAnalyticsChart() {
     return (
-        <Card className="shadow-sm">
+        <Card className="shadow-sm w-full flex flex-col">
             <CardHeader>
                 <CardTitle className="font-headline text-lg">Ingresos por Contratos Cerrados</CardTitle>
                 <CardDescription>Evolución de los ingresos generados por nuevos contratos en los últimos 6 meses.</CardDescription>
             </CardHeader>
-            <CardContent>
-                <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart 
-                          data={contractData}
-                          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                        >
-                            <defs>
-                                <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4}/>
-                                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border) / 0.5)" />
-                            <XAxis 
-                              dataKey="month" 
-                              stroke="hsl(var(--muted-foreground))" 
-                              fontSize={12} 
-                              tickLine={false} 
-                              axisLine={false} 
-                            />
-                            <YAxis 
-                              stroke="hsl(var(--muted-foreground))" 
-                              fontSize={12} 
-                              tickLine={false} 
-                              axisLine={false} 
-                              tickFormatter={(value: number) => `$${value/1000000}M`}
-                            />
-                            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'hsl(var(--primary))', strokeWidth: 1, strokeDasharray: '3 3' }}/>
-                            <Area 
-                              type="monotone" 
-                              dataKey="value" 
-                              stroke="hsl(var(--primary))" 
-                              strokeWidth={2}
-                              fillOpacity={1} 
-                              fill="url(#colorSales)"
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
+            <CardContent className="flex-1 -ml-4">
+                <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart 
+                        data={contractData}
+                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    >
+                        <defs>
+                            <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4}/>
+                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border) / 0.5)" />
+                        <XAxis 
+                            dataKey="month" 
+                            stroke="hsl(var(--muted-foreground))" 
+                            fontSize={12} 
+                            tickLine={false} 
+                            axisLine={false} 
+                        />
+                        <YAxis 
+                            stroke="hsl(var(--muted-foreground))" 
+                            fontSize={12} 
+                            tickLine={false} 
+                            axisLine={false} 
+                            tickFormatter={(value: number) => `$${value/1000000}M`}
+                        />
+                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'hsl(var(--primary))', strokeWidth: 1, strokeDasharray: '3 3' }}/>
+                        <Area 
+                            type="monotone" 
+                            dataKey="value" 
+                            stroke="hsl(var(--primary))" 
+                            strokeWidth={2}
+                            fillOpacity={1} 
+                            fill="url(#colorSales)"
+                        />
+                    </AreaChart>
+                </ResponsiveContainer>
             </CardContent>
         </Card>
     );
 }
+
+    
 
     
