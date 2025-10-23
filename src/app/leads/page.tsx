@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { LeadCard } from '@/components/leads/lead-card';
 import { LeadDetailPanel } from '@/components/leads/lead-detail-panel';
 import { NewLeadForm } from '@/components/leads/new-lead-form';
@@ -39,6 +39,9 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
 
 
 export const stages = [
@@ -75,6 +78,7 @@ export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isNewLeadFormOpen, setIsNewLeadFormOpen] = useState(false);
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
 
   const [filterStage, setFilterStage] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -192,7 +196,7 @@ export default function LeadsPage() {
                   ))}
                 </SelectContent>
               </Select>
-               <Button variant="outline" className="gap-1.5 h-10">
+               <Button variant="outline" className="gap-1.5 h-10" onClick={() => setIsFilterSheetOpen(true)}>
                 <Filter className="h-4 w-4" />
                 <span className='hidden sm:inline'>Más Filtros</span>
               </Button>
@@ -232,6 +236,62 @@ export default function LeadsPage() {
             />
           </SheetContent>
         </Sheet>
+        
+        {/* Sheet for advanced filters */}
+        <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+          <SheetContent className="w-full max-w-sm">
+            <SheetHeader>
+              <SheetTitle>Filtros Avanzados</SheetTitle>
+              <SheetDescription>
+                Refina tu búsqueda de leads con estas opciones.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="py-6 space-y-6">
+              <div className='space-y-3'>
+                <Label>Prioridad</Label>
+                <div className='flex items-center space-x-2'>
+                  <Checkbox id="priority-alta"/>
+                  <Label htmlFor="priority-alta" className='font-normal'>Alta</Label>
+                </div>
+                 <div className='flex items-center space-x-2'>
+                  <Checkbox id="priority-media"/>
+                  <Label htmlFor="priority-media" className='font-normal'>Media</Label>
+                </div>
+                 <div className='flex items-center space-x-2'>
+                  <Checkbox id="priority-baja"/>
+                  <Label htmlFor="priority-baja" className='font-normal'>Baja</Label>
+                </div>
+              </div>
+
+              <Separator />
+              
+              <div className='space-y-3'>
+                <Label>Tipo de Interés</Label>
+                <div className='flex items-center space-x-2'>
+                  <Checkbox id="interest-planta"/>
+                  <Label htmlFor="interest-planta" className='font-normal'>Planta Solar</Label>
+                </div>
+                 <div className='flex items-center space-x-2'>
+                  <Checkbox id="interest-comercializadora"/>
+                  <Label htmlFor="interest-comercializadora" className='font-normal'>Comercializadora</Label>
+                </div>
+              </div>
+              
+               <Separator />
+
+              <div className="space-y-3">
+                <Label htmlFor="city-filter">Ciudad</Label>
+                <Input id="city-filter" placeholder="Ej: Bogotá D.C." />
+              </div>
+
+            </div>
+            <div className='flex justify-end gap-2 mt-4'>
+              <Button variant="outline" onClick={() => setIsFilterSheetOpen(false)}>Limpiar</Button>
+              <Button onClick={() => setIsFilterSheetOpen(false)}>Aplicar Filtros</Button>
+            </div>
+          </SheetContent>
+        </Sheet>
+
     </DashboardLayout>
   );
 }
