@@ -10,10 +10,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Info, Contact, Sun, Zap, Layers } from 'lucide-react';
+import { ArrowRight, Info, Contact, Sun, Zap, Layers, UserCircle } from 'lucide-react';
 import type { Lead } from './lead-card';
 import { StageForm } from './stage-form';
 import { stages } from '@/app/leads/page';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+
+type Advisor = {
+  id: string;
+  name: string;
+}
 
 const getNextStages = (currentStage: string): string[] => {
   const stageMap: { [key: string]: string[] } = {
@@ -79,7 +85,19 @@ const interestTypeIcons = {
 };
 
 
-export const LeadDetailPanel = ({ lead, onUpdateStatus, onSaveStageData }: { lead: Lead | null; onUpdateStatus: (stage: string) => void; onSaveStageData: (stage: string, data: any) => void; }) => {
+export const LeadDetailPanel = ({ 
+  lead, 
+  onUpdateStatus, 
+  onSaveStageData,
+  advisors,
+  onAssignLead
+}: { 
+  lead: Lead | null; 
+  onUpdateStatus: (stage: string) => void; 
+  onSaveStageData: (stage: string, data: any) => void; 
+  advisors: Advisor[];
+  onAssignLead: (advisorId: string) => void;
+}) => {
     if (!lead) return null;
 
     const currentStage = stages.find(s => s.name === lead.status);
@@ -133,6 +151,27 @@ export const LeadDetailPanel = ({ lead, onUpdateStatus, onSaveStageData }: { lea
                                     </Badge>
                                 </div>
                             )}
+                        </div>
+
+                         <Separator/>
+
+                        <div className="space-y-3">
+                          <h3 className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                            <UserCircle className="h-4 w-4" />
+                            Asesor Asignado
+                          </h3>
+                           <Select value={lead.advisorId} onValueChange={onAssignLead}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Seleccionar asesor..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {advisors.map(advisor => (
+                                        <SelectItem key={advisor.id} value={advisor.id}>
+                                            {advisor.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         
                         <Separator/>

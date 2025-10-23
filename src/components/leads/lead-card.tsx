@@ -2,7 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Sun, Zap, Layers, AlertCircle } from 'lucide-react';
+import { Sun, Zap, Layers, AlertCircle, UserCircle } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
 import { stages } from '@/app/leads/page';
 
@@ -12,7 +12,6 @@ const leadExample = {
   name: 'Constructora S.A.S',
   city: 'Bogotá D.C.',
   lastContact: 'Hace 2h',
-  priority: 'alta' as const,
   interestType: 'planta-solar' as const,
   status: 'Por Visitar',
   phone: '310 123 4567',
@@ -23,7 +22,9 @@ const leadExample = {
     'consumo': '5000 kWh',
     'valor_cotizacion': 15000000,
     'potencia_pico': '10 kWp'
-  }
+  },
+  advisorId: 'user-1',
+  advisorName: 'Carlos Ruiz',
 };
 export type Lead = typeof leadExample;
 
@@ -58,7 +59,10 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
           </div>
           <div className="flex-1">
             <p className="font-semibold text-base">{lead.name}</p>
-            <p className="text-sm text-muted-foreground">{lead.city}</p>
+            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                <UserCircle className="h-3 w-3" />
+                {lead.advisorName}
+            </p>
           </div>
         </div>
 

@@ -72,15 +72,24 @@ const today = new Date();
 const threeDaysAgo = new Date();
 threeDaysAgo.setDate(today.getDate() - 3);
 
+const advisors = [
+  { id: 'user-1', name: 'Carlos Ruiz' },
+  { id: 'user-2', name: 'Ana Gómez' },
+  { id: 'user-3', name: 'Luisa Fernández' },
+  { id: 'user-4', name: 'Jorge Arias' },
+  { id: 'user-5', name: 'Maria Rodriguez' },
+];
+
+
 const initialLeads: Lead[] = [
-  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', priority: 'alta', interestType: 'planta-solar', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', creationDate: new Date().toISOString(), collectedData: { 'nic': '123456-7', 'consumo': '15000 kWh', 'valor_cotizacion': 0, 'potencia_pico': '' } },
-  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', priority: 'media', interestType: 'comercializadora', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', creationDate: new Date().toISOString(), collectedData: {} },
-  { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', priority: 'baja', interestType: 'ambos', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com', creationDate: new Date().toISOString(), collectedData: {} },
-  { id: 'lead-4', name: 'Nuevo Cliente Alfa (Urgente)', city: 'Barranquilla', lastContact: 'Hace 4 días', priority: 'alta', interestType: 'planta-solar', status: 'Nuevo Cliente', phone: '318 111 2233', email: 'alfa@cliente.com', creationDate: threeDaysAgo.toISOString(), collectedData: {} },
-  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', priority: 'media', interestType: 'comercializadora', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', creationDate: new Date().toISOString(), collectedData: {} },
-  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', priority: 'baja', interestType: 'planta-solar', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '987654-3', 'consumo': '8000 kWh'} },
-  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', priority: 'alta', interestType: 'ambos', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '555444-1', 'consumo': '25000 kWh', 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' } },
-  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', priority: 'alta', interestType: 'comercializadora', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', creationDate: new Date().toISOString(), collectedData: {} },
+  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', interestType: 'planta-solar', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', creationDate: new Date().toISOString(), collectedData: { 'nic': '123456-7', 'consumo': '15000 kWh', 'valor_cotizacion': 0, 'potencia_pico': '' }, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
+  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', interestType: 'comercializadora', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', creationDate: new Date().toISOString(), collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
+  { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', interestType: 'ambos', status: 'Por Visitar', phone: '315 555 8888', email: 'logistica.total@email.com', creationDate: new Date().toISOString(), collectedData: {}, advisorId: 'user-2', advisorName: 'Ana Gómez' },
+  { id: 'lead-4', name: 'Nuevo Cliente Alfa (Urgente)', city: 'Barranquilla', lastContact: 'Hace 4 días', interestType: 'planta-solar', status: 'Nuevo Cliente', phone: '318 111 2233', email: 'alfa@cliente.com', creationDate: threeDaysAgo.toISOString(), collectedData: {}, advisorId: 'user-2', advisorName: 'Ana Gómez' },
+  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', interestType: 'comercializadora', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', creationDate: new Date().toISOString(), collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
+  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', interestType: 'planta-solar', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '987654-3', 'consumo': '8000 kWh'}, advisorId: 'user-3', advisorName: 'Luisa Fernández' },
+  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', interestType: 'ambos', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '555444-1', 'consumo': '25000 kWh', 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' }, advisorId: 'user-3', advisorName: 'Luisa Fernández' },
+  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', interestType: 'comercializadora', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', creationDate: new Date().toISOString(), collectedData: {}, advisorId: 'user-4', advisorName: 'Jorge Arias' },
 ];
 
 
@@ -105,6 +114,22 @@ export default function LeadsPage() {
       setSelectedLead(updatedSelectedLead);
     }
   };
+  
+   const handleAssignLead = (advisorId: string) => {
+    if (selectedLead) {
+      const advisor = advisors.find(a => a.id === advisorId);
+      if (advisor) {
+        const updatedLeads = leads.map(lead =>
+          lead.id === selectedLead.id ? { ...lead, advisorId: advisor.id, advisorName: advisor.name, lastContact: 'Ahora' } : lead
+        );
+        setLeads(updatedLeads);
+
+        const updatedSelectedLead = { ...selectedLead, advisorId: advisor.id, advisorName: advisor.name, lastContact: 'Ahora' };
+        setSelectedLead(updatedSelectedLead);
+      }
+    }
+  };
+
 
   const handleSelectLead = (lead: Lead) => {
     setSelectedLead(lead);
@@ -116,13 +141,14 @@ export default function LeadsPage() {
         name: newLeadData.name || 'Nuevo Lead',
         city: newLeadData.city || 'Por definir',
         lastContact: 'Ahora',
-        priority: 'media',
         interestType: newLeadData.interestType || 'planta-solar',
         status: 'Nuevo Cliente',
         phone: newLeadData.phone || 'N/A',
         email: newLeadData.email || 'N/A',
         creationDate: new Date().toISOString(),
         collectedData: {},
+        advisorId: 'user-1', // Default assignment
+        advisorName: 'Carlos Ruiz',
       };
       setLeads([newLead, ...leads]);
   };
@@ -165,9 +191,15 @@ export default function LeadsPage() {
         const searchMatch = !searchTerm || 
                               lead.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                               lead.phone.includes(searchTerm);
-        return stageMatch && searchMatch;
+        
+        const dateMatch = !dateRange || (
+            (lead.creationDate >= (dateRange.from?.toISOString() || '')) &&
+            (lead.creationDate <= (dateRange.to?.toISOString() || new Date().toISOString()))
+        );
+
+        return stageMatch && searchMatch && dateMatch;
     });
-  }, [leads, filterStage, searchTerm]);
+  }, [leads, filterStage, searchTerm, dateRange]);
   
   const stageCounts = useMemo(() => {
     const counts: { [key: string]: number } = { all: leads.length };
@@ -244,6 +276,8 @@ export default function LeadsPage() {
               lead={selectedLead}
               onUpdateStatus={handleUpdateStatus}
               onSaveStageData={handleSaveStageData}
+              advisors={advisors}
+              onAssignLead={handleAssignLead}
             />
           </SheetContent>
         </Sheet>
@@ -332,5 +366,3 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
-
-    
