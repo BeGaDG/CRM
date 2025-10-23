@@ -33,11 +33,11 @@ export function SalesAnalyticsChart() {
                 <CardTitle className="font-headline text-lg">Ingresos por Contratos Cerrados</CardTitle>
                 <CardDescription>Evolución de los ingresos generados por nuevos contratos en los últimos 6 meses.</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 -ml-4">
+            <CardContent className="flex-1 pl-2 pr-4 sm:pl-4">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart 
                         data={contractData}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
                     >
                         <defs>
                             <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
@@ -75,7 +75,3 @@ export function SalesAnalyticsChart() {
         </Card>
     );
 }
-
-    
-
-    

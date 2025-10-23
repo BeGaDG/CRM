@@ -140,7 +140,7 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6 overflow-auto">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {kpis.map((kpi, index) => (
             <KpiCard key={index} {...kpi} />
           ))}
