@@ -2,15 +2,6 @@
 import { useState } from 'react';
 import {
   ChevronRight,
-  FileText,
-  LayoutDashboard,
-  MoreHorizontal,
-  PlusCircle,
-  Search,
-  Settings,
-  Users,
-  Contact,
-  BarChart,
   Upload,
   UserPlus,
   X
@@ -23,7 +14,6 @@ import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -31,12 +21,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { SolYCieloLogo } from '@/components/icons';
 import {
   Select,
   SelectContent,
@@ -44,18 +32,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
 import {
   Table,
   TableBody,
@@ -77,6 +53,8 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
+import { Users, MoreHorizontal, Contact, FileText } from 'lucide-react';
 
 
 const usersData = [
@@ -316,90 +294,7 @@ export default function UsersPage() {
 
 
   return (
-    <SidebarProvider>
-      <Sidebar collapsible="icon" className="border-r border-sidebar-border/80">
-        <SidebarHeader className="flex items-center gap-2.5 p-4">
-          <SolYCieloLogo className="h-8 w-8" />
-          <h2 className="text-xl font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
-            Sol & Cielo
-          </h2>
-        </SidebarHeader>
-        <SidebarContent className="p-2">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <Link href="/">
-                <SidebarMenuButton>
-                  <LayoutDashboard />
-                  <span className="truncate">Home General</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link href="/leads">
-                <SidebarMenuButton>
-                  <Contact />
-                  <span className="truncate">Gestión de Leads</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link href="/users">
-                <SidebarMenuButton isActive>
-                  <Users />
-                  <span className="truncate">Gestión de Usuarios</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <FileText />
-                <span className="truncate">Gestión de Facturas</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <BarChart />
-                <span className="truncate">Reportes y Análisis</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarContent>
-        <SidebarFooter className="p-2">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Settings />
-                <span className="truncate">Configuración</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      </Sidebar>
-      <SidebarInset className="flex flex-col">
-        {/* Header */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-card px-4 sm:px-6">
-          <SidebarTrigger className="md:hidden" />
-           <div className="hidden md:flex text-sm items-center gap-2 text-muted-foreground">
-             <Link href="/" className="hover:text-foreground">Home</Link>
-             <ChevronRight className="h-4 w-4"/>
-             <span className="font-semibold text-foreground">Gestión de Usuarios</span>
-           </div>
-          <div className="ml-auto flex items-center gap-2 md:gap-4">
-            <div className="relative flex-1 max-w-xs">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                type="search"
-                placeholder="Buscar usuario..."
-                className="w-full rounded-lg bg-background pl-10 h-10"
-                />
-            </div>
-             <Button size="sm" className="gap-1.5" onClick={() => handleOpenForm(null)}>
-                <UserPlus className="h-4 w-4" />
-                <span className="hidden sm:inline">Nuevo Usuario</span>
-              </Button>
-          </div>
-        </header>
-
+    <DashboardLayout>
         <main className="flex-1 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
             {/* Main Column: User Table */}
             <div className={cn("lg:col-span-1 flex flex-col gap-4", isMobile && selectedUser ? "hidden" : "flex")}>
@@ -515,7 +410,6 @@ export default function UsersPage() {
             <UserModalForm open={isFormOpen} onOpenChange={handleCloseForm} user={selectedUser} />
 
         </main>
-      </SidebarInset>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }

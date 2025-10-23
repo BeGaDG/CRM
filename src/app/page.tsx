@@ -1,29 +1,18 @@
-
 'use client';
 import * as React from 'react';
 import {
   Activity,
-  ArrowDownRight,
-  ArrowUpRight,
-  ClipboardList,
   Contact,
   DollarSign,
   FileText,
-  LayoutDashboard,
-  MoreHorizontal,
   Percent,
-  Search,
-  Settings,
-  Target,
-  Users,
-  BarChart,
-  Bell,
+  FileSignature,
   CheckCircle,
-  FileSignature
+  ClipboardList,
+  Users
 } from 'lucide-react';
 import Link from 'next/link';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,29 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { SolYCieloLogo } from '@/components/icons';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
+
 import {
   Table,
   TableBody,
@@ -66,8 +33,10 @@ import {
 } from '@/components/ui/table';
 import { SalesAnalyticsChart } from '@/components/dashboard/sales-analytics-chart';
 import { LeadFunnelStats } from '@/components/dashboard/lead-funnel-stats';
-import { cn } from '@/lib/utils';
-
+import { KpiCard } from '@/components/dashboard/kpi-card';
+import { RecentActivity } from '@/components/dashboard/recent-activity';
+import { RecentContracts } from '@/components/dashboard/recent-contracts';
+import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 
 const kpis = [
   {
@@ -111,8 +80,6 @@ const recentContracts = [
         value: 120000000,
         type: 'Planta Solar',
         date: '2024-07-23',
-        status: 'Activo',
-        statusColor: 'bg-green-500',
     },
     {
         id: 'contract-2',
@@ -120,8 +87,6 @@ const recentContracts = [
         value: 15000000,
         type: 'Comercializadora',
         date: '2024-07-20',
-        status: 'Activo',
-        statusColor: 'bg-green-500',
     },
     {
         id: 'contract-3',
@@ -129,8 +94,6 @@ const recentContracts = [
         value: 85000000,
         type: 'Ambos',
         date: '2024-07-15',
-        status: 'Finalizado',
-        statusColor: 'bg-gray-500',
     },
      {
         id: 'contract-4',
@@ -138,8 +101,6 @@ const recentContracts = [
         value: 250000000,
         type: 'Planta Solar',
         date: '2024-07-11',
-        status: 'Activo',
-        statusColor: 'bg-green-500',
     },
 ];
 
@@ -176,210 +137,28 @@ const recentActivity = [
 
 
 export default function Dashboard() {
-  const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
-
   return (
-    <SidebarProvider>
-      <Sidebar collapsible="icon" className="border-r border-sidebar-border/80">
-        <SidebarHeader className="flex items-center gap-2.5 p-4">
-          <SolYCieloLogo className="h-8 w-8 text-primary" />
-          <h2 className="text-xl font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
-            Sol & Cielo
-          </h2>
-        </SidebarHeader>
-        <SidebarContent className="p-2">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <Link href="/">
-                <SidebarMenuButton isActive>
-                  <LayoutDashboard />
-                  <span className="truncate">Dashboard</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link href="/leads">
-                <SidebarMenuButton>
-                  <Contact />
-                  <span className="truncate">Leads</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link href="/users">
-                <SidebarMenuButton>
-                  <Users />
-                  <span className="truncate">Usuarios</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <FileText />
-                  <span className="truncate">Facturas</span>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <BarChart />
-                  <span className="truncate">Reportes</span>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarContent>
-        <SidebarFooter className="p-2">
-          <SidebarMenu>
-             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Bell />
-                <span className="truncate">Notificaciones</span>
-                 <span className="ml-auto flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">3</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Settings />
-                <span className="truncate">Configuración</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      </Sidebar>
-      <SidebarInset className="flex flex-col bg-muted/40">
-        {/* Header */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 sm:px-6">
-          <SidebarTrigger className="md:hidden" />
-          <h1 className="text-lg font-semibold md:text-xl">
-            Bienvenido de nuevo, Equipo
-          </h1>
-          <div className="ml-auto flex items-center gap-4">
-            <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Buscar cualquier cosa..."
-                className="w-full rounded-md bg-background pl-9 md:w-[200px] lg:w-[320px] h-9"
-              />
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="rounded-full h-10 w-10 p-0">
-                  <Avatar className="h-9 w-9">
-                    {userAvatar && (
-                      <AvatarImage
-                        src={userAvatar.imageUrl}
-                        alt="Avatar de usuario"
-                        data-ai-hint={userAvatar.imageHint}
-                      />
-                    )}
-                    <AvatarFallback>SC</AvatarFallback>
-                  </Avatar>
-                  <span className="sr-only">Menú de usuario</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Perfil</DropdownMenuItem>
-                <DropdownMenuItem>Configuración</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </header>
+    <DashboardLayout>
+      <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6 overflow-auto">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {kpis.map((kpi, index) => (
+            <KpiCard key={index} {...kpi} />
+          ))}
+        </div>
 
-        <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6 overflow-auto">
-          {/* KPI Strip */}
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {kpis.map((kpi, index) => (
-              <Card key={index} className="shadow-sm">
-                <CardContent className="p-4 flex items-center gap-4">
-                   <div className={cn("w-1.5 h-12 rounded-full", kpi.color)}></div>
-                   <div className={cn("h-12 w-12 flex-shrink-0 rounded-lg flex items-center justify-center", kpi.color.replace('bg-', 'bg-') + '/10')}>
-                      {React.cloneElement(kpi.icon, { className: kpi.icon.props.className.replace('text-muted-foreground', '') })}
-                   </div>
-                   <div className="flex-1">
-                      <p className="text-sm font-medium text-muted-foreground">{kpi.title}</p>
-                      <p className="text-xl font-bold">{kpi.value}</p>
-                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column */}
-            <div className="lg:col-span-2 flex">
-              <SalesAnalyticsChart />
-            </div>
-            
-            {/* Right Column */}
-            <div className="space-y-6">
-              <LeadFunnelStats />
-              <Card>
-                <CardHeader>
-                    <CardTitle className="font-headline text-lg">Actividad Reciente</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    {recentActivity.map((activity, index) => (
-                         <div key={index} className="flex items-start gap-3">
-                            <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", activity.bgColor, activity.textColor)}>
-                                {activity.icon}
-                            </div>
-                            <div className="flex-1 text-sm">
-                                <p>{activity.description}</p>
-                                <p className="text-xs text-muted-foreground">{activity.time}</p>
-                            </div>
-                        </div>
-                    ))}
-                </CardContent>
-              </Card>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 flex">
+            <SalesAnalyticsChart />
           </div>
           
-          {/* Recent Contracts Table */}
-          <Card>
-            <CardHeader className='flex-row items-center justify-between'>
-              <div>
-                <CardTitle className="font-headline text-lg">
-                    Contratos Recientes
-                </CardTitle>
-                <CardDescription>Estos son los últimos contratos cerrados este mes.</CardDescription>
-              </div>
-              <Button asChild variant="outline" size="sm">
-                <Link href="#">Ver todos</Link>
-              </Button>
-            </CardHeader>
-            <CardContent>
-               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead className="hidden sm:table-cell">Tipo de Interés</TableHead>
-                    <TableHead className="hidden md:table-cell">Fecha de Cierre</TableHead>
-                    <TableHead className="text-right">Valor</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentContracts.map((contract) => (
-                    <TableRow key={contract.id}>
-                      <TableCell>
-                        <div className="font-medium">{contract.customer}</div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <Badge variant="secondary">{contract.type}</Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">{new Date(contract.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
-                      <TableCell className='text-right font-mono'>${contract.value.toLocaleString('es-CO')}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </main>
-      </SidebarInset>
-    </SidebarProvider>
+          <div className="space-y-6">
+            <LeadFunnelStats />
+            <RecentActivity activities={recentActivity} />
+          </div>
+        </div>
+        
+        <RecentContracts contracts={recentContracts} />
+      </main>
+    </DashboardLayout>
   );
 }

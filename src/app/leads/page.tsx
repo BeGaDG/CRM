@@ -5,17 +5,14 @@ import {
   Contact,
   FileText,
   Filter,
-  LayoutDashboard,
   PlusCircle,
   Search,
-  Settings,
   Users,
   BarChart,
   Bell,
 } from 'lucide-react';
 import Link from 'next/link';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -26,20 +23,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { SolYCieloLogo } from '@/components/icons';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { LeadCard } from '@/components/leads/lead-card';
 import { LeadDetailPanel } from '@/components/leads/lead-detail-panel';
@@ -52,7 +35,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 
 
 export const stages = [
@@ -86,7 +72,6 @@ const initialLeads: Lead[] = [
 
 
 export default function LeadsPage() {
-  const userAvatar = PlaceHolderImages.find((p) => p.id === 'user-avatar');
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isNewLeadFormOpen, setIsNewLeadFormOpen] = useState(false);
@@ -179,111 +164,8 @@ export default function LeadsPage() {
 
 
   return (
-    <SidebarProvider>
-      <Sidebar collapsible="icon" className="border-r border-sidebar-border/80">
-        <SidebarHeader className="flex items-center gap-2.5 p-4">
-          <SolYCieloLogo className="h-8 w-8" />
-          <h2 className="text-xl font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
-            Sol & Cielo
-          </h2>
-        </SidebarHeader>
-        <SidebarContent className="p-2">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <Link href="/">
-                <SidebarMenuButton>
-                  <LayoutDashboard />
-                  <span className="truncate">Home General</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link href="/leads">
-                <SidebarMenuButton isActive>
-                  <Contact />
-                  <span className="truncate">Gestión de Leads</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link href="/users">
-                <SidebarMenuButton>
-                  <Users />
-                  <span className="truncate">Gestión de Usuarios</span>
-                </SidebarMenuButton>
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <FileText />
-                <span className="truncate">Gestión de Facturas</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <BarChart />
-                <span className="truncate">Reportes y Análisis</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarContent>
-        <SidebarFooter className="p-2">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Settings />
-                <span className="truncate">Configuración</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      </Sidebar>
-      <SidebarInset className="flex flex-col">
-        {/* Header */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-card px-4 sm:px-6">
-          <SidebarTrigger className="md:hidden" />
-          <div className="hidden md:flex text-sm items-center gap-2 text-muted-foreground">
-            <Link href="/" className="hover:text-foreground">Home</Link>
-            <ChevronRight className="h-4 w-4" />
-            <span className="font-semibold text-foreground">Gestión de Leads</span>
-          </div>
-          <div className="ml-auto flex items-center gap-4">
-            <Button size="sm" className="gap-1.5" onClick={() => setIsNewLeadFormOpen(true)}>
-              <PlusCircle className="h-4 w-4" />
-              Crear Lead
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full relative">
-              <Bell className="h-5 w-5" />
-              <span className="sr-only">Notificaciones</span>
-              <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-              </span>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="rounded-full h-10 w-10 p-0">
-                  <Avatar className="h-9 w-9">
-                    {userAvatar && <AvatarImage src={userAvatar.imageUrl} alt="Avatar de usuario" data-ai-hint={userAvatar.imageHint} />}
-                    <AvatarFallback>JD</AvatarFallback>
-                  </Avatar>
-                  <span className="sr-only">Menú de usuario</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Perfil</DropdownMenuItem>
-                <DropdownMenuItem>Configuración</DropdownMenuItem>
-                <DropdownMenuItem>Soporte</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </header>
-
-        <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
+    <DashboardLayout>
+      <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
           {/* Top Filters */}
            <div className='flex flex-col md:flex-row gap-4'>
             <div className="relative flex-1">
@@ -350,7 +232,6 @@ export default function LeadsPage() {
             />
           </SheetContent>
         </Sheet>
-      </SidebarInset>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 }
