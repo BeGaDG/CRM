@@ -2,26 +2,20 @@
 'use client';
 import {
   Activity,
-  AlertTriangle,
-  BarChart,
-  Bell,
-  Building,
+  ArrowDownRight,
+  ArrowUpRight,
   ChevronRight,
   ClipboardList,
   Contact,
   CreditCard,
   FileText,
-  Filter,
   LayoutDashboard,
   MoreHorizontal,
-  PlusCircle,
   Search,
   Settings,
   Users,
-  UserPlus
 } from 'lucide-react';
 import Link from 'next/link';
-import { ConversionRateChart } from '@/components/dashboard/conversion-rate-chart';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -56,110 +50,92 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { SalesAnalyticsChart } from '@/components/dashboard/sales-analytics-chart';
+import { InvoiceStats } from '@/components/dashboard/invoice-stats';
+
 
 const kpis = [
   {
     title: 'Total de Clientes',
-    value: '1,250',
-    delta: '+50 este mes',
-    icon: <Users className="text-primary" />,
-    cta: 'Ver clientes',
+    value: '1.456',
+    delta: '+6,5% desde la semana pasada',
+    deltaType: 'positive',
+    icon: <Users className="h-6 w-6 text-muted-foreground" />,
   },
   {
-    title: 'Leads Activos',
-    value: '82',
-    delta: '+15 hoy',
-    icon: <Contact className="text-primary" />,
-    cta: 'Gestionar leads',
+    title: 'Ingresos',
+    value: '$3.345',
+    delta: '-0,10% desde la semana pasada',
+    deltaType: 'negative',
+    icon: <FileText className="h-6 w-6 text-muted-foreground" />,
   },
   {
-    title: 'Facturas Pendientes',
-    value: '42',
-    delta: '$15,780.00',
-    icon: <FileText className="text-destructive" />,
-    cta: 'Ver facturas',
+    title: 'Beneficio',
+    value: '60%',
+    delta: '-0,2% desde la semana pasada',
+    deltaType: 'negative',
+    icon: <Activity className="h-6 w-6 text-muted-foreground" />,
   },
   {
-    title: 'Contratos Firmados',
-    value: '310',
-    delta: '+12 este mes',
-    icon: <ClipboardList className="text-green-500" />,
-    cta: 'Ver contratos',
-  },
-];
-
-const quickAccess = [
-  {
-    title: 'Gestión de Leads',
-    description: 'Flujo comercial y oportunidades.',
-    icon: <Contact className="h-8 w-8" />,
-    href: '/leads',
-  },
-  {
-    title: 'Gestión de Usuarios',
-    description: 'Clientes y equipo administrativo.',
-    icon: <Users className="h-8 w-8" />,
-    href: '/users',
-  },
-  {
-    title: 'Gestión de Facturas',
-    description: 'Facturación, cobros y pagos.',
-    icon: <FileText className="h-8 w-8" />,
-    href: '#',
-  },
-  {
-    title: 'Reportes y Análisis',
-    description: 'Métricas y rendimiento.',
-    icon: <BarChart className="h-8 w-8" />,
-    href: '#',
+    title: 'Facturas',
+    value: '1.135',
+    delta: '+11,5% desde la semana pasada',
+    deltaType: 'positive',
+    icon: <ClipboardList className="h-6 w-6 text-muted-foreground" />,
   },
 ];
 
 const recentActivities = [
   {
-    type: 'lead',
-    title: "Nuevo lead 'Ana Torres' asignado a 'Carlos Ruiz'",
-    timestamp: 'Hace 5min',
-    meta: 'Fuente: Web',
+    id: '#065499',
+    customer: 'Constructora S.A.S',
+    items: '1x Contrato Comercializadora',
+    date: '2024-07-23 08:21',
+    status: 'Pagado',
+    price: '$2.500.000',
+    statusVariant: 'success',
   },
   {
-    type: 'factura',
-    title: "Factura #FAC-2024-789 generada para 'Construcciones S.A.'",
-    timestamp: 'Hace 15min',
-    meta: 'Valor: $2,500',
+    id: '#065498',
+    customer: 'Inversiones XYZ',
+    items: '1x Instalación Planta Solar',
+    date: '2024-07-22 14:45',
+    status: 'Pendiente',
+    statusVariant: 'warning',
+    price: '$15.000.000',
   },
   {
-    type: 'pago',
-    title: "Pago recibido de 'Inversiones ABC'",
-    timestamp: 'Hace 1h',
-    meta: 'Método: Wompi',
+    id: '#065497',
+    customer: 'Logística Total',
+    items: '1x Mantenimiento',
+    date: '2024-07-22 10:10',
+    status: 'Pagado',
+    statusVariant: 'success',
+    price: '$800.000',
   },
   {
-    type: 'usuario',
-    title: "Nuevo usuario 'Laura Méndez' creado",
-    timestamp: 'Hace 2h',
-    meta: 'Rol: Comercial',
-  },
-  {
-    type: 'contrato',
-    title: "Contrato #CTR-124 firmado por 'Logística Total'",
-    timestamp: 'Ayer',
-    meta: 'Estado: Activo',
+    id: '#065496',
+    customer: 'Nuevo Cliente Alfa',
+    items: '1x Asesoría Energética',
+    date: '2024-07-21 18:30',
+    status: 'Vencido',
+    statusVariant: 'destructive',
+    price: '$300.000',
   },
 ];
 
-const alerts = [
-  { title: '5 Leads sin contactar por más de 3 días', cta: 'Revisar ahora' },
-  { title: '2 Facturas a punto de vencer', cta: 'Contactar clientes' },
-  { title: "Usuario 'Juan Pérez' inactivo por 30 días", cta: 'Ver perfil' },
-];
-
-const activityIcons = {
-  lead: <Contact className="h-4 w-4" />,
-  factura: <FileText className="h-4 w-4" />,
-  pago: <CreditCard className="h-4 w-4" />,
-  usuario: <Users className="h-4 w-4" />,
-  contrato: <ClipboardList className="h-4 w-4" />,
+const statusBadgeVariants: { [key: string]: string } = {
+  success: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+  warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+  destructive: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
 };
 
 export default function Dashboard() {
@@ -169,7 +145,7 @@ export default function Dashboard() {
     <SidebarProvider>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border/80">
         <SidebarHeader className="flex items-center gap-2.5 p-4">
-          <SolYCieloLogo className="h-8 w-8" />
+          <SolYCieloLogo className="h-8 w-8 text-primary" />
           <h2 className="text-xl font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
             Sol & Cielo
           </h2>
@@ -180,7 +156,7 @@ export default function Dashboard() {
               <Link href="/">
                 <SidebarMenuButton isActive>
                   <LayoutDashboard />
-                  <span className="truncate">Home General</span>
+                  <span className="truncate">Dashboard</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
@@ -188,7 +164,7 @@ export default function Dashboard() {
               <Link href="/leads">
                 <SidebarMenuButton>
                   <Contact />
-                  <span className="truncate">Gestión de Leads</span>
+                  <span className="truncate">Leads</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
@@ -196,20 +172,14 @@ export default function Dashboard() {
               <Link href="/users">
                 <SidebarMenuButton>
                   <Users />
-                  <span className="truncate">Gestión de Usuarios</span>
+                  <span className="truncate">Usuarios</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton>
                 <FileText />
-                <span className="truncate">Gestión de Facturas</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <BarChart />
-                <span className="truncate">Reportes y Análisis</span>
+                <span className="truncate">Facturas</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -225,31 +195,22 @@ export default function Dashboard() {
           </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset className="flex flex-col">
+      <SidebarInset className="flex flex-col bg-muted/40">
         {/* Header */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-card px-4 sm:px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 sm:px-6">
           <SidebarTrigger className="md:hidden" />
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Buscar en todo el CRM..."
-              className="w-full rounded-lg bg-background pl-10 md:w-[200px] lg:w-[320px] h-10"
-            />
-          </div>
+          <h1 className="text-lg font-semibold md:text-xl">
+            Bienvenido de nuevo, Equipo
+          </h1>
           <div className="ml-auto flex items-center gap-4">
-            <Button variant="outline" size="sm" className="gap-1.5 hidden sm:flex">
-              <PlusCircle className="h-4 w-4" />
-              Crear Lead
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full relative">
-              <Bell className="h-5 w-5" />
-              <span className="sr-only">Notificaciones</span>
-              <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-              </span>
-            </Button>
+            <div className="relative hidden md:block">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Buscar cualquier cosa..."
+                className="w-full rounded-md bg-background pl-9 md:w-[200px] lg:w-[320px] h-9"
+              />
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="rounded-full h-10 w-10 p-0">
@@ -261,7 +222,7 @@ export default function Dashboard() {
                         data-ai-hint={userAvatar.imageHint}
                       />
                     )}
-                    <AvatarFallback>JD</AvatarFallback>
+                    <AvatarFallback>SC</AvatarFallback>
                   </Avatar>
                   <span className="sr-only">Menú de usuario</span>
                 </Button>
@@ -271,7 +232,6 @@ export default function Dashboard() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Perfil</DropdownMenuItem>
                 <DropdownMenuItem>Configuración</DropdownMenuItem>
-                <DropdownMenuItem>Soporte</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
               </DropdownMenuContent>
@@ -279,141 +239,76 @@ export default function Dashboard() {
           </div>
         </header>
 
-        <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6 overflow-auto bg-muted/40">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold font-headline tracking-tight">
-              Home General
-            </h1>
-          </div>
-
+        <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6 overflow-auto">
           {/* KPI Strip */}
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {kpis.map((kpi, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow">
+              <Card key={index} className="shadow-sm">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
-                  <div className="h-8 w-8 flex items-center justify-center rounded-full bg-primary/10">
-                    {kpi.icon}
-                  </div>
+                  {kpi.icon}
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{kpi.value}</div>
-                  <div className="flex justify-between items-center text-xs">
-                    <p className="text-muted-foreground">{kpi.delta}</p>
-                    <Link
-                      href="#"
-                      className="font-medium text-primary hover:underline flex items-center gap-1"
-                    >
-                      {kpi.cta} <ChevronRight className="h-3 w-3" />
-                    </Link>
-                  </div>
+                  <p className={`text-xs ${kpi.deltaType === 'positive' ? 'text-green-600' : 'text-red-600'} flex items-center gap-1`}>
+                     {kpi.deltaType === 'positive' ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+                    {kpi.delta}
+                  </p>
                 </CardContent>
               </Card>
             ))}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Quick Access */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-headline text-lg">
-                    Accesos Rápidos
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {quickAccess.map((item) => (
-                    <Link key={item.title} href={item.href} className="group">
-                      <Card className="h-full hover:border-primary transition-colors">
-                        <CardHeader className="flex flex-row items-center gap-4">
-                          <div className="p-3 rounded-full bg-primary/10 text-primary">
-                            {item.icon}
-                          </div>
-                          <div>
-                            <CardTitle className="text-base font-semibold">
-                              {item.title}
-                            </CardTitle>
-                            <CardDescription>{item.description}</CardDescription>
-                          </div>
-                          <ChevronRight className="h-5 w-5 ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
-                        </CardHeader>
-                      </Card>
-                    </Link>
-                  ))}
-                </CardContent>
-              </Card>
-
-              {/* Recent Activity */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-headline text-lg">
-                    Actividad Reciente Global
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {recentActivities.map((activity, i) => (
-                      <div key={i} className="flex items-start gap-4">
-                        <div className="bg-muted p-2 rounded-full mt-1">
-                          {activityIcons[activity.type as keyof typeof activityIcons]}
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm">{activity.title}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {activity.timestamp} &middot; {activity.meta}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <SalesAnalyticsChart />
             </div>
-            {/* Side column */}
+            
+            {/* Right Column */}
             <div className="space-y-6">
-              {/* Alerts */}
-              <Card className="bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800">
-                <CardHeader>
-                  <CardTitle className="font-headline text-lg flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
-                    <AlertTriangle className="h-5 w-5" />
-                    Alertas y Recordatorios
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {alerts.map((alert, i) => (
-                      <li
-                        key={i}
-                        className="flex items-center justify-between text-sm"
-                      >
-                        <p className="text-yellow-900 dark:text-yellow-200">
-                          {alert.title}
-                        </p>
-                        <Link
-                          href="#"
-                          className="font-semibold text-primary hover:underline text-xs"
-                        >
-                          {alert.cta}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <ConversionRateChart />
+              <InvoiceStats />
             </div>
           </div>
+          
+          {/* Recent Invoices Table */}
+          <Card>
+            <CardHeader className='flex-row items-center justify-between'>
+              <CardTitle className="font-headline text-lg">
+                Facturas Recientes
+              </CardTitle>
+              <Button variant="ghost" size="icon"><MoreHorizontal className='h-4 w-4'/></Button>
+            </CardHeader>
+            <CardContent>
+               <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className='w-[100px]'>No</TableHead>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>Items</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className='text-right'>Precio</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentActivities.map((activity) => (
+                    <TableRow key={activity.id}>
+                      <TableCell className='font-medium'>{activity.id}</TableCell>
+                      <TableCell>{activity.customer}</TableCell>
+                      <TableCell>{activity.items}</TableCell>
+                      <TableCell>{activity.date}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className={statusBadgeVariants[activity.statusVariant]}>{activity.status}</Badge>
+                      </TableCell>
+                      <TableCell className='text-right'>{activity.price}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </main>
-        <footer className="px-6 py-3 border-t text-xs text-muted-foreground text-center">
-          Sol & Cielo CRM v2.0 | Contacto para soporte:{' '}
-          <a
-            href="mailto:automations@sol-cielo.com"
-            className="text-primary hover:underline"
-          >
-            automations@sol-cielo.com
-          </a>
-        </footer>
       </SidebarInset>
     </SidebarProvider>
   );
