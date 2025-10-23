@@ -11,9 +11,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Info, Contact, Sun, Zap, Layers, UserCircle } from 'lucide-react';
+import { ArrowRight, Info, Contact, Sun, Zap, Layers, UserCircle, ChevronsUpDown } from 'lucide-react';
 import type { Lead } from './lead-card';
 import { StageForm } from './stage-form';
+import type { Stage } from '@/app/leads/page';
 import { stages } from '@/app/leads/page';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
@@ -39,32 +40,77 @@ const getNextStages = (currentStage: string): string[] => {
   return stageMap[currentStage] || [];
 };
 
-const NextStageSelector = ({ currentStage, onUpdateStatus, canAdvance }: { currentStage: string; onUpdateStatus: (stage: string) => void; canAdvance: boolean; }) => {
+const NextStageSelector = ({ 
+    currentStage, 
+    allStages, 
+    onUpdateStatus, 
+    canAdvance 
+}: { 
+    currentStage: string; 
+    allStages: Stage[];
+    onUpdateStatus: (stage: string) => void; 
+    canAdvance: boolean; 
+}) => {
+  const [manualStage, setManualStage] = useState<string>('');
   const nextStages = getNextStages(currentStage);
 
-  if (nextStages.length === 0) {
-    return <p className="text-sm text-muted-foreground text-center p-4 bg-muted rounded-md">Este es el final del flujo.</p>;
+  const mainAction = nextStages.length > 0 ? nextStages[0] : null;
+  const otherActions = nextStages.slice(1);
+  
+  const handleManualChange = () => {
+    if (manualStage && manualStage !== currentStage) {
+      onUpdateStatus(manualStage);
+    }
   }
 
-  const mainAction = nextStages[0];
-  const otherActions = nextStages.slice(1);
-
   return (
-    <div className="space-y-3">
-      <h3 className="text-sm font-semibold text-muted-foreground">Próximo Paso</h3>
-      <Button onClick={() => onUpdateStatus(mainAction)} size="lg" className="w-full font-bold" disabled={!canAdvance} title={!canAdvance ? "Completa los campos obligatorios de la etapa actual para avanzar" : ""}>
-        <ArrowRight className="mr-2 h-4 w-4" />
-        Avanzar a: {mainAction}
-      </Button>
-      {otherActions.length > 0 && (
-        <div className="grid grid-cols-2 gap-2">
-          {otherActions.map(stage => (
-            <Button key={stage} onClick={() => onUpdateStatus(stage)} variant="outline" size="sm" className="flex-1">
-              {stage}
+    <div className="space-y-4">
+      <div>
+        <h3 className="text-sm font-semibold text-muted-foreground mb-2">Próximo Paso Sugerido</h3>
+        {mainAction ? (
+            <Button onClick={() => onUpdateStatus(mainAction)} size="lg" className="w-full font-bold" disabled={!canAdvance} title={!canAdvance ? "Completa los campos obligatorios de la etapa actual para avanzar" : ""}>
+                <ArrowRight className="mr-2 h-4 w-4" />
+                Avanzar a: {mainAction}
             </Button>
-          ))}
+        ) : (
+             <p className="text-sm text-muted-foreground text-center p-4 bg-muted rounded-md">Este es el final del flujo.</p>
+        )}
+        {otherActions.length > 0 && (
+            <div className="grid grid-cols-2 gap-2 mt-2">
+            {otherActions.map(stage => (
+                <Button key={stage} onClick={() => onUpdateStatus(stage)} variant="outline" size="sm" className="flex-1">
+                {stage}
+                </Button>
+            ))}
+            </div>
+        )}
+      </div>
+
+      <Separator />
+
+      <div>
+        <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center gap-2">
+            <ChevronsUpDown className="h-4 w-4" />
+            Cambio Manual de Etapa
+        </h3>
+        <div className="flex gap-2">
+            <Select onValueChange={setManualStage} value={manualStage}>
+                <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una etapa..." />
+                </SelectTrigger>
+                <SelectContent>
+                    {allStages.map(stage => (
+                        <SelectItem key={stage.name} value={stage.name} disabled={stage.name === currentStage}>
+                            {stage.name}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+            <Button onClick={handleManualChange} disabled={!manualStage || manualStage === currentStage}>
+                Cambiar
+            </Button>
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -214,7 +260,12 @@ export const LeadDetailPanel = ({
                         </div>
                         
                         <Separator/>
-                        <NextStageSelector currentStage={lead.status} onUpdateStatus={onUpdateStatus} canAdvance={canAdvance} />
+                        <NextStageSelector 
+                            currentStage={lead.status} 
+                            allStages={stages}
+                            onUpdateStatus={onUpdateStatus} 
+                            canAdvance={canAdvance} 
+                        />
                     </TabsContent>
                     <TabsContent value="formularios" className='p-4'>
                         <Accordion type="single" collapsible defaultValue={`item-${lead.status}`}>

@@ -55,8 +55,12 @@ import {
 } from "@/components/ui/popover"
 import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 
+export type Stage = {
+  name: string;
+  color: string;
+}
 
-export const stages = [
+export const stages: Stage[] = [
   { name: 'Nuevo Cliente', color: 'bg-sky-500' },
   { name: 'Por Contactar', color: 'bg-cyan-500' },
   { name: 'Por Visitar', color: 'bg-blue-500' },
