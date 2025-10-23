@@ -1,5 +1,6 @@
 
 'use client';
+import * as React from 'react';
 import {
   Activity,
   ArrowDownRight,
@@ -73,29 +74,33 @@ const kpis = [
     title: 'Nuevos Leads (Mes)',
     value: '124',
     delta: '+15.2% vs mes anterior',
-    deltaType: 'positive',
-    icon: <Users className="h-6 w-6 text-muted-foreground" />,
+    deltaType: 'positive' as const,
+    icon: <Users className="h-6 w-6 text-blue-500" />,
+    color: 'bg-blue-500',
   },
   {
     title: 'Ingresos del Mes',
     value: '$45,231.89',
     delta: '+20.1% vs mes anterior',
-    deltaType: 'positive',
-    icon: <DollarSign className="h-6 w-6 text-muted-foreground" />,
+    deltaType: 'positive' as const,
+    icon: <DollarSign className="h-6 w-6 text-green-500" />,
+    color: 'bg-green-500',
   },
   {
     title: 'Tasa de Conversión',
     value: '23.5%',
     delta: '-1.2% vs mes anterior',
-    deltaType: 'negative',
-    icon: <Percent className="h-6 w-6 text-muted-foreground" />,
+    deltaType: 'negative' as const,
+    icon: <Percent className="h-6 w-6 text-purple-500" />,
+    color: 'bg-purple-500',
   },
    {
     title: 'Facturas Pendientes',
     value: '12',
     delta: '3 vencidas',
-    deltaType: 'negative',
-    icon: <FileText className="h-6 w-6 text-muted-foreground" />,
+    deltaType: 'negative' as const,
+    icon: <FileText className="h-6 w-6 text-orange-500" />,
+    color: 'bg-orange-500',
   },
 ];
 
@@ -289,16 +294,15 @@ export default function Dashboard() {
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {kpis.map((kpi, index) => (
               <Card key={index} className="shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
-                  {kpi.icon}
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{kpi.value}</div>
-                  <p className={`text-xs ${kpi.deltaType === 'positive' ? 'text-green-600' : 'text-red-600'} flex items-center gap-1`}>
-                     {kpi.deltaType === 'positive' ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-                    {kpi.delta}
-                  </p>
+                <CardContent className="p-4 flex items-center gap-4">
+                   <div className={cn("w-1.5 h-12 rounded-full", kpi.color)}></div>
+                   <div className={cn("h-12 w-12 flex-shrink-0 rounded-lg flex items-center justify-center", kpi.color.replace('bg-', 'bg-') + '/10')}>
+                      {React.cloneElement(kpi.icon, { className: kpi.icon.props.className.replace('text-muted-foreground', '') })}
+                   </div>
+                   <div className="flex-1">
+                      <p className="text-sm font-medium text-muted-foreground">{kpi.title}</p>
+                      <p className="text-xl font-bold">{kpi.value}</p>
+                   </div>
                 </CardContent>
               </Card>
             ))}
@@ -379,7 +383,3 @@ export default function Dashboard() {
     </SidebarProvider>
   );
 }
-
-    
-
-    
