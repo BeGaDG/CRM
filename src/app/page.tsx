@@ -15,6 +15,10 @@ import {
   Settings,
   Target,
   Users,
+  BarChart,
+  Bell,
+  CheckCircle,
+  FileSignature
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -73,9 +77,9 @@ const kpis = [
     icon: <Users className="h-6 w-6 text-muted-foreground" />,
   },
   {
-    title: 'Valor del Pipeline',
-    value: '$1.2M',
-    delta: '+8.1% vs mes anterior',
+    title: 'Ingresos del Mes',
+    value: '$45,231.89',
+    delta: '+20.1% vs mes anterior',
     deltaType: 'positive',
     icon: <DollarSign className="h-6 w-6 text-muted-foreground" />,
   },
@@ -86,49 +90,84 @@ const kpis = [
     deltaType: 'negative',
     icon: <Percent className="h-6 w-6 text-muted-foreground" />,
   },
-  {
-    title: 'Leads por Contactar',
-    value: '18',
-    delta: '2 vencidos',
+   {
+    title: 'Facturas Pendientes',
+    value: '12',
+    delta: '3 vencidas',
     deltaType: 'negative',
-    icon: <Target className="h-6 w-6 text-muted-foreground" />,
+    icon: <FileText className="h-6 w-6 text-muted-foreground" />,
   },
 ];
 
-const recentLeads = [
-  {
-    id: 'lead-1',
-    customer: 'Constructora S.A.S',
-    interest: 'Planta Solar',
-    date: '2024-07-23 08:21',
-    status: 'Por Visitar',
-    statusColor: 'bg-blue-500',
-  },
-  {
-    id: 'lead-2',
-    customer: 'Inversiones XYZ',
-    interest: 'Comercializadora',
-    date: '2024-07-22 14:45',
-    status: 'Por Cotizar',
-    statusColor: 'bg-indigo-500',
-  },
-  {
-    id: 'lead-3',
-    customer: 'Logística Total',
-    interest: 'Ambos',
-    date: '2024-07-22 10:10',
-    status: 'Por Contactar',
-    statusColor: 'bg-cyan-500',
-  },
-  {
-    id: 'lead-4',
-    customer: 'Nuevo Cliente Alfa',
-    interest: 'Planta Solar',
-    date: '2024-07-21 18:30',
-    status: 'Nuevo Cliente',
-    statusColor: 'bg-sky-500',
-  },
+const recentContracts = [
+    {
+        id: 'contract-1',
+        customer: 'Constructora S.A.S',
+        value: 120000000,
+        type: 'Planta Solar',
+        date: '2024-07-23',
+        status: 'Activo',
+        statusColor: 'bg-green-500',
+    },
+    {
+        id: 'contract-2',
+        customer: 'Inversiones XYZ',
+        value: 15000000,
+        type: 'Comercializadora',
+        date: '2024-07-20',
+        status: 'Activo',
+        statusColor: 'bg-green-500',
+    },
+    {
+        id: 'contract-3',
+        customer: 'Tiendas La Rebaja',
+        value: 85000000,
+        type: 'Ambos',
+        date: '2024-07-15',
+        status: 'Finalizado',
+        statusColor: 'bg-gray-500',
+    },
+     {
+        id: 'contract-4',
+        customer: 'Hotel El Dorado',
+        value: 250000000,
+        type: 'Planta Solar',
+        date: '2024-07-11',
+        status: 'Activo',
+        statusColor: 'bg-green-500',
+    },
 ];
+
+const recentActivity = [
+    {
+        icon: <Contact className="h-4 w-4" />,
+        bgColor: 'bg-blue-100 dark:bg-blue-900/50',
+        textColor: 'text-blue-600 dark:text-blue-300',
+        description: "Nuevo lead 'Colegio Moderno' fue creado.",
+        time: "Hace 5m"
+    },
+     {
+        icon: <FileSignature className="h-4 w-4" />,
+        bgColor: 'bg-green-100 dark:bg-green-900/50',
+        textColor: 'text-green-600 dark:text-green-300',
+        description: "Contrato firmado con 'Constructora S.A.S'.",
+        time: "Hace 2h"
+    },
+     {
+        icon: <CheckCircle className="h-4 w-4" />,
+        bgColor: 'bg-sky-100 dark:bg-sky-900/50',
+        textColor: 'text-sky-600 dark:text-sky-300',
+        description: "Pago de factura de 'Inversiones XYZ' recibido.",
+        time: "Hace 8h"
+    },
+     {
+        icon: <ClipboardList className="h-4 w-4" />,
+        bgColor: 'bg-orange-100 dark:bg-orange-900/50',
+        textColor: 'text-orange-600 dark:text-orange-300',
+        description: "Nueva cotización enviada a 'Logística Total'.",
+        time: "Ayer"
+    }
+]
 
 
 export default function Dashboard() {
@@ -170,15 +209,28 @@ export default function Dashboard() {
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <FileText />
-                <span className="truncate">Facturas</span>
-              </SidebarMenuButton>
+                <SidebarMenuButton>
+                  <FileText />
+                  <span className="truncate">Facturas</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <BarChart />
+                  <span className="truncate">Reportes</span>
+                </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter className="p-2">
           <SidebarMenu>
+             <SidebarMenuItem>
+              <SidebarMenuButton>
+                <Bell />
+                <span className="truncate">Notificaciones</span>
+                 <span className="ml-auto flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">3</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton>
                 <Settings />
@@ -261,39 +313,61 @@ export default function Dashboard() {
             {/* Right Column */}
             <div className="space-y-6">
               <LeadFunnelStats />
+              <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Actividad Reciente</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {recentActivity.map((activity, index) => (
+                         <div key={index} className="flex items-start gap-3">
+                            <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", activity.bgColor, activity.textColor)}>
+                                {activity.icon}
+                            </div>
+                            <div className="flex-1 text-sm">
+                                <p>{activity.description}</p>
+                                <p className="text-xs text-muted-foreground">{activity.time}</p>
+                            </div>
+                        </div>
+                    ))}
+                </CardContent>
+              </Card>
             </div>
           </div>
           
-          {/* Recent Leads Table */}
+          {/* Recent Contracts Table */}
           <Card>
             <CardHeader className='flex-row items-center justify-between'>
-              <CardTitle className="font-headline text-lg">
-                Leads Recientes
-              </CardTitle>
-              <Button variant="ghost" size="icon"><MoreHorizontal className='h-4 w-4'/></Button>
+              <div>
+                <CardTitle className="font-headline text-lg">
+                    Contratos Recientes
+                </CardTitle>
+                <CardDescription>Estos son los últimos contratos cerrados este mes.</CardDescription>
+              </div>
+              <Button asChild variant="outline" size="sm">
+                <Link href="#">Ver todos</Link>
+              </Button>
             </CardHeader>
             <CardContent>
                <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Cliente</TableHead>
-                    <TableHead>Interés</TableHead>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead className='text-right'>Estado</TableHead>
+                    <TableHead className="hidden sm:table-cell">Tipo de Interés</TableHead>
+                    <TableHead className="hidden md:table-cell">Fecha de Cierre</TableHead>
+                    <TableHead className="text-right">Valor</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {recentLeads.map((lead) => (
-                    <TableRow key={lead.id}>
-                      <TableCell className='font-medium'>{lead.customer}</TableCell>
-                      <TableCell>{lead.interest}</TableCell>
-                      <TableCell>{lead.date}</TableCell>
-                      <TableCell className='text-right'>
-                        <div className="flex items-center justify-end gap-2">
-                            <span className={cn("h-2 w-2 rounded-full", lead.statusColor)}></span>
-                            <span>{lead.status}</span>
-                        </div>
+                  {recentContracts.map((contract) => (
+                    <TableRow key={contract.id}>
+                      <TableCell>
+                        <div className="font-medium">{contract.customer}</div>
                       </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <Badge variant="secondary">{contract.type}</Badge>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">{new Date(contract.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
+                      <TableCell className='text-right font-mono'>${contract.value.toLocaleString('es-CO')}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -305,3 +379,5 @@ export default function Dashboard() {
     </SidebarProvider>
   );
 }
+
+    
