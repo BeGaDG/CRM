@@ -83,8 +83,9 @@ export const PerformanceChartCard = ({ title, description, data, dataKey, indexK
                              {data.map((entry) => {
                                  const isGoalMet = metaKey ? entry[dataKey] >= entry[metaKey] : true;
                                  const primaryColor = `hsl(var(--primary))`;
-                                 const secondaryColor = `hsl(var(--chart-2))`;
-                                 const defaultFill = entry.fill || secondaryColor;
+                                 // A much lower contrast orange for when goal is not met
+                                 const secondaryColor = `hsl(25 80% 80%)`; 
+                                 const defaultFill = entry.fill || primaryColor;
                                  const fillColor = metaKey ? (isGoalMet ? primaryColor : secondaryColor) : defaultFill;
                                 return <Cell key={`cell-${entry[indexKey]}`} fill={fillColor}/>
                              })}
