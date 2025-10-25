@@ -14,12 +14,9 @@ import { NotificationKpiCard } from '@/components/notificaciones/notification-kp
 import { PerformanceChartCard } from '@/components/notificaciones/performance-chart-card';
 import { ComplianceDonutCard } from '@/components/notificaciones/compliance-donut-card';
 import { ActiveAlertsCard } from '@/components/notificaciones/active-alerts-card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { useIsMobile } from '@/hooks/use-mobile';
-
 
 const FilterBar = () => (
-    <div className="flex flex-col sm:flex-row items-center gap-2 bg-card p-3 rounded-lg border shadow-sm">
+    <div className="flex flex-col sm:flex-row items-center gap-2 bg-card p-3 rounded-lg border">
         <div className="flex flex-1 w-full gap-2">
             <Select defaultValue="monteria">
                 <SelectTrigger className="w-full sm:w-[150px]"><SelectValue placeholder="Ciudad" /></SelectTrigger>
@@ -72,10 +69,10 @@ const FilterBar = () => (
 
 
 const kpis = [
-    { title: "Tiempo prom. de respuesta", value: "45", unit: "minutos", trend: -10, trendText: "vs mes anterior" },
-    { title: "Ofertas Presentadas vs. Vencidas", value: "82 / 18", chartData: [{value: 82, color: '#22C55E'}, {value: 18, color: '#EF4444'}] },
-    { title: "Tiempo prom. de conversión", value: "21", unit: "días", trend: 5, trendText: "vs mes anterior" },
-    { title: "Top Motivos de Rechazo", value: "Precio, Tiempo, Competencia", isTagCloud: true }
+    { title: "Tiempo prom. de respuesta", value: "45", unit: "minutos", trend: -10, trendText: "vs mes anterior", color: "border-blue-500" },
+    { title: "Ofertas Presentadas vs. Vencidas", value: "82 / 18", chartData: [{value: 82, color: '#22C55E'}, {value: 18, color: '#EF4444'}], color: "border-green-500" },
+    { title: "Tiempo prom. de conversión", value: "21", unit: "días", trend: 5, trendText: "vs mes anterior", color: "border-yellow-500" },
+    { title: "Top Motivos de Rechazo", value: "Precio, Tiempo, Competencia", isTagCloud: true, color: "border-red-500" }
 ]
 
 const salesByAdvisor = [
@@ -86,22 +83,20 @@ const salesByAdvisor = [
 ];
 
 const minOffersData = [
-  { name: 'Carlos R. (Nuevo)', done: 4, goal: 5 },
-  { name: 'Ana G. (Nuevo)', done: 8, goal: 10 },
-  { name: 'Luisa F. (Antiguo)', done: 18, goal: 15 },
-  { name: 'Jorge A. (Antiguo)', done: 12, goal: 15 },
+  { name: 'Carlos R. (N)', done: 4, goal: 5 },
+  { name: 'Ana G. (N)', done: 8, goal: 10 },
+  { name: 'Luisa F. (A)', done: 18, goal: 15 },
+  { name: 'Jorge A. (A)', done: 12, goal: 15 },
 ]
 
 const salesByCity = [
-    { name: 'Montería', ventas: 210, color: 'hsl(var(--chart-1))' },
-    { name: 'Sincelejo', ventas: 150, color: 'hsl(var(--chart-2))' },
-    { name: 'Barranquilla', ventas: 90, color: 'hsl(var(--chart-3))' },
-    { name: 'Otros', ventas: 45, color: 'hsl(var(--chart-4))' },
+    { name: 'Montería', ventas: 210, fill: 'hsl(var(--chart-1))' },
+    { name: 'Sincelejo', ventas: 150, fill: 'hsl(var(--chart-2))' },
+    { name: 'Barranquilla', ventas: 90, fill: 'hsl(var(--chart-3))' },
+    { name: 'Otros', ventas: 45, fill: 'hsl(var(--chart-4))' },
 ];
 
 export default function NotificacionesPage() {
-    const isMobile = useIsMobile();
-
     return (
         <DashboardLayout>
              <main className="flex-1 flex flex-col gap-6 p-4 lg:p-6 overflow-auto">
@@ -118,24 +113,9 @@ export default function NotificacionesPage() {
                 
                 <FilterBar />
 
-                {isMobile ? (
-                     <Carousel opts={{ align: "start" }} className="w-full">
-                        <CarouselContent>
-                            {kpis.map((kpi, index) => (
-                            <CarouselItem key={index} className="basis-4/5">
-                                <NotificationKpiCard {...kpi} />
-                            </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                        <CarouselPrevious className="ml-12"/>
-                        <CarouselNext className="mr-12"/>
-                    </Carousel>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {kpis.map(kpi => <NotificationKpiCard key={kpi.title} {...kpi} />)}
-                    </div>
-                )}
-
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {kpis.map(kpi => <NotificationKpiCard key={kpi.title} {...kpi} />)}
+                </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-6">
