@@ -146,7 +146,6 @@ export default function NotificacionesPage() {
                             dataKey="ventas"
                             indexKey="name"
                             layout="horizontal"
-                            hideLegend
                         />
                         <ComplianceDonutCard />
                         <ActiveAlertsCard />
