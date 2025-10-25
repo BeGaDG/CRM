@@ -33,6 +33,8 @@ import { Clock, TrendingUp, TrendingDown, Target, XCircle, FileCheck, Users, Map
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { NotificationKpiCard } from '@/components/notificaciones/notification-kpi-card';
+import { FilterBar } from '@/components/notificaciones/filter-bar';
+
 
 const salesByAdvisorData = [
     { name: 'Carlos Ruiz', sales: 120000000 },
@@ -75,6 +77,8 @@ export default function IndicadoresPage() {
         <DashboardLayout>
             <main className="flex-1 flex flex-col gap-6 p-4 lg:p-6 overflow-auto">
                 <h1 className="text-2xl font-semibold">Indicadores de Rendimiento</h1>
+
+                <FilterBar />
 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {kpis.map(kpi => <NotificationKpiCard key={kpi.title} {...kpi} />)}
