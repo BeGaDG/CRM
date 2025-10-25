@@ -1,7 +1,6 @@
 'use client';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList, Cell } from 'recharts';
-import { useTheme } from 'next-themes';
 
 type PerformanceChartCardProps = {
     title: string;
@@ -15,7 +14,6 @@ type PerformanceChartCardProps = {
 };
 
 const CustomTooltip = ({ active, payload, label, title }: any) => {
-    const { theme } = useTheme();
     if (active && payload && payload.length) {
         const formatCurrency = (value: number) => (value * 1000000).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
         const isCurrency = title.includes("(en Millones COP)");
