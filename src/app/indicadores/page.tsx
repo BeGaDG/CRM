@@ -32,8 +32,6 @@ import {
 import { Clock, TrendingUp, TrendingDown, Target, XCircle, FileCheck, Users, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { NotificationKpiCard } from '@/components/notificaciones/notification-kpi-card';
-import { FilterBar } from '@/components/notificaciones/filter-bar';
 
 
 const salesByAdvisorData = [
@@ -78,10 +76,23 @@ export default function IndicadoresPage() {
             <main className="flex-1 flex flex-col gap-6 p-4 lg:p-6 overflow-auto">
                 <h1 className="text-2xl font-semibold">Indicadores de Rendimiento</h1>
 
-                <FilterBar />
-
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                    {kpis.map(kpi => <NotificationKpiCard key={kpi.title} {...kpi} />)}
+                    {kpis.map((kpi, index) => (
+                    <Card key={kpi.title} className={`border-l-4 ${kpi.color}`}>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
+                        {kpi.icon}
+                        </CardHeader>
+                        <CardContent>
+                        <div className="text-2xl font-bold">{kpi.value} {kpi.unit}</div>
+                        {kpi.trend &&
+                            <p className={`text-xs ${kpi.trend > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            {kpi.trend > 0 ? '+' : ''}{kpi.trend}% {kpi.trendText}
+                            </p>
+                        }
+                        </CardContent>
+                    </Card>
+                    ))}
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
