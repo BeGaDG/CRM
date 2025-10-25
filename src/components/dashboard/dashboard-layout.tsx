@@ -8,8 +8,7 @@ import {
   Contact,
   FileText,
   LayoutDashboard,
-  PlusCircle,
-  Search,
+  TrendingUp,
   Settings,
   Users
 } from 'lucide-react';
@@ -38,6 +37,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Search } from 'lucide-react';
 
 const navItems = [
   { href: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -45,6 +45,7 @@ const navItems = [
   { href: '/users', icon: Users, label: 'Usuarios' },
   { href: '/invoices', icon: FileText, label: 'Facturas' },
   { href: '/reportes', icon: BarChart, label: 'Reportes' },
+  { href: '/indicadores', icon: TrendingUp, label: 'Indicadores' },
 ]
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
