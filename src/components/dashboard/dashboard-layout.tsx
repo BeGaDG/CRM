@@ -46,7 +46,6 @@ const navItems = [
   { href: '/invoices', icon: FileText, label: 'Facturas' },
   { href: '/reportes', icon: BarChart, label: 'Reportes' },
   { href: '/indicadores', icon: TrendingUp, label: 'Indicadores' },
-  { href: '/notificaciones', icon: Bell, label: 'Notificaciones' },
 ]
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
