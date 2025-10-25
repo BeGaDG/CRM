@@ -14,7 +14,6 @@ import { NotificationKpiCard } from '@/components/notificaciones/notification-kp
 import { PerformanceChartCard } from '@/components/notificaciones/performance-chart-card';
 import { ComplianceDonutCard } from '@/components/notificaciones/compliance-donut-card';
 import { ActiveAlertsCard } from '@/components/notificaciones/active-alerts-card';
-import { PieChartCard } from '@/components/notificaciones/pie-chart-card';
 
 const FilterBar = () => (
     <div className="flex flex-col sm:flex-row items-center gap-2 bg-card p-3 rounded-lg border">
@@ -91,10 +90,10 @@ const minOffersData = [
 ]
 
 const salesByCity = [
-    { name: 'Montería', value: 210, fill: 'hsl(var(--chart-1))' },
-    { name: 'Sincelejo', value: 150, fill: 'hsl(var(--chart-2))' },
-    { name: 'Barranquilla', value: 90, fill: 'hsl(var(--chart-3))' },
-    { name: 'Otros', value: 45, fill: 'hsl(var(--chart-4))' },
+    { name: 'Montería', ventas: 210, fill: 'hsl(var(--chart-1))' },
+    { name: 'Sincelejo', ventas: 150, fill: 'hsl(var(--chart-2))' },
+    { name: 'Barranquilla', ventas: 90, fill: 'hsl(var(--chart-3))' },
+    { name: 'Otros', ventas: 45, fill: 'hsl(var(--chart-4))' },
 ];
 
 export default function NotificacionesPage() {
@@ -140,10 +139,14 @@ export default function NotificacionesPage() {
                         />
                     </div>
                     <div className="space-y-6">
-                         <PieChartCard
+                         <PerformanceChartCard
                             title="Ventas por Ciudad (en Millones COP)"
                             description="Distribución de ventas en las principales ciudades."
                             data={salesByCity}
+                            dataKey="ventas"
+                            indexKey="name"
+                            layout="horizontal"
+                            hideLegend
                         />
                         <ComplianceDonutCard />
                         <ActiveAlertsCard />
