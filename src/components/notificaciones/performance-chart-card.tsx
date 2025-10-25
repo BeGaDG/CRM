@@ -58,7 +58,7 @@ export const PerformanceChartCard = ({ title, description, data, dataKey, indexK
                         <Bar dataKey={dataKey} name="Realizado" radius={[4, 4, 0, 0]}>
                              <LabelList dataKey={dataKey} position={layout === 'horizontal' ? 'insideRight' : 'top'} formatter={formatValue} fontSize={12} fill="white" />
                              {data.map((entry) => (
-                                <Cell key={`cell-${entry[indexKey]}`} fill={metaKey && entry[dataKey] >= entry[metaKey] ? 'hsl(var(--primary))' : 'hsl(var(--secondary-foreground))'}/>
+                                <Cell key={`cell-${entry[indexKey]}`} fill={metaKey && entry[dataKey] >= entry[metaKey] ? 'hsl(var(--primary))' : (entry.fill || 'hsl(var(--secondary-foreground))')}/>
                              ))}
                         </Bar>
                         {metaKey && (
