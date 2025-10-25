@@ -29,11 +29,11 @@ export const ComplianceDonutCard = () => {
                             labelLine={false}
                         >
                             {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color} />
                             ))}
                         </Pie>
-                        <Legend iconType="circle" />
-                        <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="text-3xl font-bold fill-foreground">
+                        <Legend iconType="circle" wrapperStyle={{fontSize: "0.8rem"}}/>
+                        <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="text-4xl font-bold fill-foreground">
                             85%
                         </text>
                     </PieChart>

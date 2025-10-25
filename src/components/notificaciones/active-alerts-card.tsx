@@ -1,6 +1,6 @@
 'use client';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { AlertCircle, ArrowRight } from 'lucide-react';
+import { AlertTriangle, ArrowRight } from 'lucide-react';
 import { Button } from '../ui/button';
 
 const alerts = [
@@ -12,15 +12,15 @@ const alerts = [
 export const ActiveAlertsCard = () => {
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Alertas Activas</CardTitle>
-                <Button variant="ghost" size="sm">Ver todo</Button>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-base font-semibold">Alertas Activas</CardTitle>
+                <Button variant="ghost" size="sm" className="h-8">Ver todo <ArrowRight className="ml-2 h-4 w-4"/></Button>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
                 {alerts.map(alert => (
                     <div key={alert.id} className="flex items-start gap-3 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
-                        <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                        <p className="text-sm font-medium text-destructive-foreground">{alert.text}</p>
+                        <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                        <p className="text-sm font-medium text-destructive">{alert.text}</p>
                     </div>
                 ))}
             </CardContent>
