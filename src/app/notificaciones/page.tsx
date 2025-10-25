@@ -14,6 +14,7 @@ import { NotificationKpiCard } from '@/components/notificaciones/notification-kp
 import { PerformanceChartCard } from '@/components/notificaciones/performance-chart-card';
 import { ComplianceDonutCard } from '@/components/notificaciones/compliance-donut-card';
 import { ActiveAlertsCard } from '@/components/notificaciones/active-alerts-card';
+import { AdvisorPerformanceCard } from '@/components/notificaciones/advisor-performance-card';
 
 const FilterBar = () => (
     <div className="flex flex-col sm:flex-row items-center gap-2 bg-card p-3 rounded-lg border">
@@ -76,10 +77,10 @@ const kpis = [
 ]
 
 const salesByAdvisor = [
-    { name: 'Carlos R.', ventas: 120, meta: 100 },
-    { name: 'Ana G.', ventas: 95, meta: 100 },
-    { name: 'Luisa F.', ventas: 75, meta: 90 },
-    { name: 'Jorge A.', ventas: 50, meta: 80 },
+    { name: 'Carlos Ruiz', sales: 120, goal: 100, avatar: 'https://picsum.photos/seed/301/40/40' },
+    { name: 'Ana Gómez', sales: 95, goal: 100, avatar: 'https://picsum.photos/seed/302/40/40' },
+    { name: 'Luisa Fernández', sales: 75, goal: 90, avatar: 'https://picsum.photos/seed/303/40/40' },
+    { name: 'Jorge Arias', sales: 50, goal: 80, avatar: 'https://picsum.photos/seed/304/40/40' },
 ];
 
 const minOffersData = [
@@ -89,12 +90,19 @@ const minOffersData = [
   { name: 'Jorge A. (A)', done: 12, goal: 15 },
 ]
 
-const salesByCity = [
-    { name: 'Montería', ventas: 210, fill: 'hsl(var(--chart-1))' },
-    { name: 'Sincelejo', ventas: 150, fill: 'hsl(var(--chart-2))' },
-    { name: 'Barranquilla', ventas: 90, fill: 'hsl(var(--chart-3))' },
-    { name: 'Otros', ventas: 45, fill: 'hsl(var(--chart-4))' },
+const salesByCityRaw = [
+    { name: 'Montería', sales: 210, fill: 'hsl(var(--chart-1))' },
+    { name: 'Sincelejo', sales: 150, fill: 'hsl(var(--chart-2))' },
+    { name: 'Barranquilla', sales: 90, fill: 'hsl(var(--chart-3))' },
+    { name: 'Otros', sales: 45, fill: 'hsl(var(--chart-4))' },
 ];
+
+const totalCitySales = salesByCityRaw.reduce((acc, city) => acc + city.sales, 0);
+
+const salesByCity = salesByCityRaw.map(city => ({
+    ...city,
+    totalSales: totalCitySales,
+}));
 
 export default function NotificacionesPage() {
     return (
@@ -119,14 +127,10 @@ export default function NotificacionesPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-6">
-                        <PerformanceChartCard
+                        <AdvisorPerformanceCard
                             title="Ventas por Asesor (en Millones COP)"
                             description="Rendimiento de ventas de cada asesor frente a su meta mensual."
                             data={salesByAdvisor}
-                            dataKey="ventas"
-                            metaKey="meta"
-                            indexKey="name"
-                            layout="horizontal"
                         />
                          <PerformanceChartCard
                             title="Ofertas Mínimas Realizadas"
@@ -143,7 +147,7 @@ export default function NotificacionesPage() {
                             title="Ventas por Ciudad (en Millones COP)"
                             description="Distribución de ventas en las principales ciudades."
                             data={salesByCity}
-                            dataKey="ventas"
+                            dataKey="sales"
                             indexKey="name"
                             layout="horizontal"
                         />

@@ -18,14 +18,22 @@ const CustomTooltip = ({ active, payload, label, title }: any) => {
         const formatCurrency = (value: number) => (value * 1000000).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
         const isCurrency = title.includes("(en Millones COP)");
         
+        const pld = payload[0];
+        const { totalSales, sales } = pld.payload;
+        const percentage = totalSales && sales ? ((sales / totalSales) * 100).toFixed(1) : null;
+
         return (
-            <div className="p-2 bg-card border rounded-md shadow-lg text-card-foreground">
-                <p className="font-bold text-sm">{label}</p>
-                 {payload.map((pld: any, index: number) => (
-                     <div key={index} style={{ color: pld.fill }}>
-                        {pld.name}: {isCurrency ? formatCurrency(pld.value) : pld.value}
+            <div className="p-3 bg-card border rounded-lg shadow-lg text-sm text-card-foreground">
+                <p className="font-bold mb-2">{label}</p>
+                 <div style={{ color: pld.fill }} className="font-medium">
+                    {pld.name}: {isCurrency ? formatCurrency(pld.value) : pld.value}
+                    {percentage && <span className='ml-2 text-muted-foreground'>({percentage}%)</span>}
+                </div>
+                 {payload.length > 1 && (
+                    <div style={{ color: payload[1].fill }} className="font-medium">
+                        {payload[1].name}: {isCurrency ? formatCurrency(payload[1].value) : payload[1].value}
                     </div>
-                ))}
+                 )}
             </div>
         );
     }
@@ -40,13 +48,6 @@ export const PerformanceChartCard = ({ title, description, data, dataKey, indexK
       }
       return value.toString();
     }
-    
-    const tooltipFormatter = (value: number) => {
-       if(title.includes("(en Millones COP)")){
-        return (value * 1000000).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
-      }
-      return value.toString();
-    }
 
     return (
         <Card>
@@ -56,7 +57,7 @@ export const PerformanceChartCard = ({ title, description, data, dataKey, indexK
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={data} layout={layout} margin={{ top: 5, right: 20, left: layout === 'horizontal' ? 20 : -10, bottom: 5 }}>
+                    <BarChart data={data} layout={layout} margin={{ top: 5, right: 30, left: layout === 'horizontal' ? 20 : -10, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" vertical={layout === 'horizontal'} horizontal={layout === 'vertical'} />
                         {layout === 'horizontal' ? (
                             <>
@@ -77,7 +78,7 @@ export const PerformanceChartCard = ({ title, description, data, dataKey, indexK
                         {metaKey && (
                             <Bar dataKey={metaKey} name="Meta" fill="hsl(var(--muted))" radius={[4, 4, 0, 0]} />
                         )}
-                        <Bar dataKey={dataKey} name="Realizado" radius={[4, 4, 0, 0]}>
+                        <Bar dataKey={dataKey} name={metaKey ? 'Realizado' : 'Ventas'} radius={[4, 4, 0, 0]}>
                              <LabelList dataKey={dataKey} position={layout === 'horizontal' ? 'right' : 'top'} formatter={formatValue} fontSize={12} fill="hsl(var(--foreground))" offset={layout === 'horizontal' ? 5 : 0} />
                              {data.map((entry) => {
                                  const isGoalMet = metaKey ? entry[dataKey] >= entry[metaKey] : true;
