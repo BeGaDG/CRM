@@ -8,3 +8,4 @@ export * from './lead-filter-sheet';
 export * from './lead-detail-summary';
 export * from './lead-detail-forms';
 export * from './lead-detail-activity';
+export * from './stage-forms';
