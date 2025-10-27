@@ -1,3 +1,4 @@
+
 'use client';
 import { useState } from 'react';
 import {
@@ -9,7 +10,7 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { StageForm } from './stage-form';
-import type { Lead } from './lead-card';
+import type { Lead } from '@/lib/data/leads-data';
 
 export const NewLeadForm = ({ open, onOpenChange, onSave }: { open: boolean; onOpenChange: (open: boolean) => void; onSave: (data: Partial<Lead>) => void; }) => {
     

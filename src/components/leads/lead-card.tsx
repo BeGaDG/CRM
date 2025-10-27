@@ -1,32 +1,12 @@
+
 'use client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Sun, Zap, Layers, AlertCircle, UserCircle } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
-import { stages } from '@/app/leads/page';
-
-
-const leadExample = {
-  id: 'lead-1',
-  name: 'Constructora S.A.S',
-  city: 'Bogotá D.C.',
-  lastContact: 'Hace 2h',
-  interestType: 'planta-solar' as const,
-  status: 'Por Visitar',
-  phone: '310 123 4567',
-  email: 'contacto@constructora.com',
-  creationDate: new Date().toISOString(),
-  collectedData: {
-    'nic': '1234567',
-    'consumo': '5000 kWh',
-    'valor_cotizacion': 15000000,
-    'potencia_pico': '10 kWp'
-  },
-  advisorId: 'user-1',
-  advisorName: 'Carlos Ruiz',
-};
-export type Lead = typeof leadExample;
+import { stages } from '@/lib/data/leads-data';
+import type { Lead } from '@/lib/data/leads-data';
 
 const interestTypeIcons = {
   'planta-solar': { icon: Sun, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10' },

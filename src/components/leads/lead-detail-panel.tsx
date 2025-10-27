@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useEffect } from 'react';
 import {
@@ -12,16 +13,10 @@ import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
 import { ArrowRight, Info, Contact, Sun, Zap, Layers, UserCircle, ChevronsUpDown } from 'lucide-react';
-import type { Lead } from './lead-card';
 import { StageForm } from './stage-form';
-import type { Stage } from '@/app/leads/page';
-import { stages } from '@/app/leads/page';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-
-type Advisor = {
-  id: string;
-  name: string;
-}
+import { stages } from '@/lib/data/leads-data';
+import type { Lead, Stage, Advisor } from '@/lib/data/leads-data';
 
 const getNextStages = (currentStage: string): string[] => {
   const stageMap: { [key: string]: string[] } = {
