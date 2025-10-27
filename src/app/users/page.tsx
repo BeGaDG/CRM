@@ -1,18 +1,11 @@
 'use client';
 import { useState } from 'react';
 import {
-  ChevronRight,
   Upload,
   UserPlus,
   X,
-  TrendingUp,
-  Target,
-  FileCheck2,
-  DollarSign
+  Users, MoreHorizontal, Contact, FileText, Search
 } from 'lucide-react';
-import Link from 'next/link';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -24,13 +17,6 @@ import {
   CardTitle,
   CardDescription
 } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -39,14 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import {
   Sheet,
@@ -61,7 +39,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
-import { Users, MoreHorizontal, Contact, FileText } from 'lucide-react';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
+import { UserCard } from '@/components/users/user-card';
 
 
 const usersData = [
@@ -73,7 +52,7 @@ const usersData = [
         sede: 'Montería',
         status: true,
         last_login: '2024-07-22T14:30:00Z',
-        avatar: 'https://picsum.photos/seed/301/40/40',
+        avatar: 'https://picsum.photos/seed/301/100/100',
         performance: {
             leadsCount: 45,
             contractsCount: 8,
@@ -88,7 +67,7 @@ const usersData = [
         sede: 'Sincelejo',
         status: true,
         last_login: '2024-07-22T16:05:00Z',
-        avatar: 'https://picsum.photos/seed/302/40/40',
+        avatar: 'https://picsum.photos/seed/302/100/100',
         performance: {
             leadsCount: 25,
             contractsCount: 5,
@@ -103,7 +82,7 @@ const usersData = [
         sede: 'Montería',
         status: true,
         last_login: '2024-07-22T10:15:00Z',
-        avatar: 'https://picsum.photos/seed/303/40/40',
+        avatar: 'https://picsum.photos/seed/303/100/100',
         performance: {
             leadsCount: 10,
             contractsCount: 2,
@@ -118,7 +97,7 @@ const usersData = [
         sede: 'Otros',
         status: false,
         last_login: '2024-06-15T11:00:00Z',
-        avatar: 'https://picsum.photos/seed/304/40/40',
+        avatar: 'https://picsum.photos/seed/304/100/100',
         performance: {
             leadsCount: 30,
             contractsCount: 3,
@@ -133,13 +112,58 @@ const usersData = [
         sede: 'Sincelejo',
         status: true,
         last_login: '2024-07-21T09:00:00Z',
-        avatar: 'https://picsum.photos/seed/305/40/40',
+        avatar: 'https://picsum.photos/seed/305/100/100',
         performance: {
             leadsCount: 0,
             contractsCount: 0,
             totalSales: 0,
         }
     },
+     {
+        id: 'user-6',
+        name: 'Pedro Pascal',
+        email: 'pedro.pascal@sol-cielo.com',
+        role: 'Operaciones',
+        sede: 'Montería',
+        status: true,
+        last_login: '2024-07-23T08:00:00Z',
+        avatar: 'https://picsum.photos/seed/306/100/100',
+        performance: {
+            leadsCount: 5,
+            contractsCount: 1,
+            totalSales: 40000000,
+        }
+    },
+    {
+        id: 'user-7',
+        name: 'Sofia Vergara',
+        email: 'sofia.vergara@sol-cielo.com',
+        role: 'Comercial',
+        sede: 'Sincelejo',
+        status: true,
+        last_login: '2024-07-23T09:30:00Z',
+        avatar: 'https://picsum.photos/seed/307/100/100',
+        performance: {
+            leadsCount: 55,
+            contractsCount: 12,
+            totalSales: 450000000,
+        }
+    },
+    {
+        id: 'user-8',
+        name: 'J Balvin',
+        email: 'j.balvin@sol-cielo.com',
+        role: 'Marketing',
+        sede: 'Otros',
+        status: true,
+        last_login: '2024-07-22T11:45:00Z',
+        avatar: 'https://picsum.photos/seed/308/100/100',
+        performance: {
+            leadsCount: 150,
+            contractsCount: 0,
+            totalSales: 0,
+        }
+    }
 ];
 
 type User = typeof usersData[0];
@@ -150,6 +174,7 @@ const roleColors: { [key: string]: string } = {
   Administrador: 'bg-primary/10 text-primary border-primary/20 dark:text-primary dark:bg-primary/20',
   Contabilidad: 'bg-green-500/10 text-green-700 border-green-500/20 dark:text-green-300 dark:bg-green-900/50',
   Operaciones: 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20 dark:text-yellow-300 dark:bg-yellow-900/50',
+  Marketing: 'bg-pink-500/10 text-pink-700 border-pink-500/20 dark:text-pink-300 dark:bg-pink-900/50',
 };
 
 
@@ -187,15 +212,7 @@ const PerformanceChart = ({ data }: { data: any[] }) => {
 
 const UserDetailPanel = ({ user, onClose }: { user: User | null, onClose: () => void }) => {
     if (!user) {
-        return (
-            <Card className="hidden lg:flex h-full items-center justify-center border-dashed shadow-none">
-                <CardContent className="text-center text-muted-foreground p-6">
-                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p className="font-semibold">Selecciona un usuario</p>
-                    <p className="text-sm">Elige un usuario de la tabla para ver sus detalles aquí.</p>
-                </CardContent>
-            </Card>
-        );
+        return null;
     }
     
     const conversionRate = user.performance.leadsCount > 0 ? ((user.performance.contractsCount / user.performance.leadsCount) * 100).toFixed(1) : 0;
@@ -257,7 +274,7 @@ const UserDetailPanel = ({ user, onClose }: { user: User | null, onClose: () => 
                                  <Card>
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                         <CardTitle className="text-sm font-medium">Contratos Cerrados</CardTitle>
-                                        <FileCheck2 className="h-4 w-4 text-muted-foreground" />
+                                        <FileText className="h-4 w-4 text-muted-foreground" />
                                     </CardHeader>
                                     <CardContent>
                                         <div className="text-2xl font-bold">{user.performance.contractsCount}</div>
@@ -370,12 +387,13 @@ const UserModalForm = ({ open, onOpenChange, user }: { open: boolean, onOpenChan
 
 export default function UsersPage() {
   const [users] = useState<User[]>(usersData);
-  const [selectedUser, setSelectedUser] = useState<User | null>(usersData[0]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const isMobile = useIsMobile();
+  const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
   
   const handleSelectUser = (user: User) => {
     setSelectedUser(user);
+    setIsDetailSheetOpen(true);
   }
 
   const handleOpenForm = (user?: User | null) => {
@@ -384,134 +402,96 @@ export default function UsersPage() {
   }
 
   const handleCloseDetail = () => {
-    setSelectedUser(null);
+    setIsDetailSheetOpen(false);
+    // Give animation time to finish before clearing, avoids visual glitch
+    setTimeout(() => setSelectedUser(null), 300);
   }
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
-    setSelectedUser(null); // Deselect user when closing form
+    setTimeout(() => setSelectedUser(null), 300);
   }
-
-  // Effect to handle view changes on mobile
-  useState(() => {
-    if (isMobile) {
-      setSelectedUser(null);
-    }
-  });
 
 
   return (
     <DashboardLayout>
-        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 p-4 lg:p-6 bg-muted/40 overflow-hidden">
-            {/* Main Column: User Table */}
-            <div className={cn("lg:col-span-1 flex flex-col gap-4", isMobile && selectedUser ? "hidden" : "flex")}>
-                <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4'>
-                    <h2 className='text-lg font-semibold'>Usuarios del Sistema ({users.length})</h2>
-                    <div className="flex gap-2 w-full sm:w-auto">
-                        <Select>
-                            <SelectTrigger className="w-full sm:w-[120px]"><SelectValue placeholder="Rol" /></SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">Todos los roles</SelectItem>
-                                <SelectItem value="Comercial">Comercial</SelectItem>
-                                <SelectItem value="Supervisor">Supervisor</SelectItem>
-                                <SelectItem value="Administrador">Admin</SelectItem>
-                            </SelectContent>
-                        </Select>
-                         <Select>
-                            <SelectTrigger className="w-full sm:w-[120px]"><SelectValue placeholder="Estado" /></SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">Cualquier estado</SelectItem>
-                                <SelectItem value="active">Activo</SelectItem>
-                                <SelectItem value="inactive">Inactivo</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <Button variant="outline" className="hidden sm:flex gap-2">
-                            <Upload className="h-4 w-4"/> Exportar
-                        </Button>
-                    </div>
+        <main className="flex-1 flex flex-col gap-6 p-4 lg:p-6 bg-muted/40">
+            <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4'>
+                <div className='flex-1'>
+                    <h1 className='text-2xl font-semibold'>Usuarios y Equipo</h1>
+                    <p className='text-muted-foreground'>Gestiona los miembros de tu equipo y sus permisos.</p>
                 </div>
-                
-                 <Card className="flex-1">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Usuario</TableHead>
-                                <TableHead className="hidden md:table-cell">Rol</TableHead>
-                                <TableHead className="hidden lg:table-cell">Sede</TableHead>
-                                <TableHead className="hidden md:table-cell">Estado</TableHead>
-                                <TableHead className="text-right">Acciones</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                             {users.length > 0 ? users.map((user) => (
-                                <TableRow 
-                                  key={user.id} 
-                                  onClick={() => handleSelectUser(user)} 
-                                  className="cursor-pointer"
-                                  data-state={selectedUser?.id === user.id ? 'selected' : ''}
-                                >
-                                    <TableCell>
-                                        <div className="flex items-center gap-3">
-                                            <Avatar className="h-9 w-9">
-                                                <AvatarImage src={user.avatar} />
-                                                <AvatarFallback>{user.name.substring(0, 2)}</AvatarFallback>
-                                            </Avatar>
-                                            <div>
-                                                <p className="font-medium">{user.name}</p>
-                                                <p className="text-xs text-muted-foreground hidden sm:block">{user.email}</p>
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="hidden md:table-cell">
-                                        <Badge variant="secondary" className={cn('font-medium', roleColors[user.role])}>{user.role}</Badge>
-                                    </TableCell>
-                                    <TableCell className="hidden lg:table-cell">{user.sede}</TableCell>
-                                    <TableCell className="hidden md:table-cell">
-                                        <div className='flex items-center gap-2'>
-                                            <Switch checked={user.status} readOnly className="pointer-events-none" />
-                                            <span>{user.status ? 'Activo' : 'Inactivo'}</span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={() => handleSelectUser(user)}>Ver detalles</DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => handleOpenForm(user)}>Editar</DropdownMenuItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem className="text-destructive">Desactivar</DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
-                                </TableRow>
-                            )) : (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="h-24 text-center">
-                                         <div className="text-center text-muted-foreground py-10">
-                                            <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                            <p className="font-medium">No hay usuarios registrados.</p>
-                                            <p className="text-sm mb-4">Crea el primero para comenzar a gestionar tu equipo.</p>
-                                            <Button size="sm" onClick={() => handleOpenForm()}>
-                                                <UserPlus className="mr-2 h-4 w-4" />
-                                                Crear Usuario
-                                            </Button>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </Card>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto">
+                        <Upload className="mr-2 h-4 w-4"/> Exportar
+                    </Button>
+                    <Button className="w-full sm:w-auto" onClick={() => handleOpenForm()}>
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Nuevo Usuario
+                    </Button>
+                </div>
             </div>
             
-            {/* Right Column: User Detail */}
-            <div className={cn("hidden lg:block", isMobile && !selectedUser ? "hidden" : "", isMobile && selectedUser ? "fixed inset-0 bg-background z-50" : "")}>
-                <UserDetailPanel user={selectedUser} onClose={handleCloseDetail} />
-            </div>
+             <Card>
+                <CardHeader>
+                  <div className="flex flex-col sm:flex-row items-center gap-4">
+                     <div className="relative flex-1 w-full">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input placeholder="Buscar por nombre o correo..." className="pl-9 w-full" />
+                    </div>
+                    <div className="flex gap-2 w-full sm:w-auto">
+                      <Select>
+                          <SelectTrigger className="w-full sm:w-[150px]"><SelectValue placeholder="Filtrar por rol" /></SelectTrigger>
+                          <SelectContent>
+                              <SelectItem value="all">Todos los roles</SelectItem>
+                              <SelectItem value="Comercial">Comercial</SelectItem>
+                              <SelectItem value="Supervisor">Supervisor</SelectItem>
+                              <SelectItem value="Administrador">Admin</SelectItem>
+                          </SelectContent>
+                      </Select>
+                      <Select>
+                          <SelectTrigger className="w-full sm:w-[150px]"><SelectValue placeholder="Filtrar por estado" /></SelectTrigger>
+                          <SelectContent>
+                              <SelectItem value="all">Cualquier estado</SelectItem>
+                              <SelectItem value="active">Activo</SelectItem>
+                              <SelectItem value="inactive">Inactivo</SelectItem>
+                          </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="overflow-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {users.length > 0 ? users.map((user) => (
+                            <UserCard 
+                                key={user.id} 
+                                user={user} 
+                                roleColors={roleColors}
+                                onSelect={() => handleSelectUser(user)}
+                                onEdit={() => handleOpenForm(user)}
+                            />
+                        )) : (
+                             <div className="col-span-full text-center text-muted-foreground py-20">
+                                <Users className="h-16 w-16 mx-auto mb-4 opacity-30" />
+                                <p className="font-medium text-lg">No hay usuarios registrados</p>
+                                <p className='text-base mb-4'>Crea el primero para comenzar a gestionar tu equipo.</p>
+                                <Button size="sm" onClick={() => handleOpenForm()}>
+                                    <UserPlus className="mr-2 h-4 w-4" />
+                                    Crear Usuario
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
+            
+            {/* Sheet for User Detail */}
+            <Sheet open={isDetailSheetOpen} onOpenChange={setIsDetailSheetOpen}>
+                <SheetContent className="p-0 sm:max-w-xl w-full flex flex-col">
+                    <UserDetailPanel user={selectedUser} onClose={handleCloseDetail} />
+                </SheetContent>
+            </Sheet>
+
 
             {/* Modal for new/edit user */}
             <UserModalForm open={isFormOpen} onOpenChange={handleCloseForm} user={selectedUser} />
