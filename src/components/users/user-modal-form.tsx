@@ -1,5 +1,6 @@
 
 'use client';
+import { useState } from 'react';
 import {
     Sheet,
     SheetContent,
@@ -18,11 +19,26 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch";
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Camera } from 'lucide-react';
 import type { User } from '@/lib/data/users-data';
 
 export const UserModalForm = ({ open, onOpenChange, user }: { open: boolean, onOpenChange: (open: boolean) => void, user?: User | null }) => {
     const title = user ? "Editar Usuario" : "Crear Nuevo Usuario";
     const description = user ? "Actualiza los datos del miembro del equipo." : "Completa los datos para registrar un nuevo miembro en el equipo.";
+    const [previewImage, setPreviewImage] = useState<string | null>(user?.avatar || null);
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className="w-full max-w-md">
@@ -33,6 +49,20 @@ export const UserModalForm = ({ open, onOpenChange, user }: { open: boolean, onO
                     </SheetDescription>
                 </SheetHeader>
                 <div className="py-6 space-y-4">
+                     <div className="flex flex-col items-center space-y-4">
+                        <div className="relative group">
+                            <Avatar className="h-28 w-28">
+                                <AvatarImage src={previewImage || ''} alt="User Avatar" />
+                                <AvatarFallback className="text-3xl">
+                                    {(user?.name || 'US').substring(0, 2).toUpperCase()}
+                                </AvatarFallback>
+                            </Avatar>
+                             <Label htmlFor="avatar-upload" className="absolute inset-0 bg-black/40 flex items-center justify-center text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                                <Camera className="h-8 w-8"/>
+                            </Label>
+                        </div>
+                        <Input id="avatar-upload" type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                    </div>
                     <div>
                         <Label htmlFor="fullName">Nombre completo</Label>
                         <Input id="fullName" placeholder="Ej: Juanita Pérez" defaultValue={user?.name}/>
