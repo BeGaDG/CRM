@@ -4,3 +4,7 @@ export * from './lead-detail-panel';
 export * from './new-lead-form';
 export * from './stage-form';
 export * from './import-leads-sheet';
+export * from './lead-filter-sheet';
+export * from './lead-detail-summary';
+export * from './lead-detail-forms';
+export * from './lead-detail-activity';

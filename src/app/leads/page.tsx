@@ -2,34 +2,16 @@
 'use client';
 import { useState, useMemo } from 'react';
 import type { DateRange } from "react-day-picker";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 import {
-  ChevronRight,
   Contact,
-  FileText,
   Filter,
   PlusCircle,
   Search,
-  Users,
-  BarChart,
-  Bell,
-  Calendar as CalendarIcon,
   Upload,
 } from 'lucide-react';
-import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { LeadCard } from '@/components/leads/lead-card';
 import { LeadDetailPanel } from '@/components/leads/lead-detail-panel';
 import { NewLeadForm } from '@/components/leads/new-lead-form';
@@ -41,22 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Separator } from '@/components/ui/separator';
-import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
+import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
-import type { Stage } from '@/lib/data/leads-data';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
@@ -120,8 +90,6 @@ export default function LeadsPage() {
   };
   
   const handleImportLeads = (importedLeads: Lead[]) => {
-    // NOTE: This is a placeholder. In a real app, you would parse the Excel file
-    // and create new lead objects.
     const newLeads: Lead[] = importedLeads.map((lead, index) => ({
       ...lead,
       id: `imported-lead-${Date.now()}-${index}`,
@@ -262,106 +230,22 @@ export default function LeadsPage() {
           </div>
         </main>
 
-        {/* Sheet for new lead form */}
         <NewLeadForm open={isNewLeadFormOpen} onOpenChange={setIsNewLeadFormOpen} onSave={handleSaveLead} />
-
-        {/* Sheet for importing leads */}
         <ImportLeadsSheet open={isImportSheetOpen} onOpenChange={setIsImportSheetOpen} onImport={handleImportLeads} />
-
-        {/* Sheet for lead detail */}
-        <Sheet open={!!selectedLead} onOpenChange={(isOpen) => { if (!isOpen) handleDetailClose() }}>
-          <SheetContent className="p-0 sm:max-w-2xl w-full flex flex-col">
-            <LeadDetailPanel
-              lead={selectedLead}
-              onUpdateStatus={handleUpdateStatus}
-              onSaveStageData={handleSaveStageData}
-              advisors={advisors}
-              onAssignLead={handleAssignLead}
-            />
-          </SheetContent>
-        </Sheet>
-        
-        {/* Sheet for advanced filters */}
-        <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-          <SheetContent className="w-full max-w-sm flex flex-col">
-            <SheetHeader>
-              <SheetTitle>Filtros Avanzados</SheetTitle>
-              <SheetDescription>
-                Refina tu búsqueda de leads con estas opciones.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="py-6 space-y-6 flex-1 overflow-y-auto">
-              
-              <div className='space-y-3'>
-                <Label>Fecha de Creación</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      id="date"
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !dateRange && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dateRange?.from ? (
-                        dateRange.to ? (
-                          <>
-                            {format(dateRange.from, "LLL dd, y", { locale: es })} -{" "}
-                            {format(dateRange.to, "LLL dd, y", { locale: es })}
-                          </>
-                        ) : (
-                          format(dateRange.from, "LLL dd, y", { locale: es })
-                        )
-                      ) : (
-                        <span>Selecciona un rango de fechas</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      initialFocus
-                      mode="range"
-                      defaultMonth={dateRange?.from}
-                      selected={dateRange}
-                      onSelect={setDateRange}
-                      numberOfMonths={1}
-                      locale={es}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-
-              <Separator />
-              
-              <div className='space-y-3'>
-                <Label>Tipo de Interés</Label>
-                <div className='flex items-center space-x-2'>
-                  <Checkbox id="interest-planta"/>
-                  <Label htmlFor="interest-planta" className='font-normal'>Planta Solar</Label>
-                </div>
-                 <div className='flex items-center space-x-2'>
-                  <Checkbox id="interest-comercializadora"/>
-                  <Label htmlFor="interest-comercializadora" className='font-normal'>Comercializadora</Label>
-                </div>
-              </div>
-              
-               <Separator />
-
-              <div className="space-y-3">
-                <Label htmlFor="city-filter">Ciudad</Label>
-                <Input id="city-filter" placeholder="Ej: Bogotá D.C." />
-              </div>
-
-            </div>
-            <div className='flex justify-end gap-2 mt-4 border-t pt-4'>
-              <Button variant="outline" onClick={() => setIsFilterSheetOpen(false)}>Limpiar</Button>
-              <Button onClick={() => setIsFilterSheetOpen(false)}>Aplicar Filtros</Button>
-            </div>
-          </SheetContent>
-        </Sheet>
-
+        <LeadDetailPanel
+            lead={selectedLead}
+            onOpenChange={handleDetailClose}
+            onUpdateStatus={handleUpdateStatus}
+            onSaveStageData={handleSaveStageData}
+            advisors={advisors}
+            onAssignLead={handleAssignLead}
+        />
+        <LeadFilterSheet 
+            open={isFilterSheetOpen} 
+            onOpenChange={setIsFilterSheetOpen} 
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+        />
     </DashboardLayout>
   );
 }
