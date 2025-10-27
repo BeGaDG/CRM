@@ -4,7 +4,7 @@ import {
   Upload,
   UserPlus,
   X,
-  Users, MoreHorizontal, Contact, FileText, Search
+  Users, MoreHorizontal, Contact, FileText, Search, Target, DollarSign
 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
