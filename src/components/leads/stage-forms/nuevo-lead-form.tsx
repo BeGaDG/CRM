@@ -8,15 +8,15 @@ export const NuevoLeadForm = ({ formData, handleChange }: StageFormProps) => {
   return (
     <div className="space-y-4">
         <div>
-          <Label htmlFor="nombre">Nombre <span className='text-destructive'>*</span></Label>
+          <Label htmlFor="name">Nombre <span className='text-destructive'>*</span></Label>
           <Input id="name" placeholder="Nombre completo del cliente" defaultValue={formData.name} onChange={handleChange}/>
         </div>
         <div>
-          <Label htmlFor="direccion">Dirección</Label>
+          <Label htmlFor="address">Dirección</Label>
           <Input id="address" placeholder="Dirección del cliente" defaultValue={formData.address} onChange={handleChange}/>
         </div>
         <div>
-          <Label htmlFor="telefono">Número de teléfono <span className='text-destructive'>*</span></Label>
+          <Label htmlFor="phone">Número de teléfono <span className='text-destructive'>*</span></Label>
           <Input id="phone" type="tel" placeholder="Ej: 3101234567" defaultValue={formData.phone} onChange={handleChange}/>
         </div>
         <div>
