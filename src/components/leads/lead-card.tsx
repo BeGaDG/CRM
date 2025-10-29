@@ -19,7 +19,7 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
   const interest = interestTypeIcons[lead.interestType];
   const Icon = interest.icon;
 
-  const isOverdue = ['Nuevo Cliente', 'Por Contactar'].includes(lead.status) &&
+  const isOverdue = ['Nuevo Lead', 'Por Contactar'].includes(lead.status) &&
                     differenceInDays(new Date(), new Date(lead.creationDate)) > 2;
 
   return (

@@ -13,7 +13,7 @@ import type { Lead, Stage, Advisor } from '@/lib/data/leads-data';
 
 const getNextStages = (currentStage: string): string[] => {
   const stageMap: { [key: string]: string[] } = {
-    'Nuevo Cliente': ['Por Contactar'],
+    'Nuevo Lead': ['Por Contactar'],
     'Por Contactar': ['Por Visitar', 'No'],
     'Por Visitar': ['Por Cotizar'],
     'Por Cotizar': ['Por Presentar Cotización'],

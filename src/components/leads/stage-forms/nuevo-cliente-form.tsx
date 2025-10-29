@@ -1,9 +1,10 @@
+
 'use client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { StageFormProps } from './form-props';
 
-export const NuevoClienteForm = ({ formData, handleChange }: StageFormProps) => {
+export const NuevoLeadForm = ({ formData, handleChange }: StageFormProps) => {
   return (
     <div className="space-y-4">
         <div>

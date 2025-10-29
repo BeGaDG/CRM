@@ -1,7 +1,8 @@
+
 'use client';
 export * from './ajustar-cotizacion-form';
 export * from './no-form';
-export * from './nuevo-cliente-form';
+export * from './nuevo-lead-form';
 export * from './por-contratar-form';
 export * from './por-cotizar-form';
 export * from './por-presentar-cotizacion-form';

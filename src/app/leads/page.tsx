@@ -78,7 +78,7 @@ export default function LeadsPage() {
         city: newLeadData.city || 'Por definir',
         lastContact: 'Ahora',
         interestType: newLeadData.interestType || 'planta-solar',
-        status: 'Nuevo Cliente',
+        status: 'Nuevo Lead',
         phone: newLeadData.phone || 'N/A',
         email: newLeadData.email || 'N/A',
         creationDate: new Date().toISOString(),
@@ -94,7 +94,7 @@ export default function LeadsPage() {
       ...lead,
       id: `imported-lead-${Date.now()}-${index}`,
       lastContact: 'Ahora',
-      status: 'Nuevo Cliente',
+      status: 'Nuevo Lead',
       creationDate: new Date().toISOString(),
       collectedData: {},
       advisorId: 'user-1', // Default assignment

@@ -1,10 +1,11 @@
+
 'use client';
 import React from 'react';
 import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 import {
-  NuevoClienteForm,
+  NuevoLeadForm,
   PorVisitarForm,
   PorCotizarForm,
   PorPresentarCotizacionForm,
@@ -16,7 +17,7 @@ import {
 import { useFormStage } from '@/hooks/use-form-stage';
 
 const stageToFormComponent: { [key: string]: React.FC<any> } = {
-  'Nuevo Cliente': NuevoClienteForm,
+  'Nuevo Lead': NuevoLeadForm,
   'Por Visitar': PorVisitarForm,
   'Por Cotizar': PorCotizarForm,
   'Por Presentar Cotización': PorPresentarCotizacionForm,

@@ -33,7 +33,7 @@ export const NewLeadForm = ({ open, onOpenChange, onSave }: { open: boolean; onO
                 </SheetHeader>
                 <div className="py-6">
                     <StageForm 
-                      stageName="Nuevo Cliente" 
+                      stageName="Nuevo Lead" 
                       onSave={() => {}} 
                       onDataChange={(data) => setFormData(data)}
                       initialData={formData}
