@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BarChart as BarChartIcon } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
-import { sedes, asesores } from '@/lib/data/indicadores-data';
+import { sedes } from '@/lib/data/indicadores-data';
 import { ResponseTimeChart } from '@/components/indicadores/response-time-chart';
 import { OffersChart } from '@/components/indicadores/offers-chart';
 import { RejectionReasonChart } from '@/components/indicadores/rejection-reason-chart';
@@ -11,11 +11,9 @@ import { SalesByCityChart } from '@/components/indicadores/sales-by-city-chart';
 
 export default function IndicadoresPage() {
     const [selectedSede, setSelectedSede] = useState<string | null>(null);
-    const [selectedAsesor, setSelectedAsesor] = useState<string | null>(null);
 
     const handleSedeChange = (value: string) => {
-        setSelectedSede(value);
-        setSelectedAsesor(null); // Reset asesor when sede changes
+        setSelectedSede(value === 'all' ? null : value);
     };
 
     const SedeCharts = () => (
@@ -27,44 +25,6 @@ export default function IndicadoresPage() {
             <RejectionReasonChart />
             <div className="lg:col-span-2">
                 <SalesByCityChart />
-            </div>
-        </div>
-    );
-
-    const AsesorCharts = () => (
-        <div className="animate-in fade-in-50">
-            <h2 className="text-xl font-semibold text-muted-foreground mb-4">Métricas del Asesor: {selectedAsesor} ({selectedSede})</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-               <Card>
-                    <CardHeader>
-                        <CardTitle>Gráfico de Asesor 1</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-40 bg-muted rounded-md flex items-center justify-center">
-                             <p className="text-muted-foreground text-sm">Data del asesor</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Gráfico de Asesor 2</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                         <div className="h-40 bg-muted rounded-md flex items-center justify-center">
-                             <p className="text-muted-foreground text-sm">Data del asesor</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Gráfico de Asesor 3</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                         <div className="h-40 bg-muted rounded-md flex items-center justify-center">
-                             <p className="text-muted-foreground text-sm">Data del asesor</p>
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
         </div>
     );
@@ -83,11 +43,11 @@ export default function IndicadoresPage() {
                 <div className="flex flex-col sm:flex-row items-center gap-4 bg-card p-4 rounded-lg border">
                     <div className="flex-1 w-full">
                         <h1 className="text-2xl font-semibold">Indicadores de Rendimiento</h1>
-                        <p className="text-muted-foreground">Filtra por sede y asesor para ver las métricas.</p>
+                        <p className="text-muted-foreground">Filtra por sede para ver las métricas.</p>
                     </div>
                     <div className="flex items-center gap-2 w-full sm:w-auto">
                         <Select onValueChange={handleSedeChange} defaultValue="all">
-                            <SelectTrigger className="w-full sm:w-[180px]">
+                            <SelectTrigger className="w-full sm:w-[220px]">
                                 <SelectValue placeholder="Seleccionar Sede..." />
                             </SelectTrigger>
                             <SelectContent>
@@ -97,23 +57,12 @@ export default function IndicadoresPage() {
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Select onValueChange={setSelectedAsesor} value={selectedAsesor || ''} disabled={!selectedSede}>
-                            <SelectTrigger className="w-full sm:w-[180px]">
-                                <SelectValue placeholder="Seleccionar Asesor..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {asesores.filter(a => selectedSede === 'all' || a.sede === selectedSede).map(asesor => (
-                                    <SelectItem key={asesor.id} value={asesor.name}>{asesor.name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
                     </div>
                 </div>
 
                 <div className="flex-1">
                     {!selectedSede && <EmptyState />}
-                    {selectedSede && !selectedAsesor && <SedeCharts />}
-                    {selectedSede && selectedAsesor && <AsesorCharts />}
+                    {selectedSede && <SedeCharts />}
                 </div>
 
             </main>
