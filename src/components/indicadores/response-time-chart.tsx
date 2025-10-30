@@ -9,8 +9,6 @@ import {
 import {
   ChartConfig,
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
 } from '@/components/ui/chart';
 import { responseTimeData } from '@/lib/data/indicadores-data';
 import { PolarAngleAxis, RadialBar, RadialBarChart } from 'recharts';
@@ -26,13 +24,14 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ResponseTimeChart() {
-  const chartData = [{ name: 'value', value: responseTimeData.percentage, fill: 'hsl(var(--primary))' }];
+  const progress = (responseTimeData.currentTime / responseTimeData.maxTime) * 100;
+  const chartData = [{ name: 'value', value: progress, fill: 'hsl(var(--primary))' }];
   
   return (
     <Card>
       <CardHeader className="pb-0">
         <CardTitle className="text-sm font-medium">Tiempo promedio de respuesta a nuevos leads.</CardTitle>
-        <CardDescription className="text-sm text-red-500 font-medium">Remaining ${responseTimeData.remaining.toLocaleString()}</CardDescription>
+        <CardDescription className="text-sm text-muted-foreground">Objetivo: {responseTimeData.maxTime} horas</CardDescription>
       </CardHeader>
       <CardContent className="flex items-center justify-center p-0">
         <ChartContainer
@@ -41,10 +40,11 @@ export function ResponseTimeChart() {
         >
           <RadialBarChart
             data={chartData}
-            startAngle={180}
-            endAngle={0}
+            startAngle={90}
+            endAngle={-270}
             innerRadius={80}
             outerRadius={100}
+            barSize={12}
           >
             <PolarAngleAxis
               type="number"
@@ -54,15 +54,16 @@ export function ResponseTimeChart() {
             />
             <RadialBar
               dataKey="value"
-              background
+              background={{ fill: 'hsl(var(--muted))' }}
               cornerRadius={10}
+              
             />
              <g transform="translate(125, 125)">
                 <text x="0" y="-10" textAnchor="middle" dominantBaseline="middle" className="fill-foreground text-4xl font-bold">
-                    {responseTimeData.percentage}%
+                    {responseTimeData.currentTime.toFixed(1)}h
                 </text>
                 <text x="0" y="20" textAnchor="middle" dominantBaseline="middle" className="fill-muted-foreground text-sm">
-                    Sales: ${responseTimeData.sales.toLocaleString()}
+                    Respuesta Promedio
                 </text>
             </g>
           </RadialBarChart>

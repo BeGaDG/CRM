@@ -14,9 +14,8 @@ export const asesores = [
 ];
 
 export const responseTimeData = {
-    percentage: 72,
-    sales: 23040, // 72% of 32000
-    remaining: 8960 // 28% of 32000
+    currentTime: 3.2, // Tiempo actual en horas
+    maxTime: 8,       // Tiempo objetivo en horas
 };
 
 export const offersData = {
