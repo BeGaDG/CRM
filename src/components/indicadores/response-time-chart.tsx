@@ -1,7 +1,6 @@
 'use client';
-import { TrendingUp } from "lucide-react"
-import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts"
-
+import * as React from 'react';
+import { PieChart, Pie, Cell } from 'recharts';
 import {
   Card,
   CardContent,
@@ -10,94 +9,97 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
 import { responseTimeData } from "@/lib/data/indicadores-data";
+import { TrendingUp } from 'lucide-react';
 
-const chartConfig = {
-  tiempo: {
-    label: "Tiempo",
-    color: "hsl(var(--primary))",
-  },
-} satisfies ChartConfig
+const GaugePointer = ({ value, max, cx, cy, innerRadius, outerRadius, startAngle, endAngle }: any) => {
+  const angle = startAngle + (value / max) * (endAngle - startAngle);
+  
+  const target = {
+    x: cx + outerRadius * Math.sin(angle * (Math.PI / 180)),
+    y: cy - outerRadius * Math.cos(angle * (Math.PI / 180)),
+  };
+  
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={5} fill="hsl(var(--primary))" />
+      <path
+        d={`M ${cx} ${cy} L ${target.x} ${target.y}`}
+        stroke="hsl(var(--primary))"
+        strokeWidth={2}
+      />
+    </g>
+  );
+};
 
 export function ResponseTimeChart() {
-  const chartData = [{ month: "january", tiempo: responseTimeData.value }]
-  const totalValue = chartData[0].tiempo;
+    const { value, max } = responseTimeData;
+    const data = [
+        { name: 'value', value: value, color: 'hsl(var(--primary))' },
+        { name: 'remaining', value: max - value, color: 'hsl(var(--border))' },
+    ];
 
-  return (
-    <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Tiempo de Respuesta Promedio</CardTitle>
-        <CardDescription>Respuesta a nuevos leads en las últimas 4 semanas</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-1 items-center pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square w-full max-w-[250px]"
-        >
-          <RadialBarChart
-            data={chartData}
-            endAngle={360 * (totalValue / responseTimeData.max) }
-            innerRadius={80}
-            outerRadius={130}
-          >
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) - 16}
-                          className="fill-foreground text-3xl font-bold"
-                        >
-                          {totalValue.toFixed(1)}h
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 4}
-                          className="fill-muted-foreground"
-                        >
-                          Promedio
-                        </tspan>
-                      </text>
-                    )
-                  }
-                }}
-              />
-            </PolarRadiusAxis>
-            <RadialBar
-              dataKey="tiempo"
-              background
-              cornerRadius={5}
-              fill="var(--color-tiempo)"
-              className="stroke-transparent stroke-2"
-            />
-          </RadialBarChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-            {responseTimeData.trend.direction === 'up' ? 
-                <TrendingUp className="h-4 w-4 text-green-500" /> :
-                <TrendingUp className="h-4 w-4 text-red-500 transform rotate-180" />
-            }
-            {responseTimeData.trend.value}% este mes
-        </div>
-        <div className="leading-none text-muted-foreground">
-          {responseTimeData.trend.label}
-        </div>
-      </CardFooter>
-    </Card>
-  )
+    return (
+        <Card className="flex flex-col">
+          <CardHeader className="items-center pb-0">
+            <CardTitle>Tiempo de Respuesta Promedio</CardTitle>
+            <CardDescription>Respuesta a nuevos leads</CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 flex items-center justify-center relative">
+            <PieChart width={250} height={180}>
+               <Pie
+                    data={[{value: 1}]}
+                    dataKey="value"
+                    cx="50%"
+                    cy="100%"
+                    startAngle={-90}
+                    endAngle={90}
+                    innerRadius="60%"
+                    outerRadius="100%"
+                    fill="hsl(var(--muted))"
+                    stroke="hsl(var(--card))"
+                    isAnimationActive={false}
+                />
+                <Pie
+                    data={data}
+                    dataKey="value"
+                    cx="50%"
+                    cy="100%"
+                    startAngle={-90}
+                    endAngle={90}
+                    innerRadius="60%"
+                    outerRadius="100%"
+                    paddingAngle={0}
+                    isAnimationActive={true}
+                >
+                    {data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color} />
+                    ))}
+                </Pie>
+                <GaugePointer 
+                    value={value} 
+                    max={max} 
+                    cx={125} 
+                    cy={180} 
+                    innerRadius={0} 
+                    outerRadius={75}
+                    startAngle={-90} 
+                    endAngle={90}
+                />
+            </PieChart>
+             <div className="absolute bottom-10 text-center">
+                <p className="text-4xl font-bold">{value}h</p>
+                <p className="text-sm text-muted-foreground">Promedio</p>
+             </div>
+          </CardContent>
+          <CardFooter className="flex-col gap-2 text-sm">
+            <div className="flex items-center gap-2 font-medium leading-none text-green-500">
+                <TrendingUp className="h-4 w-4" /> 12% mejor este mes
+            </div>
+            <div className="leading-none text-muted-foreground">
+              Más rápido que el objetivo
+            </div>
+          </CardFooter>
+        </Card>
+    )
 }
