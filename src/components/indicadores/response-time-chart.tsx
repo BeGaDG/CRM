@@ -1,67 +1,82 @@
 'use client'
-import { PieChart, Pie, Cell } from 'recharts'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { MoreHorizontal, ArrowUp } from 'lucide-react'
-import { responseTimeData } from '@/lib/data/indicadores-data'
-import { cn } from '@/lib/utils'
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-const GaugeChart = () => {
-  const { value, totalSegments, activeSegments } = responseTimeData.chart
-  const data = Array.from({ length: totalSegments }, (_, i) => ({
-    name: `Segment ${i + 1}`,
-    value: 1,
-    color: i < activeSegments ? 'hsl(var(--primary))' : 'hsl(var(--muted))'
-  }))
+const GaugeChart = ({ value, min, max }: { value: number, min: number, max: number }) => {
+  const percentage = (value - min) / (max - min)
+  const endAngle = 180 - percentage * 180
+  
+  const data = [{ value: 1 }]
 
   return (
-    <div className='relative w-full h-40'>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <PieChart width={300} height={160}>
+    <div className='relative w-full h-[180px]'>
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <defs>
+            <linearGradient id="gaugeGradient" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="hsl(var(--primary) / 0.8)" />
+              <stop offset="100%" stopColor="hsl(var(--primary) / 0.3)" />
+            </linearGradient>
+          </defs>
+          {/* Background track */}
           <Pie
             data={data}
-            cx='50%'
-            cy='100%'
+            dataKey="value"
+            cx="50%"
+            cy="100%"
             startAngle={180}
             endAngle={0}
-            innerRadius='60%'
-            outerRadius='100%'
-            dataKey='value'
-            stroke='hsl(var(--card))'
-            strokeWidth={2}
-            paddingAngle={4}
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} cornerRadius={4} />
-            ))}
-          </Pie>
+            innerRadius="70%"
+            outerRadius="100%"
+            fill="hsl(var(--muted))"
+            stroke="hsl(var(--card))"
+            strokeWidth={4}
+          />
+          {/* Value arc */}
+          <Pie
+            data={data}
+            dataKey="value"
+            cx="50%"
+            cy="100%"
+            startAngle={180}
+            endAngle={endAngle}
+            innerRadius="70%"
+            outerRadius="100%"
+            fill="url(#gaugeGradient)"
+            stroke="hsl(var(--card))"
+            strokeWidth={4}
+            cornerRadius={8}
+          />
         </PieChart>
+      </ResponsiveContainer>
+      <div className='absolute inset-0 flex flex-col items-center justify-end pointer-events-none'>
+        <span className='text-6xl font-bold text-foreground'>{value.toFixed(1)}h</span>
+        <span className='text-sm text-muted-foreground'>Respuesta Promedio</span>
       </div>
-      <div className='absolute inset-0 flex flex-col items-center justify-end pb-5'>
-        <span className='text-5xl font-bold'>{value}</span>
-        <span className='text-sm text-muted-foreground mt-1'>Respuesta promedio</span>
+      <div className="absolute bottom-[20px] w-full px-4 flex justify-between text-xs text-muted-foreground">
+        <span>{min}h</span>
+        <span>{max}h+</span>
       </div>
     </div>
   )
 }
 
 export function ResponseTimeChart() {
-  const { title, trend } = responseTimeData
+  // Example data
+  const responseTime = 3.8
+  const minTime = 0
+  const maxTime = 12
+
   return (
-    <Card className='col-span-1'>
-      <CardHeader className='flex-row items-center justify-between pb-4'>
-        <CardTitle className='text-base font-semibold'>{title}</CardTitle>
-        <MoreHorizontal className='h-4 w-4 text-muted-foreground' />
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base font-semibold text-center">
+          Tiempo de Respuesta a Nuevos Leads
+        </CardTitle>
       </CardHeader>
-      <CardContent className='p-0 flex items-center justify-center'>
-        <GaugeChart />
+      <CardContent className='p-0'>
+        <GaugeChart value={responseTime} min={minTime} max={maxTime} />
       </CardContent>
-      <CardFooter className='flex-col items-center pt-2 pb-4'>
-        <div className='flex items-center gap-2 rounded-md bg-green-500/10 px-3 py-1.5 text-sm font-medium text-green-600'>
-          <ArrowUp className='h-4 w-4' />
-          <span>{trend.value}%</span>
-          <span className='text-green-600/70'>{trend.label}</span>
-        </div>
-      </CardFooter>
     </Card>
   )
 }
