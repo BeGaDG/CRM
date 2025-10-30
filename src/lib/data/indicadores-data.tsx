@@ -16,15 +16,9 @@ export const asesores = [
 export const responseTimeDataSede = {
     average: 4.2,
     trend: 10, // 10% increase from last week (which is bad for response time)
-};
-
-export const weeklyActivityData = {
-    totalHours: 28,
-    totalMinutes: 45,
-    trend: 5, // 5% increase
     activities: [
-        { name: 'Llamadas', color: 'bg-blue-500', start: 0, span: 3 }, // Starts on day 0 (Mon), spans 3 days
-        { name: 'Visitas', color: 'bg-green-500', start: 2, span: 2 }, // Starts on day 2 (Wed), spans 2 days
-        { name: 'Cotizaciones', color: 'bg-yellow-500', start: 1, span: 4 }, // Starts on day 1 (Tue), spans 4 days
+        { name: 'Rápida (<2h)', color: 'bg-green-500', start: 0, span: 3 }, // Starts on day 0 (Mon), spans 3 days
+        { name: 'Normal (2-8h)', color: 'bg-yellow-500', start: 2, span: 4 }, // Starts on day 2 (Wed), spans 4 days
+        { name: 'Lenta (>8h)', color: 'bg-red-500', start: 5, span: 2 }, // Starts on day 5 (Sat), spans 2 days
     ]
 };
