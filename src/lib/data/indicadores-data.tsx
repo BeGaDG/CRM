@@ -13,11 +13,6 @@ export const asesores = [
     { id: 'user-7', name: 'Sofia Vergara', sede: 'Sincelejo' },
 ];
 
-export const responseTimeData = {
-    currentTime: 30,
-    goal: 60,
-};
-
 export const offersData = {
     total: 350,
     presentadas: 245,
@@ -30,7 +25,7 @@ export const offersData = {
         { month: 'May', presentadas: 70, vencidas: 35 },
         { month: 'Jun', presentadas: 65, vencidas: 32 },
         { month: 'Jul', presentadas: 75, vencidas: 40 },
-        { month: 'Ago', presentadas: 80, vencidas: 42 },
+        { month: 'Aug', presentadas: 80, vencidas: 42 },
     ],
 };
 
