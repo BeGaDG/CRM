@@ -99,7 +99,7 @@ export default function IndicadoresPage() {
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Select onValueChange={setSelectedAsesor} disabled={!selectedSede}>
+                        <Select onValueChange={setSelectedAsesor} value={selectedAsesor || ''} disabled={!selectedSede}>
                             <SelectTrigger className="w-full sm:w-[180px]">
                                 <SelectValue placeholder="Seleccionar Asesor..." />
                             </SelectTrigger>
