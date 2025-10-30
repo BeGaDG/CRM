@@ -1,3 +1,4 @@
+
 'use client';
 import {
   Card,
@@ -39,11 +40,6 @@ export function ResponseTimeChart() {
                         >
                             <PolarAngleAxis type="number" domain={[0, 100]} dataKey="value" tick={false} />
                             <RadialBar dataKey="value" background={{ fill: 'hsl(var(--muted))' }} cornerRadius={6} />
-                            <g transform="translate(50%, 50%)">
-                                <text x="0" y="8" textAnchor="middle" dominantBaseline="middle" className="fill-foreground text-5xl font-bold">
-                                    {currentTime}
-                                </text>
-                            </g>
                         </RadialBarChart>
                     </ResponsiveContainer>
                 </ChartContainer>
