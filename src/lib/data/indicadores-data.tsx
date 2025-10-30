@@ -29,7 +29,7 @@ export const offersData = {
         { month: 'Apr', product: 400, subs: 500 },
         { month: 'May', product: 700, subs: 800 },
         { month: 'Jun', product: 600, subs: 700 },
-        { month ⚫ 'Jul', product: 800, subs: 900 },
+        { month: 'Jul', product: 800, subs: 900 },
         { month: 'Aug', product: 700, subs: 800 },
     ],
 };
