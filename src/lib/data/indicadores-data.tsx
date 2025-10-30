@@ -20,3 +20,7 @@ export const responseTimeData = [
   { name: 'Jorge A.', "Tiempo (hrs)": 8 },
   { name: 'Sofia V.', "Tiempo (hrs)": 5 },
 ];
+
+export const responseTimeDataSede = {
+    average: 4.2
+};
