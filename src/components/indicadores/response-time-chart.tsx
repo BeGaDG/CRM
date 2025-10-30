@@ -36,9 +36,9 @@ const GaugeChart = () => {
                         cy="100%"
                         startAngle={180}
                         endAngle={0}
-                        innerRadius="80%"
+                        innerRadius="60%"
                         outerRadius="100%"
-                        paddingAngle={1}
+                        paddingAngle={2}
                         dataKey="value"
                         stroke="hsl(var(--card))"
                         strokeWidth={2}
