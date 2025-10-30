@@ -13,6 +13,11 @@ export const asesores = [
     { id: 'user-7', name: 'Sofia Vergara', sede: 'Sincelejo' },
 ];
 
+export const responseTimeData = {
+    time: 30,
+    goal: 60,
+};
+
 export const offersData = {
     total: 350,
     presentadas: 245,

@@ -7,6 +7,7 @@ import { sedes } from '@/lib/data/indicadores-data';
 import { OffersChart } from '@/components/indicadores/offers-chart';
 import { RejectionReasonChart } from '@/components/indicadores/rejection-reason-chart';
 import { SalesByCityChart } from '@/components/indicadores/sales-by-city-chart';
+import { ResponseTimeChart } from '@/components/indicadores/response-time-chart';
 
 export default function IndicadoresPage() {
     const [selectedSede, setSelectedSede] = useState<string | null>(null);
@@ -18,6 +19,7 @@ export default function IndicadoresPage() {
     const SedeCharts = () => (
         <div className="animate-in fade-in-50 grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ResponseTimeChart />
                 <OffersChart />
             </div>
             <RejectionReasonChart />
