@@ -14,27 +14,29 @@ const GaugeChart = () => {
   }))
 
   return (
-    <div className='relative flex items-center justify-center h-40 w-full'>
-      <PieChart width={300} height={160}>
-        <Pie
-          data={data}
-          cx='50%'
-          cy='100%'
-          startAngle={180}
-          endAngle={0}
-          innerRadius='70%'
-          outerRadius='100%'
-          dataKey='value'
-          stroke='hsl(var(--card))'
-          strokeWidth={2}
-          paddingAngle={4}
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} cornerRadius={4} />
-          ))}
-        </Pie>
-      </PieChart>
-      <div className='absolute flex flex-col items-center justify-center' style={{ top: '30%' }}>
+    <div className='relative w-full h-40'>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <PieChart width={300} height={160}>
+          <Pie
+            data={data}
+            cx='50%'
+            cy='100%'
+            startAngle={180}
+            endAngle={0}
+            innerRadius='70%'
+            outerRadius='100%'
+            dataKey='value'
+            stroke='hsl(var(--card))'
+            strokeWidth={2}
+            paddingAngle={4}
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} cornerRadius={4} />
+            ))}
+          </Pie>
+        </PieChart>
+      </div>
+      <div className='absolute inset-0 flex flex-col items-center justify-end pb-5'>
         <span className='text-5xl font-bold'>{value}</span>
         <span className='text-sm text-muted-foreground mt-1'>Respuesta promedio</span>
       </div>
@@ -53,7 +55,7 @@ export function ResponseTimeChart() {
       <CardContent className='p-0 flex items-center justify-center'>
         <GaugeChart />
       </CardContent>
-      <CardFooter className='flex-col items-center pb-4'>
+      <CardFooter className='flex-col items-center pt-2 pb-4'>
         <div className='flex items-center gap-2 rounded-md bg-green-500/10 px-3 py-1.5 text-sm font-medium text-green-600'>
           <ArrowUp className='h-4 w-4' />
           <span>{trend.value}%</span>
