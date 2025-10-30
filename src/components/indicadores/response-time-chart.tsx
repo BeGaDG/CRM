@@ -10,7 +10,7 @@ const data = [
     { name: 'Lento', value: responseTimeDataSede.breakdown.slow },
 ];
 const COLORS = ['#10B981', '#F59E0B', '#EF4444'];
-const TOTAL_SEGMENTS = 40;
+const TOTAL_SEGMENTS = 50;
 
 
 const GaugeChart = () => {
@@ -27,17 +27,17 @@ const GaugeChart = () => {
     });
 
     return (
-        <div className="relative h-40 w-full">
+        <div className="relative h-52 w-full">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
                         data={segments}
                         cx="50%"
-                        cy="95%"
+                        cy="100%"
                         startAngle={180}
                         endAngle={0}
-                        innerRadius="60%"
-                        outerRadius="80%"
+                        innerRadius="70%"
+                        outerRadius="95%"
                         paddingAngle={2}
                         dataKey="value"
                         stroke="hsl(var(--card))"
@@ -49,9 +49,9 @@ const GaugeChart = () => {
                     </Pie>
                 </PieChart>
             </ResponsiveContainer>
-             <div className="absolute inset-0 flex flex-col items-center justify-end pb-10">
-                <span className="text-5xl font-bold tracking-tighter">
-                    {value}<span className="text-3xl text-muted-foreground">h</span>
+             <div className="absolute inset-0 flex flex-col items-center justify-end pb-12">
+                <span className="text-6xl font-bold tracking-tighter">
+                    {value}<span className="text-4xl text-muted-foreground">h</span>
                 </span>
                 <span className="text-sm text-muted-foreground font-medium">Promedio</span>
             </div>
@@ -80,7 +80,7 @@ export const ResponseTimeChart = () => {
                     <p className="text-xs text-muted-foreground">vs semana ant.</p>
                 </div>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col justify-center items-center">
+            <CardContent className="flex-1 flex flex-col justify-center items-center pt-4">
                 <GaugeChart />
 
                 <div className="w-full mt-4 space-y-2 text-sm">
