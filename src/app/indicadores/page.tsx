@@ -36,28 +36,70 @@ import { kpisIndicadores, salesByAdvisorData, salesByCityData, rejectionReasonsD
 
 
 export default function IndicadoresPage() {
+    const ofertasData = kpisIndicadores.find(k => k.title === "Ofertas Presentadas vs Vencidas")?.chartData || [];
     return (
         <DashboardLayout>
             <main className="flex-1 flex flex-col gap-6 p-4 lg:p-6 overflow-auto">
                 <h1 className="text-2xl font-semibold">Indicadores de Rendimiento</h1>
 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                    {kpisIndicadores.map((kpi, index) => (
-                    <Card key={kpi.title} className={`border-l-4 ${kpi.color}`}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
-                        {kpi.icon}
-                        </CardHeader>
-                        <CardContent>
-                        <div className="text-2xl font-bold">{kpi.value} {kpi.unit}</div>
-                        {kpi.trend &&
-                            <p className={`text-xs ${kpi.trend > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                            {kpi.trend > 0 ? '+' : ''}{kpi.trend}% {kpi.trendText}
-                            </p>
-                        }
-                        </CardContent>
-                    </Card>
-                    ))}
+                    {kpisIndicadores.map((kpi, index) => {
+                      if (kpi.title === "Ofertas Presentadas vs Vencidas") {
+                        return (
+                           <Card key={kpi.title} className={`border-l-4 ${kpi.color}`}>
+                              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
+                                {kpi.icon}
+                              </CardHeader>
+                              <CardContent className="flex items-center justify-center">
+                                <div className="relative h-24 w-24">
+                                  <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                      <Pie
+                                        data={ofertasData}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={25}
+                                        outerRadius={40}
+                                        dataKey="value"
+                                        startAngle={90}
+                                        endAngle={450}
+                                      >
+                                        {ofertasData.map((entry, index) => (
+                                          <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                      </Pie>
+                                    </PieChart>
+                                  </ResponsiveContainer>
+                                  <div className="absolute inset-0 flex items-center justify-center">
+                                      <span className="text-xl font-bold">{kpi.value}</span>
+                                  </div>
+                                </div>
+                                <div className='ml-4 text-xs space-y-2'>
+                                  <div className='flex items-center'><span className='w-2 h-2 rounded-full bg-primary mr-2'></span>Presentadas</div>
+                                  <div className='flex items-center'><span className='w-2 h-2 rounded-full bg-destructive mr-2'></span>Vencidas</div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                        )
+                      }
+                      return (
+                      <Card key={kpi.title} className={`border-l-4 ${kpi.color}`}>
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
+                          {kpi.icon}
+                          </CardHeader>
+                          <CardContent>
+                          <div className="text-2xl font-bold">{kpi.value} {kpi.unit}</div>
+                          {kpi.trend !== undefined &&
+                              <p className={`text-xs ${kpi.trend > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                              {kpi.trend > 0 ? '+' : ''}{kpi.trend}% {kpi.trendText}
+                              </p>
+                          }
+                          </CardContent>
+                      </Card>
+                      )
+                    })}
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
