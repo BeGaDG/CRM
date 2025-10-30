@@ -1,11 +1,11 @@
-
 'use client';
 import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart } from 'lucide-react';
+import { BarChart as BarChartIcon } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { sedes, asesores } from '@/lib/data/indicadores-data';
+import { ResponseTimeChart } from '@/components/indicadores/response-time-chart';
 
 export default function IndicadoresPage() {
     const [selectedSede, setSelectedSede] = useState<string | null>(null);
@@ -20,16 +20,7 @@ export default function IndicadoresPage() {
         <div className="animate-in fade-in-50">
             <h2 className="text-xl font-semibold text-muted-foreground mb-4">Resultados Generales de la Sede: {selectedSede}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Gráfico de Sede 1</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-60 bg-muted rounded-md flex items-center justify-center">
-                            <p className="text-muted-foreground text-sm">Data de la sede</p>
-                        </div>
-                    </CardContent>
-                </Card>
+                <ResponseTimeChart />
                  <Card>
                     <CardHeader>
                         <CardTitle>Gráfico de Sede 2</CardTitle>
@@ -144,7 +135,7 @@ export default function IndicadoresPage() {
     
     const EmptyState = () => (
         <div className="text-center text-muted-foreground py-20">
-            <BarChart className="h-16 w-16 mx-auto mb-4 opacity-30" />
+            <BarChartIcon className="h-16 w-16 mx-auto mb-4 opacity-30" />
             <p className="font-medium text-lg">Selecciona una sede</p>
             <p className='text-base'>Elige una sede para ver sus indicadores de rendimiento.</p>
         </div>
