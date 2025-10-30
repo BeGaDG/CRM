@@ -26,7 +26,7 @@ export function OffersChart() {
     <Card>
       <CardHeader>
         <CardTitle className="text-sm font-medium">Ofertas presentadas vs. vencidas.</CardTitle>
-        <CardDescription className="text-2xl font-bold">${offersData.total.toLocaleString()}</CardDescription>
+        <CardDescription className="text-2xl font-bold">{offersData.total} Ofertas</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[120px] w-full">
@@ -46,14 +46,14 @@ export function OffersChart() {
                     <span className="h-2.5 w-2.5 rounded-full bg-primary" />
                     <span>Presentadas</span>
                 </div>
-                <span className="font-semibold">${offersData.presentadas.toLocaleString()}</span>
+                <span className="font-semibold">{offersData.presentadas}</span>
             </div>
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-vencidas)]" />
                     <span>Vencidas</span>
                 </div>
-                <span className="font-semibold">${offersData.vencidas.toLocaleString()}</span>
+                <span className="font-semibold">{offersData.vencidas}</span>
             </div>
         </div>
       </CardContent>

@@ -14,25 +14,26 @@ export const asesores = [
 ];
 
 export const responseTimeData = {
-    currentTime: 3.2, // Tiempo actual en horas
-    maxTime: 8,       // Tiempo objetivo en horas
+    currentTime: 3.2,
+    totalTime: 8,
 };
 
 export const offersData = {
-    total: 12875,
-    presentadas: 8540,
-    vencidas: 4335,
+    total: 350,
+    presentadas: 245,
+    vencidas: 105,
     chartData: [
-        { month: 'Jan', presentadas: 450, vencidas: 200 },
-        { month: 'Feb', presentadas: 500, vencidas: 250 },
-        { month: 'Mar', presentadas: 600, vencidas: 300 },
-        { month: 'Apr', presentadas: 550, vencidas: 280 },
-        { month: 'May', presentadas: 700, vencidas: 350 },
-        { month: 'Jun', presentadas: 650, vencidas: 320 },
-        { month: 'Jul', presentadas: 750, vencidas: 400 },
-        { month: 'Aug', presentadas: 800, vencidas: 420 },
+        { month: 'Jan', presentadas: 45, vencidas: 20 },
+        { month: 'Feb', presentadas: 50, vencidas: 25 },
+        { month: 'Mar', presentadas: 60, vencidas: 30 },
+        { month: 'Apr', presentadas: 55, vencidas: 28 },
+        { month: 'May', presentadas: 70, vencidas: 35 },
+        { month: 'Jun', presentadas: 65, vencidas: 32 },
+        { month: 'Jul', presentadas: 75, vencidas: 40 },
+        { month: 'Aug', presentadas: 80, vencidas: 42 },
     ],
 };
+
 
 export const rejectionData = {
     average: 1.05,
