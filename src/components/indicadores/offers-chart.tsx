@@ -24,13 +24,13 @@ const chartConfig = {
 
 export function OffersChart() {
   return (
-    <Card>
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle className="text-sm font-medium">Ofertas presentadas vs. vencidas.</CardTitle>
         <CardDescription className="text-2xl font-bold">{offersData.total} Ofertas</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-[120px] w-full">
+      <CardContent className="flex-1 flex flex-col">
+        <ChartContainer config={chartConfig} className="flex-1 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={offersData.chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
