@@ -22,26 +22,26 @@ const chartConfig = {
 
 export function RejectionReasonChart() {
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle className="text-sm font-medium">Estadísticas</CardTitle>
         <CardDescription className="text-base font-semibold">Motivo de rechazo</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col items-center gap-4">
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square w-full max-w-[250px]">
+      <CardContent className="flex flex-1 flex-col items-center justify-center gap-6">
+        <ChartContainer config={chartConfig} className="mx-auto aspect-square w-full max-w-[300px]">
           <PieChart>
             <Pie
               data={rejectionData.reasons}
               dataKey="value"
               nameKey="name"
-              innerRadius={60}
-              outerRadius={90}
+              innerRadius={80}
+              outerRadius={110}
               strokeWidth={5}
               labelLine={false}
               label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
                 const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                const x = cx + (outerRadius + 15) * Math.cos(-midAngle * (Math.PI / 180));
-                const y = cy + (outerRadius + 15) * Math.sin(-midAngle * (Math.PI / 180));
+                const x = cx + (outerRadius + 20) * Math.cos(-midAngle * (Math.PI / 180));
+                const y = cy + (outerRadius + 20) * Math.sin(-midAngle * (Math.PI / 180));
                 
                 return (
                   <text
@@ -50,7 +50,7 @@ export function RejectionReasonChart() {
                     fill="hsl(var(--foreground))"
                     textAnchor={x > cx ? 'start' : 'end'}
                     dominantBaseline="central"
-                    className="text-xs font-medium"
+                    className="text-sm font-medium"
                   >
                    {`${(percent * 100).toFixed(0)}%`}
                   </text>
@@ -61,14 +61,14 @@ export function RejectionReasonChart() {
                 <Cell key={entry.name} fill={entry.color} className="stroke-background hover:opacity-80" />
               ))}
             </Pie>
-             <g transform="translate(125, 125)">
-                <text x="0" y="5" textAnchor="middle" dominantBaseline="middle" className="fill-foreground text-2xl font-bold">
+             <g transform="translate(150, 150)">
+                <text x="0" y="8" textAnchor="middle" dominantBaseline="middle" className="fill-foreground text-4xl font-bold">
                     {rejectionData.totalRejections}
                 </text>
             </g>
           </PieChart>
         </ChartContainer>
-        <div className="flex flex-col gap-2 text-sm w-full max-w-[250px]">
+        <div className="flex flex-col gap-2 text-sm w-full max-w-[300px]">
           {rejectionData.reasons.map(reason => (
             <div key={reason.name} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
