@@ -1,7 +1,7 @@
 'use client';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { responseTimeDataSede } from '@/lib/data/indicadores-data';
-import { Gauge } from 'lucide-react';
+import { Gauge, ArrowUp } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const data = [
@@ -10,57 +10,50 @@ const data = [
     { name: 'Lento', value: responseTimeDataSede.breakdown.slow },
 ];
 const COLORS = ['#10B981', '#F59E0B', '#EF4444'];
+const TOTAL_SEGMENTS = 40;
+
 
 const GaugeChart = () => {
     const value = responseTimeDataSede.average;
-    const target = responseTimeDataSede.target;
-    const percentage = Math.min((value / target) * 100, 100);
+    const performance = responseTimeDataSede.performancePercentage;
 
-    const chartData = [
-        { name: 'value', value: percentage },
-        { name: 'background', value: 100 - percentage }
-    ];
+    const segments = Array.from({ length: TOTAL_SEGMENTS }, (_, i) => {
+        const segmentValue = (i + 1) / TOTAL_SEGMENTS;
+        const isActive = segmentValue <= performance / 100;
+        return {
+            value: 1,
+            color: isActive ? 'hsl(var(--primary))' : 'hsl(var(--muted))'
+        };
+    });
 
     return (
         <div className="relative h-40 w-full">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
-                        data={[{ value: 100 }]}
-                        dataKey="value"
+                        data={segments}
                         cx="50%"
-                        cy="90%"
+                        cy="95%"
                         startAngle={180}
                         endAngle={0}
-                        innerRadius="70%"
-                        outerRadius="100%"
-                        fill="hsl(var(--muted))"
-                        isAnimationActive={false}
-                    />
-                    <Pie
-                        data={chartData}
+                        innerRadius="60%"
+                        outerRadius="80%"
+                        paddingAngle={2}
                         dataKey="value"
-                        cx="50%"
-                        cy="90%"
-                        startAngle={180}
-                        endAngle={0}
-                        innerRadius="70%"
-                        outerRadius="100%"
-                        fill="hsl(var(--primary))"
                         stroke="hsl(var(--card))"
-                        strokeWidth={4}
-                        cornerRadius={10}
+                        strokeWidth={2}
                     >
-                         <Cell key={`cell-0`} fill="hsl(var(--primary))" />
-                         <Cell key={`cell-1`} fill="transparent" />
+                        {segments.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
                     </Pie>
                 </PieChart>
             </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-end pb-12">
-                <span className="text-4xl font-bold tracking-tighter">
-                    {value}<span className="text-2xl text-muted-foreground">h</span>
+             <div className="absolute inset-0 flex flex-col items-center justify-end pb-10">
+                <span className="text-5xl font-bold tracking-tighter">
+                    {value}<span className="text-3xl text-muted-foreground">h</span>
                 </span>
-                <span className="text-sm text-muted-foreground">Promedio</span>
+                <span className="text-sm text-muted-foreground font-medium">Promedio</span>
             </div>
         </div>
     );
@@ -68,31 +61,33 @@ const GaugeChart = () => {
 
 export const ResponseTimeChart = () => {
     return (
-        <Card>
-            <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                    <div>
-                        <div className="flex items-center gap-2 mb-1">
-                             <div className='p-1.5 bg-muted rounded-md'>
-                                <Gauge className="h-5 w-5 text-primary" />
-                             </div>
-                            <h3 className="text-lg font-semibold">Tiempo de Respuesta</h3>
-                        </div>
-                        <p className="text-sm text-muted-foreground">Promedio de la sede</p>
-                    </div>
-                    <div className="text-right">
-                        <p className="text-lg font-bold">{responseTimeDataSede.target}h</p>
-                        <p className="text-xs text-muted-foreground">Objetivo</p>
-                    </div>
+        <Card className="flex flex-col">
+            <CardHeader className="flex flex-row justify-between items-start pb-2">
+                <div>
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                         <div className='p-2 bg-muted rounded-lg'>
+                            <Gauge className="h-5 w-5 text-primary" />
+                         </div>
+                        Tiempo de Respuesta
+                    </h3>
+                    <p className="text-sm text-muted-foreground">Promedio de la sede</p>
                 </div>
-
+                 <div className="text-right">
+                    <p className="text-lg font-semibold text-green-500 flex items-center">
+                        <ArrowUp className="h-4 w-4 mr-1" />
+                        {responseTimeDataSede.trend}%
+                    </p>
+                    <p className="text-xs text-muted-foreground">vs semana ant.</p>
+                </div>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col justify-center items-center">
                 <GaugeChart />
 
-                <div className="mt-4 space-y-2 text-sm">
+                <div className="w-full mt-4 space-y-2 text-sm">
                     {data.map((entry, index) => (
-                        <div key={index} className="flex justify-between items-center">
+                        <div key={index} className="flex justify-between items-center bg-muted/50 p-2 rounded-md">
                             <div className="flex items-center gap-2">
-                                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: COLORS[index] }} />
+                                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: COLORS[index] }} />
                                 <span>{entry.name}</span>
                             </div>
                             <span className="font-medium">{entry.value} leads</span>
