@@ -11,12 +11,12 @@ import { offersData } from '@/lib/data/indicadores-data';
 import { ChartConfig, ChartContainer } from '../ui/chart';
 
 const chartConfig = {
-  product: {
-    label: 'Product Sales',
+  presentadas: {
+    label: 'Presentadas',
     color: 'hsl(var(--primary))',
   },
-  subs: {
-    label: 'Subscriptions',
+  vencidas: {
+    label: 'Vencidas',
     color: 'hsl(var(--chart-4))',
   },
 } satisfies ChartConfig;
@@ -35,8 +35,8 @@ export function OffersChart() {
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
               <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} fontSize={10} />
               <YAxis hide={true} />
-              <Bar dataKey="product" fill="var(--color-product)" radius={4} />
-              <Bar dataKey="subs" fill="var(--color-subs)" radius={4} />
+              <Bar dataKey="presentadas" fill="var(--color-presentadas)" radius={4} />
+              <Bar dataKey="vencidas" fill="var(--color-vencidas)" radius={4} />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
@@ -44,16 +44,16 @@ export function OffersChart() {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-                    <span>Product sales</span>
+                    <span>Presentadas</span>
                 </div>
-                <span className="font-semibold">${offersData.productSales.toLocaleString()}</span>
+                <span className="font-semibold">${offersData.presentadas.toLocaleString()}</span>
             </div>
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-subs)]" />
-                    <span>Subscriptions</span>
+                    <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-vencidas)]" />
+                    <span>Vencidas</span>
                 </div>
-                <span className="font-semibold">${offersData.subscriptions.toLocaleString()}</span>
+                <span className="font-semibold">${offersData.vencidas.toLocaleString()}</span>
             </div>
         </div>
       </CardContent>

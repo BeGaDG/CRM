@@ -20,17 +20,17 @@ export const responseTimeData = {
 
 export const offersData = {
     total: 12875,
-    productSales: 7213,
-    subscriptions: 5662,
+    presentadas: 8540,
+    vencidas: 4335,
     chartData: [
-        { month: 'Jan', product: 300, subs: 400 },
-        { month: 'Feb', product: 200, subs: 300 },
-        { month: 'Mar', product: 500, subs: 600 },
-        { month: 'Apr', product: 400, subs: 500 },
-        { month: 'May', product: 700, subs: 800 },
-        { month: 'Jun', product: 600, subs: 700 },
-        { month: 'Jul', product: 800, subs: 900 },
-        { month: 'Aug', product: 700, subs: 800 },
+        { month: 'Jan', presentadas: 450, vencidas: 200 },
+        { month: 'Feb', presentadas: 500, vencidas: 250 },
+        { month: 'Mar', presentadas: 600, vencidas: 300 },
+        { month: 'Apr', presentadas: 550, vencidas: 280 },
+        { month: 'May', presentadas: 700, vencidas: 350 },
+        { month: 'Jun', presentadas: 650, vencidas: 320 },
+        { month: 'Jul', presentadas: 750, vencidas: 400 },
+        { month: 'Aug', presentadas: 800, vencidas: 420 },
     ],
 };
 
