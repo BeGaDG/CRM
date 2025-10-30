@@ -1,82 +1,103 @@
-'use client'
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+'use client';
+import { TrendingUp } from "lucide-react"
+import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts"
 
-const GaugeChart = ({ value, min, max }: { value: number, min: number, max: number }) => {
-  const percentage = (value - min) / (max - min)
-  const endAngle = 180 - percentage * 180
-  
-  const data = [{ value: 1 }]
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+import { responseTimeData } from "@/lib/data/indicadores-data";
 
-  return (
-    <div className='relative w-full h-[180px]'>
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <defs>
-            <linearGradient id="gaugeGradient" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="hsl(var(--primary) / 0.8)" />
-              <stop offset="100%" stopColor="hsl(var(--primary) / 0.3)" />
-            </linearGradient>
-          </defs>
-          {/* Background track */}
-          <Pie
-            data={data}
-            dataKey="value"
-            cx="50%"
-            cy="100%"
-            startAngle={180}
-            endAngle={0}
-            innerRadius="70%"
-            outerRadius="100%"
-            fill="hsl(var(--muted))"
-            stroke="hsl(var(--card))"
-            strokeWidth={4}
-          />
-          {/* Value arc */}
-          <Pie
-            data={data}
-            dataKey="value"
-            cx="50%"
-            cy="100%"
-            startAngle={180}
-            endAngle={endAngle}
-            innerRadius="70%"
-            outerRadius="100%"
-            fill="url(#gaugeGradient)"
-            stroke="hsl(var(--card))"
-            strokeWidth={4}
-            cornerRadius={8}
-          />
-        </PieChart>
-      </ResponsiveContainer>
-      <div className='absolute inset-0 flex flex-col items-center justify-end pointer-events-none'>
-        <span className='text-6xl font-bold text-foreground'>{value.toFixed(1)}h</span>
-        <span className='text-sm text-muted-foreground'>Respuesta Promedio</span>
-      </div>
-      <div className="absolute bottom-[20px] w-full px-4 flex justify-between text-xs text-muted-foreground">
-        <span>{min}h</span>
-        <span>{max}h+</span>
-      </div>
-    </div>
-  )
-}
+const chartConfig = {
+  tiempo: {
+    label: "Tiempo",
+    color: "hsl(var(--primary))",
+  },
+} satisfies ChartConfig
 
 export function ResponseTimeChart() {
-  // Example data
-  const responseTime = 3.8
-  const minTime = 0
-  const maxTime = 12
+  const chartData = [{ month: "january", tiempo: responseTimeData.value }]
+  const totalValue = chartData[0].tiempo;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base font-semibold text-center">
-          Tiempo de Respuesta a Nuevos Leads
-        </CardTitle>
+    <Card className="flex flex-col">
+      <CardHeader className="items-center pb-0">
+        <CardTitle>Tiempo de Respuesta Promedio</CardTitle>
+        <CardDescription>Respuesta a nuevos leads en las últimas 4 semanas</CardDescription>
       </CardHeader>
-      <CardContent className='p-0'>
-        <GaugeChart value={responseTime} min={minTime} max={maxTime} />
+      <CardContent className="flex flex-1 items-center pb-0">
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square w-full max-w-[250px]"
+        >
+          <RadialBarChart
+            data={chartData}
+            endAngle={360 * (totalValue / responseTimeData.max) }
+            innerRadius={80}
+            outerRadius={130}
+          >
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) - 16}
+                          className="fill-foreground text-3xl font-bold"
+                        >
+                          {totalValue.toFixed(1)}h
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 4}
+                          className="fill-muted-foreground"
+                        >
+                          Promedio
+                        </tspan>
+                      </text>
+                    )
+                  }
+                }}
+              />
+            </PolarRadiusAxis>
+            <RadialBar
+              dataKey="tiempo"
+              background
+              cornerRadius={5}
+              fill="var(--color-tiempo)"
+              className="stroke-transparent stroke-2"
+            />
+          </RadialBarChart>
+        </ChartContainer>
       </CardContent>
+      <CardFooter className="flex-col gap-2 text-sm">
+        <div className="flex items-center gap-2 font-medium leading-none">
+            {responseTimeData.trend.direction === 'up' ? 
+                <TrendingUp className="h-4 w-4 text-green-500" /> :
+                <TrendingUp className="h-4 w-4 text-red-500 transform rotate-180" />
+            }
+            {responseTimeData.trend.value}% este mes
+        </div>
+        <div className="leading-none text-muted-foreground">
+          {responseTimeData.trend.label}
+        </div>
+      </CardFooter>
     </Card>
   )
 }

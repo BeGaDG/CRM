@@ -14,14 +14,12 @@ export const asesores = [
 ];
 
 export const responseTimeData = {
-    title: 'Tiempo promedio de respuesta',
-    chart: {
-        value: '3.8h',
-        totalSegments: 20,
-        activeSegments: 14,
-    },
+    value: 3.8,
+    min: 0,
+    max: 12,
     trend: {
         value: 12,
-        label: 'más rápido este mes',
+        direction: 'down',
+        label: 'Más rápido que el mes anterior',
     }
 }
