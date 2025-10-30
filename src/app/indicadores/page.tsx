@@ -17,13 +17,21 @@ export default function IndicadoresPage() {
     };
 
     const SedeCharts = () => (
-        <div className="animate-in fade-in-50 grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="animate-in fade-in-50 grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-2 gap-6">
+            {/* Grafica 1 */}
+            <div className="lg:col-start-1">
                 <ResponseTimeChart />
+            </div>
+            {/* Grafica 2 */}
+            <div className="lg:col-start-2">
                 <OffersChart />
             </div>
-            <RejectionReasonChart />
-            <div className="lg:col-span-2">
+            {/* Grafica 3 */}
+            <div className="lg:col-start-3 lg:row-span-2 h-full">
+                <RejectionReasonChart />
+            </div>
+            {/* Grafica 4 */}
+            <div className="lg:col-span-2 lg:col-start-1 lg:row-start-2">
                 <SalesByCityChart />
             </div>
         </div>
