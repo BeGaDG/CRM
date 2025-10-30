@@ -1,4 +1,3 @@
-
 export const sedes = [
     { id: 'monteria', name: 'Montería' },
     { id: 'sincelejo', name: 'Sincelejo' },
