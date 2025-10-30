@@ -1,5 +1,5 @@
 'use client';
-import { Pie, PieChart } from 'recharts';
+import { Pie, PieChart, Cell } from 'recharts';
 import {
   Card,
   CardContent,
@@ -38,7 +38,7 @@ export function RejectionReasonChart() {
               outerRadius={90}
               strokeWidth={5}
               labelLine={false}
-              label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
+              label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
                 const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                 const x = cx + (outerRadius + 15) * Math.cos(-midAngle * (Math.PI / 180));
                 const y = cy + (outerRadius + 15) * Math.sin(-midAngle * (Math.PI / 180));
@@ -58,9 +58,7 @@ export function RejectionReasonChart() {
               }}
             >
               {rejectionData.reasons.map((entry) => (
-                <g key={entry.name} className="stroke-background hover:opacity-80">
-                  <path d="..." fill={entry.color} />
-                </g>
+                <Cell key={entry.name} fill={entry.color} className="stroke-background hover:opacity-80" />
               ))}
             </Pie>
              <g transform="translate(125, 125)">
