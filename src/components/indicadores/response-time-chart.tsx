@@ -4,53 +4,67 @@ import { responseTimeDataSede } from '@/lib/data/indicadores-data';
 import { Gauge, ArrowUp, Smile } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-const TOTAL_SEGMENTS = 50;
-
 const GaugeChart = () => {
-    const value = responseTimeDataSede.average;
-    const performance = responseTimeDataSede.performancePercentage;
-
-    const segments = Array.from({ length: TOTAL_SEGMENTS }, (_, i) => {
-        const segmentValue = (i + 1) / TOTAL_SEGMENTS;
-        const isActive = segmentValue <= performance / 100;
-        return {
-            value: 1,
-            color: isActive ? 'hsl(var(--primary))' : 'transparent'
-        };
-    });
+    const performance = responseTimeDataSede.performancePercentage / 100;
+    const data = [
+        { name: 'Performance', value: performance },
+        { name: 'Remaining', value: 1 - performance }
+    ];
 
     return (
         <div className="relative h-52 w-full">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stopColor="hsl(var(--primary))" />
+                            <stop offset="100%" stopColor="hsl(var(--chart-2))" />
+                        </linearGradient>
+                    </defs>
+                    {/* Background Arc */}
                     <Pie
-                        data={segments}
+                        data={[{ value: 1 }]}
+                        dataKey="value"
                         cx="50%"
                         cy="100%"
                         startAngle={180}
                         endAngle={0}
-                        innerRadius="60%"
-                        outerRadius="100%"
-                        paddingAngle={2}
+                        innerRadius="70%"
+                        outerRadius="85%"
+                        fill="hsl(var(--muted))"
+                        stroke="none"
+                    />
+                    {/* Data Arc */}
+                    <Pie
+                        data={data}
                         dataKey="value"
-                        stroke="hsl(var(--card))"
-                        strokeWidth={3}
+                        cx="50%"
+                        cy="100%"
+                        startAngle={180}
+                        endAngle={0}
+                        innerRadius="70%"
+                        outerRadius="85%"
+                        fill="url(#gradient)"
+                        stroke="none"
+                        cornerRadius={10}
                     >
-                        {segments.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
+                         <Cell fill="url(#gradient)" />
+                         <Cell fill="transparent" />
                     </Pie>
                 </PieChart>
             </ResponsiveContainer>
-             <div className="absolute inset-0 flex flex-col items-center justify-end pb-8">
+            <div className="absolute inset-0 flex flex-col items-center justify-end pb-8">
                 <span className="text-6xl font-bold tracking-tighter">
-                    {value}<span className="text-4xl text-muted-foreground">h</span>
+                    {responseTimeDataSede.average}<span className="text-4xl text-muted-foreground">h</span>
                 </span>
                 <span className="text-sm text-muted-foreground font-medium">Promedio</span>
             </div>
+             <div className="absolute bottom-[20%] left-[15%] text-xs text-muted-foreground">0h</div>
+             <div className="absolute bottom-[20%] right-[15%] text-xs text-muted-foreground">8h+</div>
         </div>
     );
 };
+
 
 export const ResponseTimeChart = () => {
     return (

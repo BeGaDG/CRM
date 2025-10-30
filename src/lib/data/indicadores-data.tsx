@@ -17,13 +17,8 @@ export const responseTimeDataSede = {
     average: 3.8,
     target: 4,
     trend: 10,
-    performancePercentage: 85, // (target / average) corrected for visualization
+    performancePercentage: 85,
     performanceText: 'Mejor que el 85% del objetivo de respuesta.',
-    breakdown: {
-        fast: 18, // < 2h
-        normal: 25, // 2-8h
-        slow: 5 // > 8h
-    }
 };
 
 
