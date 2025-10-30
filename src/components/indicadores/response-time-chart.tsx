@@ -1,65 +1,103 @@
 'use client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { responseTimeDataSede } from '@/lib/data/indicadores-data';
-import { cn } from '@/lib/utils';
-import { ArrowDown } from 'lucide-react';
+import { Gauge } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-export const ResponseTimeChart = () => {
-    const days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-    const averageTime = responseTimeDataSede.average;
-    
-    // Calculate the total grid columns needed. Each day is a column.
-    const gridCols = days.length;
+const data = [
+    { name: 'Rápido', value: responseTimeDataSede.breakdown.fast },
+    { name: 'Normal', value: responseTimeDataSede.breakdown.normal },
+    { name: 'Lento', value: responseTimeDataSede.breakdown.slow },
+];
+const COLORS = ['#10B981', '#F59E0B', '#EF4444'];
+
+const GaugeChart = () => {
+    const value = responseTimeDataSede.average;
+    const target = responseTimeDataSede.target;
+    const percentage = Math.min((value / target) * 100, 100);
+
+    const chartData = [
+        { name: 'value', value: percentage },
+        { name: 'background', value: 100 - percentage }
+    ];
 
     return (
+        <div className="relative h-40 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                    <Pie
+                        data={[{ value: 100 }]}
+                        dataKey="value"
+                        cx="50%"
+                        cy="90%"
+                        startAngle={180}
+                        endAngle={0}
+                        innerRadius="70%"
+                        outerRadius="100%"
+                        fill="hsl(var(--muted))"
+                        isAnimationActive={false}
+                    />
+                    <Pie
+                        data={chartData}
+                        dataKey="value"
+                        cx="50%"
+                        cy="90%"
+                        startAngle={180}
+                        endAngle={0}
+                        innerRadius="70%"
+                        outerRadius="100%"
+                        fill="hsl(var(--primary))"
+                        stroke="hsl(var(--card))"
+                        strokeWidth={4}
+                        cornerRadius={10}
+                    >
+                         <Cell key={`cell-0`} fill="hsl(var(--primary))" />
+                         <Cell key={`cell-1`} fill="transparent" />
+                    </Pie>
+                </PieChart>
+            </ResponsiveContainer>
+            <div className="absolute inset-0 flex flex-col items-center justify-end pb-12">
+                <span className="text-4xl font-bold tracking-tighter">
+                    {value}<span className="text-2xl text-muted-foreground">h</span>
+                </span>
+                <span className="text-sm text-muted-foreground">Promedio</span>
+            </div>
+        </div>
+    );
+};
+
+export const ResponseTimeChart = () => {
+    return (
         <Card>
-            <CardHeader>
-                <div className='flex justify-between items-start'>
+            <CardContent className="p-6">
+                <div className="flex justify-between items-start mb-4">
                     <div>
-                        <CardTitle>Tiempo de Respuesta Promedio</CardTitle>
-                        <CardDescription>Promedio de horas para el primer contacto.</CardDescription>
+                        <div className="flex items-center gap-2 mb-1">
+                             <div className='p-1.5 bg-muted rounded-md'>
+                                <Gauge className="h-5 w-5 text-primary" />
+                             </div>
+                            <h3 className="text-lg font-semibold">Tiempo de Respuesta</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground">Promedio de la sede</p>
                     </div>
-                     <div className="text-right">
-                        <p className="text-sm font-semibold text-red-500 flex items-center">
-                            <ArrowDown className="h-4 w-4 mr-1" />
-                            {responseTimeDataSede.trend}%
-                        </p>
-                        <p className="text-xs text-muted-foreground">vs semana anterior</p>
+                    <div className="text-right">
+                        <p className="text-lg font-bold">{responseTimeDataSede.target}h</p>
+                        <p className="text-xs text-muted-foreground">Objetivo</p>
                     </div>
                 </div>
-                 <div className='pt-2'>
-                    <span className="text-3xl font-bold">{averageTime}h</span>
-                    <span className="text-muted-foreground"> / promedio</span>
-                 </div>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-4">
-                    <div className={`grid grid-cols-7 gap-2 text-center text-xs text-muted-foreground`}>
-                        {days.map(day => <div key={day}>{day}</div>)}
-                    </div>
 
-                    <div className="relative space-y-2">
-                        {responseTimeDataSede.activities.map((activity) => (
-                            <div key={activity.name} className="relative h-6 w-full rounded-full bg-muted">
-                                <div
-                                    className={cn("absolute h-6 rounded-full", activity.color)}
-                                    style={{
-                                        left: `${(activity.start / gridCols) * 100}%`,
-                                        width: `${(activity.span / gridCols) * 100}%`,
-                                    }}
-                                />
-                            </div>
-                        ))}
-                    </div>
+                <GaugeChart />
 
-                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs">
-                        {responseTimeDataSede.activities.map(activity => (
-                             <div key={activity.name} className="flex items-center gap-2">
-                                <span className={cn("h-2 w-2 rounded-full", activity.color)}></span>
-                                <span>{activity.name}</span>
+                <div className="mt-4 space-y-2 text-sm">
+                    {data.map((entry, index) => (
+                        <div key={index} className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: COLORS[index] }} />
+                                <span>{entry.name}</span>
                             </div>
-                        ))}
-                    </div>
+                            <span className="font-medium">{entry.value} leads</span>
+                        </div>
+                    ))}
                 </div>
             </CardContent>
         </Card>

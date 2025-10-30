@@ -15,14 +15,12 @@ export const asesores = [
 
 export const responseTimeDataSede = {
     average: 4.2,
-    trend: 10, // 10% increase from last week (which is bad for response time)
-    activities: [
-        { name: 'Rápida (<2h)', color: 'bg-green-500', start: 0, span: 3 },
-        { name: 'Normal (2-8h)', color: 'bg-yellow-500', start: 2, span: 4 },
-        { name: 'Lenta (>8h)', color: 'bg-red-500', start: 5, span: 2 },
-        { name: 'Normal (2-8h)', color: 'bg-yellow-500', start: 1, span: 2 },
-        { name: 'Lenta (>8h)', color: 'bg-red-500', start: 4, span: 1 },
-    ]
+    target: 4,
+    breakdown: {
+        fast: 15, // < 2h
+        normal: 28, // 2-8h
+        slow: 7 // > 8h
+    }
 };
 
 
