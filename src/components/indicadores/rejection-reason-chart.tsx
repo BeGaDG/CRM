@@ -27,7 +27,7 @@ export function RejectionReasonChart() {
         <CardTitle className="text-sm font-medium">Estadísticas</CardTitle>
         <CardDescription className="text-base font-semibold">Motivo de rechazo</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col md:flex-row items-center gap-4">
+      <CardContent className="flex flex-col items-center gap-4">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square w-full max-w-[250px]">
           <PieChart>
             <Pie
@@ -68,7 +68,7 @@ export function RejectionReasonChart() {
             </g>
           </PieChart>
         </ChartContainer>
-        <div className="flex flex-col gap-2 text-sm w-full">
+        <div className="flex flex-col gap-2 text-sm w-full max-w-[250px]">
           {rejectionData.reasons.map(reason => (
             <div key={reason.name} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
