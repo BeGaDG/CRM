@@ -14,7 +14,8 @@ export const asesores = [
 ];
 
 export const responseTimeDataSede = {
-    average: 4.2
+    average: 4.2,
+    trend: 10, // 10% increase from last week (which is bad for response time)
 };
 
 export const weeklyActivityData = {
