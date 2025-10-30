@@ -18,6 +18,7 @@ export const responseTimeDataSede = {
     target: 4,
     trend: 10,
     performancePercentage: 85, // (target / average) corrected for visualization
+    performanceText: 'Mejor que el 85% del objetivo de respuesta.',
     breakdown: {
         fast: 18, // < 2h
         normal: 25, // 2-8h
@@ -35,9 +36,9 @@ export const weeklyActivityData = {
         { name: 'Visitas', color: 'bg-green-500', start: 1, span: 3 },
         { name: 'Cotizaciones', color: 'bg-orange-500', start: 3, span: 2 },
         { name: 'Seguimiento', color: 'bg-purple-500', start: 2, span: 5 },
-        { name: 'Normal Activity', color: 'bg-yellow-500', start: 4, span: 1 },
-        { name: 'Slow Activity', color: 'bg-red-500', start: 5, span: 2 },
-        { name: 'Normal Activity 2', color: 'bg-yellow-500', start: 0, span: 1 },
-        { name: 'Slow Activity 2', color: 'bg-red-500', start: 6, span: 1 },
+        { name: 'Normal', color: 'bg-yellow-500', start: 4, span: 1 },
+        { name: 'Lenta', color: 'bg-red-500', start: 5, span: 2 },
+        { name: 'Normal', color: 'bg-yellow-500', start: 0, span: 1 },
+        { name: 'Lenta', color: 'bg-red-500', start: 6, span: 1 },
     ]
 };

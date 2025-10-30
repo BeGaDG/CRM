@@ -1,17 +1,10 @@
 'use client';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { responseTimeDataSede } from '@/lib/data/indicadores-data';
-import { Gauge, ArrowUp } from 'lucide-react';
+import { Gauge, ArrowUp, Smile } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-const data = [
-    { name: 'Rápido', value: responseTimeDataSede.breakdown.fast },
-    { name: 'Normal', value: responseTimeDataSede.breakdown.normal },
-    { name: 'Lento', value: responseTimeDataSede.breakdown.slow },
-];
-const COLORS = ['#10B981', '#F59E0B', '#EF4444'];
 const TOTAL_SEGMENTS = 50;
-
 
 const GaugeChart = () => {
     const value = responseTimeDataSede.average;
@@ -41,7 +34,7 @@ const GaugeChart = () => {
                         paddingAngle={2}
                         dataKey="value"
                         stroke="hsl(var(--card))"
-                        strokeWidth={2}
+                        strokeWidth={3}
                     >
                         {segments.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
@@ -70,7 +63,6 @@ export const ResponseTimeChart = () => {
                          </div>
                         Tiempo de Respuesta
                     </h3>
-                    <p className="text-sm text-muted-foreground">Promedio de la sede</p>
                 </div>
                  <div className="text-right">
                     <p className="text-lg font-semibold text-green-500 flex items-center">
@@ -83,16 +75,9 @@ export const ResponseTimeChart = () => {
             <CardContent className="flex-1 flex flex-col justify-center items-center pt-4">
                 <GaugeChart />
 
-                <div className="w-full mt-4 space-y-2 text-sm">
-                    {data.map((entry, index) => (
-                        <div key={index} className="flex justify-between items-center bg-muted/50 p-2 rounded-md">
-                            <div className="flex items-center gap-2">
-                                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: COLORS[index] }} />
-                                <span>{entry.name}</span>
-                            </div>
-                            <span className="font-medium">{entry.value} leads</span>
-                        </div>
-                    ))}
+                <div className="w-full mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground bg-muted/50 p-2 rounded-lg">
+                    <Smile className="h-4 w-4" />
+                    <span>{responseTimeDataSede.performanceText}</span>
                 </div>
             </CardContent>
         </Card>
