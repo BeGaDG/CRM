@@ -36,9 +36,9 @@ const GaugeChart = () => {
                         cy="100%"
                         startAngle={180}
                         endAngle={0}
-                        innerRadius="70%"
-                        outerRadius="95%"
-                        paddingAngle={2}
+                        innerRadius="80%"
+                        outerRadius="100%"
+                        paddingAngle={1}
                         dataKey="value"
                         stroke="hsl(var(--card))"
                         strokeWidth={2}
@@ -49,7 +49,7 @@ const GaugeChart = () => {
                     </Pie>
                 </PieChart>
             </ResponsiveContainer>
-             <div className="absolute inset-0 flex flex-col items-center justify-end pb-12">
+             <div className="absolute inset-0 flex flex-col items-center justify-end pb-8">
                 <span className="text-6xl font-bold tracking-tighter">
                     {value}<span className="text-4xl text-muted-foreground">h</span>
                 </span>
