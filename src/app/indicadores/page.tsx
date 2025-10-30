@@ -1,10 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart as BarChartIcon } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { sedes, asesores } from '@/lib/data/indicadores-data';
+import { ResponseTimeChart } from '@/components/indicadores/response-time-chart';
+import { OffersChart } from '@/components/indicadores/offers-chart';
+import { RejectionReasonChart } from '@/components/indicadores/rejection-reason-chart';
+import { SalesByCityChart } from '@/components/indicadores/sales-by-city-chart';
 
 export default function IndicadoresPage() {
     const [selectedSede, setSelectedSede] = useState<string | null>(null);
@@ -16,9 +19,14 @@ export default function IndicadoresPage() {
     };
 
     const SedeCharts = () => (
-        <div className="animate-in fade-in-50">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
-                {/* Gráficos de Sede irán aquí */}
+        <div className="animate-in fade-in-50 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ResponseTimeChart />
+                <OffersChart />
+            </div>
+            <RejectionReasonChart />
+            <div className="lg:col-span-2">
+                <SalesByCityChart />
             </div>
         </div>
     );
@@ -57,46 +65,6 @@ export default function IndicadoresPage() {
                         </div>
                     </CardContent>
                 </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Gráfico de Asesor 4</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                         <div className="h-40 bg-muted rounded-md flex items-center justify-center">
-                             <p className="text-muted-foreground text-sm">Data del asesor</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Gráfico de Asesor 5</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                         <div className="h-40 bg-muted rounded-md flex items-center justify-center">
-                             <p className="text-muted-foreground text-sm">Data del asesor</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Gráfico de Asesor 6</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                         <div className="h-40 bg-muted rounded-md flex items-center justify-center">
-                             <p className="text-muted-foreground text-sm">Data del asesor</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Gráfico de Asesor 7</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                         <div className="h-40 bg-muted rounded-md flex items-center justify-center">
-                             <p className="text-muted-foreground text-sm">Data del asesor</p>
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
         </div>
     );
@@ -118,11 +86,12 @@ export default function IndicadoresPage() {
                         <p className="text-muted-foreground">Filtra por sede y asesor para ver las métricas.</p>
                     </div>
                     <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <Select onValueChange={handleSedeChange}>
+                        <Select onValueChange={handleSedeChange} defaultValue="all">
                             <SelectTrigger className="w-full sm:w-[180px]">
                                 <SelectValue placeholder="Seleccionar Sede..." />
                             </SelectTrigger>
                             <SelectContent>
+                                <SelectItem value="all">Todas las Sedes</SelectItem>
                                 {sedes.map(sede => (
                                     <SelectItem key={sede.id} value={sede.name}>{sede.name}</SelectItem>
                                 ))}
@@ -133,7 +102,7 @@ export default function IndicadoresPage() {
                                 <SelectValue placeholder="Seleccionar Asesor..." />
                             </SelectTrigger>
                             <SelectContent>
-                                {asesores.filter(a => selectedSede === 'Todas' || a.sede === selectedSede).map(asesor => (
+                                {asesores.filter(a => selectedSede === 'all' || a.sede === selectedSede).map(asesor => (
                                     <SelectItem key={asesor.id} value={asesor.name}>{asesor.name}</SelectItem>
                                 ))}
                             </SelectContent>
