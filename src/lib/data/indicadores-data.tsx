@@ -1,4 +1,3 @@
-
 export const sedes = [
     { id: 'monteria', name: 'Montería' },
     { id: 'sincelejo', name: 'Sincelejo' },
@@ -17,9 +16,10 @@ export const responseTimeData = {
     value: 3.8,
     min: 0,
     max: 12,
-    trend: {
-        value: 12,
-        direction: 'down',
-        label: 'Más rápido que el mes anterior',
-    }
+    segments: [
+        { min: 0, max: 3, color: '#22c55e' }, // Verde
+        { min: 3, max: 6, color: '#facc15' }, // Amarillo
+        { min: 6, max: 9, color: '#f97316' }, // Naranja
+        { min: 9, max: 12, color: '#ef4444' }, // Rojo
+    ]
 }

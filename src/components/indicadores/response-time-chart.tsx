@@ -5,101 +5,92 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Separator } from '@/components/ui/separator';
 import { responseTimeData } from "@/lib/data/indicadores-data";
-import { TrendingUp } from 'lucide-react';
 
-const GaugePointer = ({ value, max, cx, cy, innerRadius, outerRadius, startAngle, endAngle }: any) => {
-  const angle = startAngle + (value / max) * (endAngle - startAngle);
-  
+const GaugePointer = ({ cx, cy, angle, outerRadius }: { cx: number, cy: number, angle: number, outerRadius: number }) => {
   const target = {
-    x: cx + outerRadius * Math.sin(angle * (Math.PI / 180)),
-    y: cy - outerRadius * Math.cos(angle * (Math.PI / 180)),
+    x: cx + (outerRadius - 5) * Math.sin(angle * (Math.PI / 180)),
+    y: cy - (outerRadius - 5) * Math.cos(angle * (Math.PI / 180)),
   };
-  
+
+  const tailLength = 10;
+  const tail = {
+     x: cx + (outerRadius - tailLength) * Math.sin(angle * (Math.PI / 180)),
+     y: cy - (outerRadius - tailLength) * Math.cos(angle * (Math.PI / 180)),
+  }
+
   return (
     <g>
-      <circle cx={cx} cy={cy} r={5} fill="hsl(var(--primary))" />
-      <path
-        d={`M ${cx} ${cy} L ${target.x} ${target.y}`}
-        stroke="hsl(var(--primary))"
-        strokeWidth={2}
-      />
+        <path d={`M ${tail.x} ${tail.y} L ${target.x} ${target.y}`} stroke="white" strokeWidth={5} strokeLinecap='round' />
+        <circle cx={target.x} cy={target.y} r={10} fill="white" />
+        <circle cx={target.x} cy={target.y} r={5} fill="hsl(var(--primary))" />
     </g>
   );
 };
 
+
 export function ResponseTimeChart() {
-    const { value, max } = responseTimeData;
-    const data = [
-        { name: 'value', value: value, color: 'hsl(var(--primary))' },
-        { name: 'remaining', value: max - value, color: 'hsl(var(--border))' },
-    ];
+    const { value, min, max, segments } = responseTimeData;
+    const totalAngle = 240;
+    const startAngle = -210;
+    
+    const valuePercentage = (value - min) / (max - min);
+    const valueAngle = startAngle + (valuePercentage * totalAngle);
+
+    const chartData = segments.map(segment => ({
+      ...segment,
+      value: (segment.max - segment.min) / (max - min) * 100,
+    }));
 
     return (
-        <Card className="flex flex-col">
-          <CardHeader className="items-center pb-0">
-            <CardTitle>Tiempo de Respuesta Promedio</CardTitle>
-            <CardDescription>Respuesta a nuevos leads</CardDescription>
+        <Card className="flex flex-col shadow-lg border-2 border-muted/50 rounded-2xl w-full max-w-sm mx-auto">
+          <CardHeader className="pb-2">
+            <CardDescription>Estadísticas</CardDescription>
+            <CardTitle className="text-2xl">Tiempo de Respuesta</CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex items-center justify-center relative">
-            <PieChart width={250} height={180}>
-               <Pie
-                    data={[{value: 1}]}
-                    dataKey="value"
-                    cx="50%"
-                    cy="100%"
-                    startAngle={-90}
-                    endAngle={90}
-                    innerRadius="60%"
-                    outerRadius="100%"
-                    fill="hsl(var(--muted))"
-                    stroke="hsl(var(--card))"
-                    isAnimationActive={false}
-                />
-                <Pie
-                    data={data}
-                    dataKey="value"
-                    cx="50%"
-                    cy="100%"
-                    startAngle={-90}
-                    endAngle={90}
-                    innerRadius="60%"
-                    outerRadius="100%"
-                    paddingAngle={0}
-                    isAnimationActive={true}
-                >
-                    {data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color} />
-                    ))}
-                </Pie>
-                <GaugePointer 
-                    value={value} 
-                    max={max} 
-                    cx={125} 
-                    cy={180} 
-                    innerRadius={0} 
-                    outerRadius={75}
-                    startAngle={-90} 
-                    endAngle={90}
-                />
-            </PieChart>
-             <div className="absolute bottom-10 text-center">
-                <p className="text-4xl font-bold">{value}h</p>
-                <p className="text-sm text-muted-foreground">Promedio</p>
-             </div>
+          <Separator className="mx-6 w-auto" />
+          <CardContent className="flex-1 flex flex-col items-center justify-center relative p-6">
+            
+            <div className="relative w-[280px] h-[180px]">
+                <PieChart width={280} height={280} >
+                    <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        startAngle={startAngle}
+                        endAngle={startAngle + totalAngle}
+                        innerRadius="75%"
+                        outerRadius="90%"
+                        dataKey="value"
+                        stroke="none"
+                        cornerRadius={10}
+                        isAnimationActive={false}
+                    >
+                        {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                    </Pie>
+                </PieChart>
+
+                <div className='absolute inset-0' style={{ transformOrigin: 'center 140px' }}>
+                     <GaugePointer cx={140} cy={140} angle={valueAngle} outerRadius={126} />
+                </div>
+
+            </div>
+            
+            <div className='text-center -mt-8'>
+                <p className="text-7xl font-bold text-foreground">
+                    {value}<span className='text-5xl text-muted-foreground'>h</span>
+                </p>
+                <p className="font-semibold text-foreground mt-2">es el tiempo de respuesta</p>
+                <p className="text-sm text-muted-foreground">Actualizado hoy</p>
+            </div>
+            
           </CardContent>
-          <CardFooter className="flex-col gap-2 text-sm">
-            <div className="flex items-center gap-2 font-medium leading-none text-green-500">
-                <TrendingUp className="h-4 w-4" /> 12% mejor este mes
-            </div>
-            <div className="leading-none text-muted-foreground">
-              Más rápido que el objetivo
-            </div>
-          </CardFooter>
         </Card>
     )
 }
