@@ -14,11 +14,8 @@ export const asesores = [
 ];
 
 export const responseTimeData = {
-    currentTime: 3.2,
-    goal: 8,
-    progress: 40,
-    text: "vs la semana pasada",
-    trend: '15%',
+    currentTime: 30,
+    goal: 60,
 };
 
 export const offersData = {

@@ -2,49 +2,48 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import {
-  ChartConfig,
   ChartContainer,
 } from '@/components/ui/chart';
 import { responseTimeData } from '@/lib/data/indicadores-data';
-import { PolarAngleAxis, RadialBar, RadialBarChart } from 'recharts';
-
-const chartConfig = {
-  value: {
-    label: 'Tiempo de respuesta',
-  },
-  primary: {
-    label: 'Primary',
-    color: 'hsl(var(--primary))',
-  },
-} satisfies ChartConfig;
+import { PolarAngleAxis, RadialBar, RadialBarChart, ResponsiveContainer, Scatter, ScatterChart } from 'recharts';
 
 export function ResponseTimeChart() {
-  const progress = (responseTimeData.currentTime / responseTimeData.maxTime) * 100;
+  const { currentTime, goal } = responseTimeData;
+  const progress = (currentTime / goal) * 100;
   const chartData = [{ name: 'value', value: progress, fill: 'hsl(var(--primary))' }];
   
+  const endAngle = -270;
+  const startAngle = 90;
+  const chartAngle = startAngle - ((startAngle - endAngle) * (progress / 100));
+  
+  const thumbX = 125 + 90 * Math.cos(-chartAngle * Math.PI / 180);
+  const thumbY = 125 + 90 * Math.sin(-chartAngle * Math.PI / 180);
+  
+  const thumbData = [{ x: thumbX, y: thumbY }];
+
   return (
     <Card>
-      <CardHeader className="pb-0">
+      <CardHeader className="pb-4">
         <CardTitle className="text-sm font-medium">Tiempo promedio de respuesta a nuevos leads.</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">Objetivo: {responseTimeData.maxTime} horas</CardDescription>
       </CardHeader>
-      <CardContent className="flex items-center justify-center p-0">
+      <Separator />
+      <CardContent className="flex items-center justify-center p-6 relative h-[250px]">
         <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square w-full max-w-[250px]"
+          config={{}}
+          className="absolute inset-0 w-full h-full"
         >
           <RadialBarChart
             data={chartData}
-            startAngle={90}
-            endAngle={-270}
+            startAngle={startAngle}
+            endAngle={endAngle}
             innerRadius={80}
             outerRadius={100}
-            barSize={12}
+            barSize={20}
           >
             <PolarAngleAxis
               type="number"
@@ -56,18 +55,21 @@ export function ResponseTimeChart() {
               dataKey="value"
               background={{ fill: 'hsl(var(--muted))' }}
               cornerRadius={10}
-              
             />
-             <g transform="translate(125, 125)">
-                <text x="0" y="-10" textAnchor="middle" dominantBaseline="middle" className="fill-foreground text-4xl font-bold">
-                    {responseTimeData.currentTime.toFixed(1)}h
-                </text>
-                <text x="0" y="20" textAnchor="middle" dominantBaseline="middle" className="fill-muted-foreground text-sm">
-                    Respuesta Promedio
-                </text>
-            </g>
           </RadialBarChart>
+           <ScatterChart
+              width={250}
+              height={250}
+              margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+            >
+              <Scatter data={thumbData} fill="hsl(var(--primary))" shape={<circle r={10} />} />
+               <Scatter data={thumbData} fill="white" shape={<circle r={6} />} />
+            </ScatterChart>
         </ChartContainer>
+         <div className="absolute flex flex-col items-center justify-center">
+            <p className="text-6xl font-bold text-foreground">{currentTime}</p>
+            <p className="text-lg text-muted-foreground -mt-2">Minutos</p>
+        </div>
       </CardContent>
     </Card>
   );
