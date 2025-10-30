@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart as BarChartIcon } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { sedes, asesores } from '@/lib/data/indicadores-data';
-import { ResponseTimeChart } from '@/components/indicadores/response-time-chart';
 
 export default function IndicadoresPage() {
     const [selectedSede, setSelectedSede] = useState<string | null>(null);
@@ -19,9 +18,7 @@ export default function IndicadoresPage() {
     const SedeCharts = () => (
         <div className="animate-in fade-in-50">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
-                <div className="lg:col-start-2 flex justify-center">
-                    <ResponseTimeChart />
-                </div>
+                {/* Gráficos de Sede irán aquí */}
             </div>
         </div>
     );
