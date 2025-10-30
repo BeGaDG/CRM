@@ -15,7 +15,7 @@ const GaugeChart = () => {
         const isActive = segmentValue <= performance / 100;
         return {
             value: 1,
-            color: isActive ? 'hsl(var(--primary))' : 'hsl(var(--muted))'
+            color: isActive ? 'hsl(var(--primary))' : 'transparent'
         };
     });
 
