@@ -15,7 +15,10 @@ export const asesores = [
 
 export const responseTimeData = {
     currentTime: 3.2,
-    totalTime: 8,
+    goal: 8,
+    progress: 40,
+    text: "vs la semana pasada",
+    trend: '15%',
 };
 
 export const offersData = {
@@ -36,12 +39,12 @@ export const offersData = {
 
 
 export const rejectionData = {
-    average: 1.05,
+    totalRejections: 105,
     reasons: [
-        { name: 'Approved', value: 39, count: 410, color: 'hsl(var(--chart-2))' },
-        { name: 'Pending', value: 26, count: 142, color: 'hsl(var(--chart-3))' },
-        { name: 'Under review', value: 24, count: 340, color: 'hsl(var(--chart-4))' },
-        { name: 'Rejected', value: 11, count: 590, color: 'hsl(var(--chart-5))' },
+        { name: 'Precio', value: 42, count: 44, color: 'hsl(var(--chart-2))' },
+        { name: 'Falta de Interés', value: 25, count: 26, color: 'hsl(var(--chart-3))' },
+        { name: 'Otro Proveedor', value: 23, count: 24, color: 'hsl(var(--chart-4))' },
+        { name: 'Tiempo', value: 10, count: 11, color: 'hsl(var(--chart-5))' },
     ]
 };
 

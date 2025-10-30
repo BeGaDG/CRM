@@ -24,7 +24,7 @@ export function RejectionReasonChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm font-medium">Statistics</CardTitle>
+        <CardTitle className="text-sm font-medium">Estadísticas</CardTitle>
         <CardDescription className="text-base font-semibold">Motivo de rechazo</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col md:flex-row items-center gap-4">
@@ -64,11 +64,8 @@ export function RejectionReasonChart() {
               ))}
             </Pie>
              <g transform="translate(125, 125)">
-                <text x="0" y="-5" textAnchor="middle" dominantBaseline="middle" className="fill-foreground text-2xl font-bold">
-                    {rejectionData.average}
-                </text>
-                <text x="0" y="15" textAnchor="middle" dominantBaseline="middle" className="fill-muted-foreground text-xs">
-                    Average range
+                <text x="0" y="5" textAnchor="middle" dominantBaseline="middle" className="fill-foreground text-2xl font-bold">
+                    {rejectionData.totalRejections}
                 </text>
             </g>
           </PieChart>
