@@ -69,8 +69,7 @@ export default function IndicadoresPage() {
                 </div>
 
                 <div className="flex-1">
-                    {!selectedSede && <EmptyState />}
-                    {selectedSede && <SedeCharts />}
+                    {selectedSede ? <SedeCharts /> : <EmptyState />}
                 </div>
 
             </main>

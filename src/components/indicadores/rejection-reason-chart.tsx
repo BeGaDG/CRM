@@ -15,14 +15,14 @@ const chartConfig = {
     label: 'Reasons',
   },
   ...rejectionData.reasons.reduce((acc, reason) => {
-    acc[reason.name] = { label: reason.name, color: reason.color };
+    acc[reason.name.replace(/ /g, '')] = { label: reason.name, color: reason.color };
     return acc;
   }, {} as any)
 } satisfies ChartConfig;
 
 export function RejectionReasonChart() {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-sm font-medium">Estadísticas</CardTitle>
         <CardDescription className="text-base font-semibold">Motivo de rechazo</CardDescription>
