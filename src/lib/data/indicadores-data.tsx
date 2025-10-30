@@ -1,3 +1,4 @@
+
 export const sedes = [
     { id: 'monteria', name: 'Montería' },
     { id: 'sincelejo', name: 'Sincelejo' },
@@ -14,8 +15,8 @@ export const asesores = [
 
 export const responseTimeData = {
     percentage: 72,
-    sales: 24400,
-    remaining: 7600
+    sales: 23040, // 72% of 32000
+    remaining: 8960 // 28% of 32000
 };
 
 export const offersData = {
