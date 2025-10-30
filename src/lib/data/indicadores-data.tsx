@@ -37,9 +37,9 @@ export const offersData = {
 export const rejectionData = {
     totalRejections: 105,
     reasons: [
-        { name: 'Precio', value: 42, count: 44, color: 'hsl(var(--chart-2))' },
         { name: 'Falta de Interés', value: 25, count: 26, color: 'hsl(var(--chart-3))' },
         { name: 'Otro Proveedor', value: 23, count: 24, color: 'hsl(var(--chart-4))' },
+        { name: 'Precio', value: 42, count: 44, color: 'hsl(var(--chart-2))' },
         { name: 'Tiempo', value: 10, count: 11, color: 'hsl(var(--chart-5))' },
     ]
 };
