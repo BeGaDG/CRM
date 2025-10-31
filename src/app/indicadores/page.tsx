@@ -7,7 +7,8 @@ import { sedes } from '@/lib/data/indicadores-data';
 import { OffersChart } from '@/components/indicadores/offers-chart';
 import { RejectionReasonChart } from '@/components/indicadores/rejection-reason-chart';
 import { SalesByCityChart } from '@/components/indicadores/sales-by-city-chart';
-import { ResponseTimeChart } from '@/components/indicadores/response-time-chart';
+import { EchartsGaugeChart } from '@/components/indicadores/echarts-gauge-chart';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export default function IndicadoresPage() {
     const [selectedSede, setSelectedSede] = useState<string | null>(null);
@@ -18,19 +19,20 @@ export default function IndicadoresPage() {
 
     const SedeCharts = () => (
         <div className="animate-in fade-in-50 grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-2 gap-6">
-            {/* Grafica 1 */}
-            <div className="lg:col-start-1">
-                <ResponseTimeChart />
-            </div>
-            {/* Grafica 2 */}
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-sm font-medium">Tiempo promedio de respuesta a nuevos leads.</CardTitle>
+                </CardHeader>
+                <CardContent className="h-[200px]">
+                    <EchartsGaugeChart value={30} />
+                </CardContent>
+            </Card>
             <div className="lg:col-start-2">
                 <OffersChart />
             </div>
-            {/* Grafica 3 */}
             <div className="lg:col-start-3 lg:row-span-2 h-full">
                 <RejectionReasonChart />
             </div>
-            {/* Grafica 4 */}
             <div className="lg:col-span-2 lg:col-start-1 lg:row-start-2">
                 <SalesByCityChart />
             </div>
