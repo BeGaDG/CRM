@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign, FileText, Download, HousePlug, MessageSquare } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign, FileText, Download, HousePlug, MessageSquare, Edit } from 'lucide-react';
 import { StageForm } from './stage-form';
 import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
@@ -16,6 +16,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Textarea } from '../ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { SolarPanelIcon } from '@/components/icons';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
+import { FullLeadForm } from './full-lead-form';
+
 
 const AmbosIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <div className="flex gap-1.5">
@@ -98,14 +101,21 @@ const InfoFileItem = ({ label, fileName, date }: { label: string; fileName?: str
 }
 
 
-const CollectedInfo = ({ lead }: { lead: Lead }) => (
+const CollectedInfo = ({ lead, onEditClick }: { lead: Lead, onEditClick: () => void }) => (
     <Card>
         <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-                <Info className="h-4 w-4" />
-                Información Clave Recopilada
-            </CardTitle>
-            <CardDescription>Resumen de los datos más importantes del lead.</CardDescription>
+             <div className="flex items-center justify-between">
+                <div className='flex-1'>
+                    <CardTitle className="text-base flex items-center gap-2">
+                        <Info className="h-4 w-4" />
+                        Información Clave
+                    </CardTitle>
+                    <CardDescription>Resumen de los datos del lead.</CardDescription>
+                </div>
+                <Button variant="ghost" size="icon" onClick={onEditClick}>
+                    <Edit className="h-4 w-4" />
+                </Button>
+            </div>
         </CardHeader>
         <CardContent className="space-y-4 text-sm">
             <InfoItem label="Teléfono" value={lead.phone} icon={Phone} />
@@ -246,12 +256,18 @@ export const LeadDetailPanel = ({
     const interestInfo = interestTypeIcons[lead.interestType];
     const canAdvance = true; // Placeholder for validation logic
     const [manualStage, setManualStage] = useState<string>('');
+    const [isFullEditOpen, setIsFullEditOpen] = useState(false);
     const nextStages = getNextStages(lead.status);
 
     const handleManualChange = () => {
         if (manualStage && manualStage !== lead.status) {
             onUpdateStatus(manualStage);
         }
+    }
+    
+    const handleFullSave = (data: any) => {
+        onSaveStageData(lead.status, data);
+        setIsFullEditOpen(false);
     }
 
 
@@ -362,11 +378,31 @@ export const LeadDetailPanel = ({
 
                 {/* Right Column (Info) */}
                 <div className="space-y-6">
-                   <CollectedInfo lead={lead} />
+                   <CollectedInfo lead={lead} onEditClick={() => setIsFullEditOpen(true)} />
                    <AdvisorAssign lead={lead} advisors={advisors} onAssignLead={onAssignLead} />
                    <QuickNotes />
                 </div>
             </div>
+
+            {/* Full Edit Sheet */}
+            <Sheet open={isFullEditOpen} onOpenChange={setIsFullEditOpen}>
+                <SheetContent className="sm:max-w-2xl w-full">
+                    <SheetHeader>
+                        <SheetTitle>Edición Completa del Lead</SheetTitle>
+                        <SheetDescription>Modifica cualquier campo del lead en un solo lugar.</SheetDescription>
+                    </SheetHeader>
+                    <div className='py-4 overflow-y-auto' style={{height: 'calc(100% - 8rem)'}}>
+                        <FullLeadForm 
+                            initialData={lead} 
+                            onSave={handleFullSave}
+                        />
+                    </div>
+                     <SheetFooter className="absolute bottom-0 right-0 p-6 bg-background w-full">
+                        <Button variant="outline" onClick={() => setIsFullEditOpen(false)}>Cancelar</Button>
+                        {/* The save button is inside FullLeadForm */}
+                    </SheetFooter>
+                </SheetContent>
+            </Sheet>
         </main>
     );
 }
