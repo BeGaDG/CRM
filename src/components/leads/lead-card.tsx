@@ -37,16 +37,16 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
           <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
             <Icon className={cn("h-6 w-6", interest.color)} />
           </div>
-          <div className="flex-1">
-            <p className="font-semibold text-base">{lead.name}</p>
-            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                <UserCircle className="h-3 w-3" />
-                {lead.advisorName}
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-base truncate" title={lead.name}>{lead.name}</p>
+            <p className="text-sm text-muted-foreground flex items-center gap-1.5 truncate">
+                <UserCircle className="h-3 w-3 flex-shrink-0" />
+                <span className="truncate">{lead.advisorName}</span>
             </p>
           </div>
         </div>
 
-        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 pl-14 sm:pl-0">
+        <div className="w-full sm:w-auto flex flex-row sm:items-center justify-between sm:justify-end gap-4 pl-14 sm:pl-0">
             <div className="flex flex-col items-start sm:items-end text-sm">
                 <span className='font-medium text-foreground'>{lead.phone}</span>
                 <span className='text-muted-foreground whitespace-nowrap'>Últ. contacto: {lead.lastContact}</span>

@@ -23,9 +23,9 @@ export const StageKpiCard = ({ title, count, total, icon: Icon, color }: StageKp
   const chartColor = `hsl(var(--${color.replace('bg-', '')}))`;
 
   return (
-    <Card className='h-full w-full overflow-hidden'>
+    <Card className='h-full w-full overflow-hidden shadow-sm hover:shadow-md transition-shadow'>
       <CardContent className="p-3 flex flex-col items-center justify-center text-center h-full">
-        <div className="relative h-20 w-20">
+        <div className="relative h-16 w-16 sm:h-20 sm:w-20">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -45,11 +45,11 @@ export const StageKpiCard = ({ title, count, total, icon: Icon, color }: StageKp
             </PieChart>
           </ResponsiveContainer>
           <div className="absolute inset-0 flex items-center justify-center">
-            <Icon className={cn("h-7 w-7", color.replace('bg-', 'text-'))} />
+            <Icon className={cn("h-6 w-6 sm:h-7 sm:w-7", color.replace('bg-', 'text-'))} />
           </div>
         </div>
-        <p className="text-2xl font-bold mt-1">{count}</p>
-        <p className="text-xs text-muted-foreground font-medium truncate">{title}</p>
+        <p className="text-xl sm:text-2xl font-bold mt-1">{count}</p>
+        <p className="text-xs text-muted-foreground font-medium truncate w-full">{title}</p>
       </CardContent>
     </Card>
   );
