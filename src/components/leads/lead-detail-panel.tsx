@@ -13,7 +13,6 @@ import { StageForm } from './stage-form';
 import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { LeadStatusFlow } from './lead-status-flow';
 import { Textarea } from '../ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
@@ -227,8 +226,6 @@ export const LeadDetailPanel = ({
             onUpdateStatus(manualStage);
         }
     }
-    
-    const flowStages = stages.filter(s => !['No', 'Finalizados', 'Recaptura BD'].includes(s.name));
 
 
     return (
