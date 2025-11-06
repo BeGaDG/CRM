@@ -29,7 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { SolYCieloLogo } from '@/components/icons';
+import { SolYCieloLogo, SolarPanelIcon } from '@/components/icons';
 import {
   Sidebar,
   SidebarContent,
@@ -105,7 +105,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                      <SidebarMenuItem>
                         <Link href="#">
                             <SidebarMenuButton>
-                                <Grid />
+                                <SolarPanelIcon />
                                 <span className="truncate">Proyectos solares</span>
                             </SidebarMenuButton>
                         </Link>
