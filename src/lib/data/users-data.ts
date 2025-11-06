@@ -1,4 +1,5 @@
 
+
 export const usersData = [
     {
         id: 'user-1',
@@ -8,7 +9,7 @@ export const usersData = [
         sede: 'Montería',
         status: true,
         last_login: '2024-07-22T14:30:00Z',
-        avatar: 'https://picsum.photos/seed/301/100/100',
+        avatar: '/avatars/user-1.jpg',
         performance: {
             leadsCount: 45,
             contractsCount: 8,
@@ -23,7 +24,7 @@ export const usersData = [
         sede: 'Sincelejo',
         status: true,
         last_login: '2024-07-22T16:05:00Z',
-        avatar: 'https://picsum.photos/seed/302/100/100',
+        avatar: '/avatars/user-2.jpg',
         performance: {
             leadsCount: 25,
             contractsCount: 5,
@@ -38,7 +39,7 @@ export const usersData = [
         sede: 'Montería',
         status: true,
         last_login: '2024-07-22T10:15:00Z',
-        avatar: 'https://picsum.photos/seed/303/100/100',
+        avatar: '/avatars/user-3.jpg',
         performance: {
             leadsCount: 10,
             contractsCount: 2,
@@ -53,7 +54,7 @@ export const usersData = [
         sede: 'Otros',
         status: false,
         last_login: '2024-06-15T11:00:00Z',
-        avatar: 'https://picsum.photos/seed/304/100/100',
+        avatar: '/avatars/user-4.jpg',
         performance: {
             leadsCount: 30,
             contractsCount: 3,
@@ -68,7 +69,7 @@ export const usersData = [
         sede: 'Sincelejo',
         status: true,
         last_login: '2024-07-21T09:00:00Z',
-        avatar: 'https://picsum.photos/seed/305/100/100',
+        avatar: '/avatars/user-5.jpg',
         performance: {
             leadsCount: 0,
             contractsCount: 0,
@@ -83,7 +84,7 @@ export const usersData = [
         sede: 'Montería',
         status: true,
         last_login: '2024-07-23T08:00:00Z',
-        avatar: 'https://picsum.photos/seed/306/100/100',
+        avatar: '/avatars/user-6.jpg',
         performance: {
             leadsCount: 5,
             contractsCount: 1,
@@ -98,7 +99,7 @@ export const usersData = [
         sede: 'Sincelejo',
         status: true,
         last_login: '2024-07-23T09:30:00Z',
-        avatar: 'https://picsum.photos/seed/307/100/100',
+        avatar: '/avatars/user-7.jpg',
         performance: {
             leadsCount: 55,
             contractsCount: 12,
@@ -113,7 +114,7 @@ export const usersData = [
         sede: 'Otros',
         status: true,
         last_login: '2024-07-22T11:45:00Z',
-        avatar: 'https://picsum.photos/seed/308/100/100',
+        avatar: '/avatars/user-8.jpg',
         performance: {
             leadsCount: 150,
             contractsCount: 0,

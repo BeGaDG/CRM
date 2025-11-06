@@ -195,14 +195,14 @@ const QuickNotes = () => {
         {
             id: 'note-1',
             author: 'Ana Gómez',
-            avatar: 'https://picsum.photos/seed/302/100/100',
+            avatar: '/avatars/user-2.jpg',
             content: 'El cliente está muy interesado pero necesita que ajustemos el precio. Le preocupa el ROI a corto plazo.',
             date: 'Hace 2 horas',
         },
         {
             id: 'note-2',
             author: 'Ana Gómez',
-            avatar: 'https://picsum.photos/seed/302/100/100',
+            avatar: '/avatars/user-2.jpg',
             content: 'Se envió la cotización v2 con el descuento solicitado. A la espera de comentarios.',
             date: 'Ayer',
         }
@@ -257,8 +257,14 @@ export const LeadDetailPanel = ({
     const canAdvance = true; // Placeholder for validation logic
     const [manualStage, setManualStage] = useState<string>('');
     const [isFullEditOpen, setIsFullEditOpen] = useState(false);
+    
     const [fullFormData, setFullFormData] = useState({});
 
+    const handleFullSave = (data: any) => {
+        onSaveStageData(lead.status, data);
+        setIsFullEditOpen(false);
+    }
+    
     const nextStages = getNextStages(lead.status);
 
     const handleManualChange = () => {
@@ -267,10 +273,9 @@ export const LeadDetailPanel = ({
         }
     }
     
-    const handleFullSave = (data: any) => {
-        onSaveStageData(lead.status, data);
-        setIsFullEditOpen(false);
-    }
+    const handleFullFormChange = useCallback((data: any) => {
+        setFullFormData(data);
+    }, []);
 
 
     return (
@@ -397,7 +402,7 @@ export const LeadDetailPanel = ({
                         <FullLeadForm 
                             initialData={lead} 
                             onSave={handleFullSave}
-                            onDataChange={useCallback((data: any) => setFullFormData(data), [])}
+                            onDataChange={handleFullFormChange}
                         />
                     </div>
                      <SheetFooter className="absolute bottom-0 right-0 p-6 bg-background w-full">
