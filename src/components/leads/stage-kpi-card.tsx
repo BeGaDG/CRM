@@ -12,44 +12,20 @@ type StageKpiCardProps = {
   color: string;
 };
 
-export const StageKpiCard = ({ title, count, total, icon: Icon, color }: StageKpiCardProps) => {
-  const percentage = total > 0 ? (count / total) * 100 : 0;
-  
-  const chartData = [
-    { name: 'count', value: percentage },
-    { name: 'rest', value: 100 - percentage },
-  ];
+export const StageKpiCard = ({ title, count, icon: Icon, color }: StageKpiCardProps) => {
 
   const chartColor = `hsl(var(--${color.replace('bg-', '')}))`;
 
   return (
     <Card className='h-full w-full overflow-hidden shadow-sm hover:shadow-md transition-shadow'>
-      <CardContent className="p-3 flex flex-col items-center justify-center text-center h-full">
-        <div className="relative h-16 w-16 sm:h-20 sm:w-20">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={chartData}
-                cx="50%"
-                cy="50%"
-                dataKey="value"
-                innerRadius="80%"
-                outerRadius="100%"
-                startAngle={90}
-                endAngle={450}
-                stroke="none"
-              >
-                 <Cell key="count" fill={chartColor} />
-                 <Cell key="rest" fill="hsl(var(--muted))" />
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Icon className={cn("h-6 w-6 sm:h-7 sm:w-7", color.replace('bg-', 'text-'))} />
-          </div>
+      <CardContent className="p-3 flex items-center gap-3">
+        <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", color + '/10')}>
+            <Icon className={cn("h-6 w-6", color.replace('bg-', 'text-'))} />
         </div>
-        <p className="text-xl sm:text-2xl font-bold mt-1">{count}</p>
-        <p className="text-xs text-muted-foreground font-medium truncate w-full">{title}</p>
+        <div className='flex-1'>
+            <p className="text-xl font-bold">{count}</p>
+            <p className="text-xs text-muted-foreground font-medium truncate w-full">{title}</p>
+        </div>
       </CardContent>
     </Card>
   );

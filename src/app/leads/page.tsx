@@ -29,7 +29,6 @@ import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
 import { StageKpiCard } from '@/components/leads/stage-kpi-card';
 import { Contact2, FileSearch, Presentation, DraftingCompass, UserRoundPlus, Ban, Hourglass, FolderCheck, Repeat, FileCheck, Phone, Eye } from 'lucide-react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
@@ -181,30 +180,17 @@ export default function LeadsPage() {
     <DashboardLayout>
       <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
           {/* KPI Cards */}
-          <div className="relative px-8 sm:px-10">
-             <Carousel 
-              opts={{
-                align: "start",
-                dragFree: true,
-              }}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-2 md:-ml-4">
-                {stages.map(stage => (
-                  <CarouselItem key={stage.name} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 2xl:basis-[12%]">
-                    <StageKpiCard 
-                      title={stage.name}
-                      count={stageCounts[stage.name] || 0}
-                      total={leads.length}
-                      icon={iconMap[stage.name as keyof typeof iconMap] || Contact}
-                      color={stage.color}
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 flex" />
-              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 flex" />
-            </Carousel>
+           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2">
+            {stages.map(stage => (
+              <StageKpiCard 
+                key={stage.name}
+                title={stage.name}
+                count={stageCounts[stage.name] || 0}
+                total={leads.length}
+                icon={iconMap[stage.name as keyof typeof iconMap] || Contact}
+                color={stage.color}
+              />
+            ))}
           </div>
 
           {/* Top Bar: Search, Filters and Actions */}
