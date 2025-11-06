@@ -16,17 +16,17 @@ export const StageKpiCard = ({ title, count, total, icon: Icon, color }: StageKp
   const percentage = total > 0 ? (count / total) * 100 : 0;
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+    <Card className='h-full'>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-4 pt-4">
+        <CardTitle className="text-xs font-medium truncate">{title}</CardTitle>
         <Icon className={cn("h-4 w-4 text-muted-foreground", color.replace('bg-', 'text-'))} />
       </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{count}</div>
-        <p className="text-xs text-muted-foreground">
-          {percentage.toFixed(1)}% del total de leads
+      <CardContent className="px-4 pb-4">
+        <div className="text-xl font-bold">{count}</div>
+        <p className="text-xs text-muted-foreground truncate">
+          {percentage.toFixed(1)}% del total
         </p>
-        <Progress value={percentage} className="h-2 mt-2" indicatorClassName={color} />
+        <Progress value={percentage} className="h-1.5 mt-2" indicatorClassName={color} />
       </CardContent>
     </Card>
   );

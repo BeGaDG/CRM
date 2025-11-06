@@ -28,7 +28,8 @@ import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
 import { StageKpiCard } from '@/components/leads/stage-kpi-card';
-import { Contact2, FileSearch, Presentation, DraftingCompass } from 'lucide-react';
+import { Contact2, FileSearch, Presentation, DraftingCompass, UserRoundPlus, Ban, Hourglass, FolderCheck, Repeat, FileCheck, Phone, Eye } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
@@ -161,30 +162,49 @@ export default function LeadsPage() {
     });
     return counts;
   }, [leads]);
-
-  const kpiStages = [
-    { title: 'Nuevo Lead', icon: Contact, count: stageCounts['Nuevo Lead'] || 0, color: 'bg-blue-500' },
-    { title: 'Por Visitar', icon: Contact2, count: stageCounts['Por Visitar'] || 0, color: 'bg-teal-500' },
-    { title: 'Por Cotizar', icon: FileSearch, count: stageCounts['Por Cotizar'] || 0, color: 'bg-yellow-500' },
-    { title: 'Por Presentar Cotización', icon: Presentation, count: stageCounts['Por Presentar Cotización'] || 0, color: 'bg-amber-500' },
-    { title: 'Por Contratar', icon: DraftingCompass, count: stageCounts['Por Contratar'] || 0, color: 'bg-emerald-500' },
-  ];
+  
+  const iconMap = {
+    'Nuevo Lead': UserRoundPlus,
+    'Por Contactar': Phone,
+    'Por Visitar': Eye,
+    'Por Cotizar': FileSearch,
+    'Por Presentar Cotización': Presentation,
+    'Ajustar Cotización': FileCheck,
+    'Seguimiento a la Cotización': Hourglass,
+    'Por Contratar': DraftingCompass,
+    'Recaptura BD': Repeat,
+    'Finalizados': FolderCheck,
+    'No': Ban,
+  };
 
   return (
     <DashboardLayout>
       <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
           {/* KPI Cards */}
-          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-            {kpiStages.map(kpi => (
-              <StageKpiCard 
-                key={kpi.title}
-                title={kpi.title}
-                count={kpi.count}
-                total={leads.length}
-                icon={kpi.icon}
-                color={kpi.color}
-              />
-            ))}
+          <div className="relative">
+             <Carousel 
+              opts={{
+                align: "start",
+                dragFree: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2">
+                {stages.map(stage => (
+                  <CarouselItem key={stage.name} className="pl-2 basis-1/2 md:basis-1/3 lg:basis-1/5">
+                    <StageKpiCard 
+                      title={stage.name}
+                      count={stageCounts[stage.name] || 0}
+                      total={leads.length}
+                      icon={iconMap[stage.name as keyof typeof iconMap] || Contact}
+                      color={stage.color}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 hidden sm:flex" />
+              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 hidden sm:flex" />
+            </Carousel>
           </div>
 
           {/* Top Bar: Search, Filters and Actions */}
