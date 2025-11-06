@@ -1,6 +1,7 @@
 'use client';
 import * as React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   BarChart,
@@ -29,7 +30,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { SolYCieloLogo, SolarPanelIcon } from '@/components/icons';
+import { SolarPanelIcon } from '@/components/icons';
 import {
   Sidebar,
   SidebarContent,
@@ -65,7 +66,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <Sidebar collapsible="icon" className="border-r border-sidebar-border/80 bg-sidebar text-sidebar-foreground">
         <SidebarHeader className="flex flex-col items-start gap-2 p-4 h-auto">
           <div className="flex items-center gap-3">
-              <SolYCieloLogo className="h-10 w-10" />
+              <Image src="/Icono.png" width={40} height={40} alt="Logo Sol & Cielo" />
               <div>
                   <h2 className="text-base font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
                     Panel Administrativo
