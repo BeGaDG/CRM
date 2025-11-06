@@ -46,10 +46,10 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
           </div>
         </div>
 
-        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pl-8 sm:pl-0">
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 pl-16 sm:pl-0">
             <div className="flex flex-col items-start sm:items-end text-sm">
                 <span className='font-medium text-foreground'>{lead.phone}</span>
-                <span className='text-muted-foreground'>Últ. contacto: {lead.lastContact}</span>
+                <span className='text-muted-foreground whitespace-nowrap'>Últ. contacto: {lead.lastContact}</span>
             </div>
             <div className="flex items-center gap-2 justify-end">
               {isOverdue && <AlertCircle className="h-5 w-5 text-red-500" title="Este lead no ha sido contactado en más de 2 días"/>}

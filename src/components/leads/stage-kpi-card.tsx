@@ -19,11 +19,11 @@ export const StageKpiCard = ({ title, count, total, icon: Icon, color }: StageKp
   return (
     <Card className='h-full'>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-4 pt-4">
-        <CardTitle className="text-xs font-medium truncate">{title}</CardTitle>
+        <CardTitle className="text-sm font-medium truncate">{title}</CardTitle>
         <Icon className={cn("h-4 w-4 text-muted-foreground", color.replace('bg-', 'text-'))} />
       </CardHeader>
       <CardContent className="px-4 pb-4">
-        <div className="text-xl font-bold">{count}</div>
+        <div className="text-2xl font-bold">{count}</div>
         <p className="text-xs text-muted-foreground truncate">
           {percentage.toFixed(1)}% del total
         </p>
