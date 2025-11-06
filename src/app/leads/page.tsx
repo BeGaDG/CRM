@@ -181,7 +181,7 @@ export default function LeadsPage() {
     <DashboardLayout>
       <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
           {/* KPI Cards */}
-          <div className="relative">
+          <div className="relative px-8 sm:px-10">
              <Carousel 
               opts={{
                 align: "start",
@@ -189,9 +189,9 @@ export default function LeadsPage() {
               }}
               className="w-full"
             >
-              <CarouselContent className="-ml-2">
+              <CarouselContent className="-ml-2 md:-ml-4">
                 {stages.map(stage => (
-                  <CarouselItem key={stage.name} className="pl-2 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 2xl:basis-[12%]">
+                  <CarouselItem key={stage.name} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 2xl:basis-[12%]">
                     <StageKpiCard 
                       title={stage.name}
                       count={stageCounts[stage.name] || 0}
@@ -202,8 +202,8 @@ export default function LeadsPage() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 hidden sm:flex" />
-              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 hidden sm:flex" />
+              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 flex" />
+              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 flex" />
             </Carousel>
           </div>
 
