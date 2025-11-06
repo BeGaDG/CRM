@@ -26,7 +26,7 @@ export const NuevoLeadForm = ({ formData, handleChange, handleSelectChange }: St
         </div>
         <div>
           <Label htmlFor="source">Fuente del Lead</Label>
-           <Select name="source" onValueChange={(value) => handleSelectChange('source', value)}>
+           <Select onValueChange={(value) => handleSelectChange('source', value)}>
             <SelectTrigger id="source">
               <SelectValue placeholder="Seleccionar fuente..." />
             </SelectTrigger>
