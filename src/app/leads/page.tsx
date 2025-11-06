@@ -181,13 +181,12 @@ export default function LeadsPage() {
     <DashboardLayout>
       <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
           {/* KPI Cards */}
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {stages.map(stage => (
               <StageKpiCard 
                 key={stage.name}
                 title={stage.name}
                 count={stageCounts[stage.name] || 0}
-                total={leads.length}
                 icon={iconMap[stage.name as keyof typeof iconMap] || Contact}
                 color={stage.color}
               />
@@ -279,3 +278,5 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
+
+    

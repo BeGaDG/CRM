@@ -8,27 +8,24 @@ import * as React from 'react';
 type StageKpiCardProps = {
   title: string;
   count: number;
-  total: number;
   icon: LucideIcon;
   color: string;
 };
 
 export const StageKpiCard = ({ title, count, icon: Icon, color }: StageKpiCardProps) => {
     const iconColor = color.replace('bg-', 'text-');
-    const iconBgColor = color.replace('bg-', 'bg-') + '/10';
     
     return (
         <Card className="shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-4 flex items-center gap-4">
-                <div className={cn("w-1.5 h-12 rounded-full", color)}></div>
-                 <div className={cn("h-12 w-12 flex-shrink-0 rounded-lg flex items-center justify-center", iconBgColor)}>
-                    <Icon className={cn("h-6 w-6", iconColor)} />
+            <CardContent className="p-3 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                    <Icon className={cn("h-4 w-4", iconColor)} />
+                    <p className="text-xs font-medium text-muted-foreground truncate">{title}</p>
                 </div>
-                <div className="flex-1">
-                    <p className="text-sm font-medium text-muted-foreground">{title}</p>
-                    <p className="text-2xl font-bold">{count}</p>
-                </div>
+                <p className="text-lg font-bold">{count}</p>
             </CardContent>
         </Card>
     );
 };
+
+    
