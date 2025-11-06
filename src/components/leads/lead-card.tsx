@@ -16,21 +16,8 @@ const interestTypeIcons = {
   'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10' },
 };
 
-const stageTimelineColors = [
-    '#6b7280', // 1. Nuevo (Gris)
-    '#f59e0b', // 2. Por Contactar (Ámbar)
-    '#f97316', // 3. Por Visitar (Naranja)
-    '#3b82f6', // 4. Por Cotizar (Azul)
-    '#8b5cf6', // 5. Por Presentar (Violeta)
-    '#a855f7', // 6. Ajustar (Púrpura)
-    '#84cc16', // 7. Seguimiento (Lima)
-    '#16a34a', // 8. Por Contratar (Verde)
-    '#10b981', // 9. Finalizado (Esmeralda)
-];
-
 export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: () => void, isSelected: boolean }) => {
   const flowStages = stages.filter(s => !['No', 'Finalizados', 'Recaptura BD'].includes(s.name));
-  const currentStageIndex = flowStages.findIndex(s => s.name === lead.status);
   const currentStage = stages.find(s => s.name === lead.status);
   const interest = interestTypeIcons[lead.interestType];
   const Icon = interest.icon;
@@ -38,7 +25,7 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
   const isOverdue = ['Nuevo Lead', 'Por Contactar'].includes(lead.status) &&
                     differenceInDays(new Date(), new Date(lead.creationDate)) > 2;
 
-  const badgeColor = currentStageIndex !== -1 ? stageTimelineColors[currentStageIndex % stageTimelineColors.length] : 'hsl(var(--muted))';
+  const badgeColor = currentStage?.colorHex || 'hsl(var(--muted))';
 
   return (
     <Card 
@@ -48,7 +35,7 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
         isOverdue ? "border-l-red-500" : `border-l-transparent`,
         isSelected && "ring-2 ring-primary border-primary"
       )}
-      style={!isOverdue && currentStage ? { borderLeftColor: `hsl(var(--${currentStage.color.replace('bg-', '')}))`} : {}}
+      style={!isOverdue && currentStage ? { borderLeftColor: currentStage.colorHex } : {}}
     >
       <CardContent className="p-4 flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">

@@ -2,6 +2,7 @@
 export type Stage = {
   name: string;
   color: string;
+  colorHex: string;
 }
 
 export type Advisor = {
@@ -31,17 +32,17 @@ const leadExample = {
 export type Lead = typeof leadExample;
 
 export const stages: Stage[] = [
-  { name: 'Nuevo Lead', color: 'bg-blue-500' },
-  { name: 'Por Contactar', color: 'bg-cyan-500' },
-  { name: 'Por Visitar', color: 'bg-teal-500' },
-  { name: 'Por Cotizar', color: 'bg-yellow-500' },
-  { name: 'Por Presentar Cotización', color: 'bg-amber-500' },
-  { name: 'Ajustar Cotización', color: 'bg-orange-500' },
-  { name: 'Seguimiento a la Cotización', color: 'bg-lime-500' },
-  { name: 'Por Contratar', color: 'bg-emerald-500' },
-  { name: 'Recaptura BD', color: 'bg-indigo-500' },
-  { name: 'Finalizados', color: 'bg-green-600' },
-  { name: 'No', color: 'bg-slate-500' }
+  { name: 'Nuevo Lead', color: 'bg-blue-500', colorHex: '#6b7280' },
+  { name: 'Por Contactar', color: 'bg-cyan-500', colorHex: '#f59e0b' },
+  { name: 'Por Visitar', color: 'bg-teal-500', colorHex: '#f97316' },
+  { name: 'Por Cotizar', color: 'bg-yellow-500', colorHex: '#3b82f6' },
+  { name: 'Por Presentar Cotización', color: 'bg-amber-500', colorHex: '#8b5cf6' },
+  { name: 'Ajustar Cotización', color: 'bg-orange-500', colorHex: '#a855f7' },
+  { name: 'Seguimiento a la Cotización', color: 'bg-lime-500', colorHex: '#84cc16' },
+  { name: 'Por Contratar', color: 'bg-emerald-500', colorHex: '#16a34a' },
+  { name: 'Finalizados', color: 'bg-green-600', colorHex: '#10b981' },
+  { name: 'No', color: 'bg-slate-500', colorHex: '#ef4444' },
+  { name: 'Recaptura BD', color: 'bg-indigo-500', colorHex: '#4f46e5' },
 ];
 
 const today = new Date();
@@ -62,7 +63,7 @@ export const initialLeads: Lead[] = [
   { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', interestType: 'comercializadora', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', creationDate: new Date().toISOString(), collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
   { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', interestType: 'ambos', status: 'Seguimiento a la Cotización', phone: '315 555 8888', email: 'logistica.total@email.com', creationDate: new Date().toISOString(), collectedData: {
     nic: '555888-1',
-    consumo: '25000 kWh',
+    consumo: 25000,
     pago: 12000000,
     operador: 'Celsia',
     comercializador: 'Celsia',

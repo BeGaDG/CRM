@@ -242,7 +242,10 @@ export const LeadDetailPanel = ({
                         <span>{lead.city}</span>
                         <Separator orientation="vertical" className="h-4" />
                          {currentStageInfo && (
-                            <Badge className={cn('font-medium text-white', currentStageInfo.color)}>
+                            <Badge 
+                              className='font-medium text-white'
+                              style={{ backgroundColor: currentStageInfo.colorHex }}
+                            >
                                 {lead.status}
                             </Badge>
                         )}
@@ -324,5 +327,3 @@ export const LeadDetailPanel = ({
         </main>
     );
 }
-
-    
