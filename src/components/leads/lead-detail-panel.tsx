@@ -146,9 +146,6 @@ export const LeadDetailPanel = ({
             onUpdateStatus(manualStage);
         }
     }
-    
-    const flowStages = stages.filter(s => !['No', 'Finalizados', 'Recaptura BD'].includes(s.name));
-
 
     return (
         <main className="flex-1 flex flex-col p-4 lg:p-6 bg-muted/40 overflow-y-auto">
@@ -241,14 +238,6 @@ export const LeadDetailPanel = ({
                 <div className="space-y-6">
                    <CollectedInfo lead={lead} />
                    <AdvisorAssign lead={lead} advisors={advisors} onAssignLead={onAssignLead} />
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base">Flujo del Lead</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <LeadStatusFlow stages={flowStages} currentStageName={lead.status} />
-                        </CardContent>
-                    </Card>
                    <Card>
                     <CardHeader><CardTitle className="text-base">Notas Rápidas</CardTitle></CardHeader>
                     <CardContent className="space-y-2">
