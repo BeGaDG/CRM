@@ -1,6 +1,7 @@
 
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import type { DateRange } from "react-day-picker";
 import {
   Contact,
@@ -40,6 +41,14 @@ export default function LeadsPage() {
   const [filterStage, setFilterStage] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname === '/leads') {
+      setSelectedLead(null);
+    }
+  }, [pathname]);
 
   const handleUpdateStatus = (stage: string) => {
      if (selectedLead) {
@@ -253,3 +262,5 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
+
+    
