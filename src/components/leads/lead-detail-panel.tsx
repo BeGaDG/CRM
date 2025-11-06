@@ -7,12 +7,13 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Grid, Zap, Layers, UserCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Grid, Zap, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar } from 'lucide-react';
 import { StageForm } from './stage-form';
 import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { LeadStatusFlow } from './lead-status-flow';
+import { Textarea } from '../ui/textarea';
 
 const interestTypeIcons = {
   'planta-solar': { icon: Grid, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
@@ -37,11 +38,14 @@ const getNextStages = (currentStage: string): string[] => {
     return stageMap[currentStage] || [];
 };
 
-const InfoItem = ({ label, value }: { label: string; value?: string | number | null }) => {
+const InfoItem = ({ label, value, icon: Icon }: { label: string; value?: string | number | null, icon?: React.ElementType }) => {
     if (!value && value !== 0) return null;
     return (
-    <div className="flex justify-between text-sm">
-        <p className="text-muted-foreground">{label}</p>
+    <div className="flex items-start justify-between text-sm">
+        <p className="text-muted-foreground flex items-center gap-2">
+            {Icon && <Icon className="h-4 w-4" />}
+            <span>{label}</span>
+        </p>
         <p className="font-medium text-right">{value}</p>
     </div>
     );
@@ -56,17 +60,19 @@ const CollectedInfo = ({ lead }: { lead: Lead }) => (
             </CardTitle>
             <CardDescription>Resumen de los datos más importantes del lead.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-            <InfoItem label="Teléfono" value={lead.phone} />
-            <InfoItem label="Email" value={lead.email} />
-            <InfoItem label="Fuente" value="Referido" />
+        <CardContent className="space-y-4 text-sm">
+            <InfoItem label="Teléfono" value={lead.phone} icon={Phone} />
+            <InfoItem label="Email" value={lead.email} icon={Mail} />
+            <InfoItem label="Fuente" value="Referido" icon={TrendingUp}/>
             <Separator />
             {Object.keys(lead.collectedData).length > 0 ? (
                 <>
-                    <InfoItem label="NIC" value={lead.collectedData.nic} />
-                    <InfoItem label="Consumo" value={lead.collectedData.consumo} />
-                    <InfoItem label="Potencia Pico" value={lead.collectedData.potencia_pico} />
-                    <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} />
+                    <InfoItem label="NIC" value={lead.collectedData.nic} icon={Building}/>
+                    <InfoItem label="Consumo (kWh)" value={lead.collectedData.consumo?.toLocaleString('es-CO')} icon={Zap} />
+                    <InfoItem label="Pago Promedio" value={lead.collectedData.pago ? `$${lead.collectedData.pago.toLocaleString('es-CO')}` : null} icon={PiggyBank} />
+                    <InfoItem label="Potencia Pico (kWp)" value={lead.collectedData.potencia_pico} icon={Grid}/>
+                    <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} icon={DollarSign} />
+                    <InfoItem label="Fecha de Próx. Seguimiento" value={lead.collectedData.follow_up_date ? new Date(lead.collectedData.follow_up_date).toLocaleDateString('es-CO') : null} icon={Calendar} />
                 </>
               ) : (
                  <p className="text-muted-foreground text-center text-xs p-4 bg-muted/50 rounded-lg border">
@@ -146,6 +152,9 @@ export const LeadDetailPanel = ({
             onUpdateStatus(manualStage);
         }
     }
+    
+    const flowStages = stages.filter(s => !['No', 'Finalizados', 'Recaptura BD'].includes(s.name));
+
 
     return (
         <main className="flex-1 flex flex-col p-4 lg:p-6 bg-muted/40 overflow-y-auto">
@@ -241,7 +250,7 @@ export const LeadDetailPanel = ({
                    <Card>
                     <CardHeader><CardTitle className="text-base">Notas Rápidas</CardTitle></CardHeader>
                     <CardContent className="space-y-2">
-                         <Input placeholder='Escribe una nota rápida...'/>
+                         <Textarea placeholder='Escribe una nota rápida...'/>
                          <Button className="w-full">Guardar Nota</Button>
                     </CardContent>
                    </Card>
