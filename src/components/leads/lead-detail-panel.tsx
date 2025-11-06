@@ -17,10 +17,17 @@ import { Textarea } from '../ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { SolarPanelIcon } from '@/components/icons';
 
+const AmbosIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <div className="flex -space-x-2">
+    <SolarPanelIcon {...props} />
+    <HousePlug {...props} />
+  </div>
+);
+
 const interestTypeIcons = {
   'planta-solar': { icon: SolarPanelIcon, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
   'comercializadora': { icon: HousePlug, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Comercializadora' },
-  'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Ambos' },
+  'ambos': { icon: AmbosIcon, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Ambos' },
 };
 
 const getNextStages = (currentStage: string): string[] => {
@@ -91,9 +98,9 @@ const CollectedInfo = ({ lead }: { lead: Lead }) => (
                 <>
                     <InfoItem label="NIC" value={lead.collectedData.nic} icon={Building}/>
                     <InfoItem label="Consumo (kWh)" value={lead.collectedData.consumo?.toLocaleString('es-CO')} icon={HousePlug} />
-                    <InfoItem label="Pago Promedio" value={lead.collectedData.pago ? `$${lead.collectedData.pago.toLocaleString('es-CO')}` : null} icon={PiggyBank} />
+                    <InfoItem label="Pago Promedio" value={lead.collectedData.pago ? `$${'\'\'\''}{lead.collectedData.pago.toLocaleString('es-CO')}` : null} icon={PiggyBank} />
                     <InfoItem label="Potencia Pico (kWp)" value={lead.collectedData.potencia_pico} icon={SolarPanelIcon}/>
-                    <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} icon={DollarSign} />
+                    <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${'\'\'\''}{lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} icon={DollarSign} />
                     <InfoItem label="Fecha de Próx. Seguimiento" value={lead.collectedData.follow_up_date ? new Date(lead.collectedData.follow_up_date).toLocaleDateString('es-CO') : null} icon={Calendar} />
                      <Separator />
                     <div className='space-y-2'>

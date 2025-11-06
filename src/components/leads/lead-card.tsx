@@ -11,10 +11,18 @@ import type { Lead } from '@/lib/data/leads-data';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { LeadStatusFlow } from './lead-status-flow';
 
+const AmbosIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <div className="flex -space-x-2">
+    <SolarPanelIcon {...props} />
+    <HousePlug {...props} />
+  </div>
+);
+
+
 const interestTypeIcons = {
   'planta-solar': { icon: SolarPanelIcon, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10' },
   'comercializadora': { icon: HousePlug, color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
-  'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10' },
+  'ambos': { icon: AmbosIcon, color: 'text-green-500', bgColor: 'bg-green-500/10' },
 };
 
 export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: () => void, isSelected: boolean }) => {
