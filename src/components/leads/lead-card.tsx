@@ -79,14 +79,6 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
                 </div>
                 <div className="flex items-center gap-2 justify-end">
                   {isOverdue && <TooltipProvider><Tooltip><TooltipTrigger><AlertCircle className="h-5 w-5 text-red-500"/></TooltipTrigger><TooltipContent><p>Lead sin contacto por más de 2 días</p></TooltipContent></Tooltip></TooltipProvider>}
-                  {currentStage && (
-                    <Badge 
-                        className={cn('font-medium text-xs sm:text-sm whitespace-nowrap h-fit text-white')}
-                        style={{ backgroundColor: badgeColor }}
-                    >
-                      {lead.status}
-                    </Badge>
-                  )}
                 </div>
             </div>
         </div>
