@@ -66,7 +66,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <Sidebar collapsible="icon" className="border-r border-sidebar-border/80 bg-sidebar text-sidebar-foreground">
         <SidebarHeader className="flex flex-col items-start gap-2 p-4 h-auto">
           <div className="flex items-center gap-3">
-              <Image src="/Icono.png" width={40} height={40} alt="Logo Sol & Cielo" />
+              <Image src="/Icono.png" width={60} height={60} alt="Logo Sol & Cielo" />
               <div>
                   <h2 className="text-base font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
                     Panel Administrativo
