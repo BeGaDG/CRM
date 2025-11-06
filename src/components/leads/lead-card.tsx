@@ -49,9 +49,20 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
       <CardContent className="p-4 flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
             <div className="flex items-center gap-4 flex-1">
-              <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
-                <Icon className={cn("h-6 w-6", interest.color)} />
-              </div>
+              {lead.interestType === 'ambos' ? (
+                <div className="flex gap-1.5">
+                  <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interestTypeIcons['planta-solar'].bgColor)}>
+                    <SolarPanelIcon className={cn("h-6 w-6", interestTypeIcons['planta-solar'].color)} />
+                  </div>
+                  <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interestTypeIcons['comercializadora'].bgColor)}>
+                    <HousePlug className={cn("h-6 w-6", interestTypeIcons['comercializadora'].color)} />
+                  </div>
+                </div>
+              ) : (
+                <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
+                  <Icon className={cn("h-6 w-6", interest.color)} />
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-base truncate" title={lead.name}>{lead.name}</p>
                 <p className="text-sm text-muted-foreground flex items-center gap-1.5 truncate">
