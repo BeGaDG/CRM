@@ -18,9 +18,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { SolarPanelIcon } from '@/components/icons';
 
 const AmbosIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <div className="flex gap-1">
-    <SolarPanelIcon {...props} />
-    <HousePlug {...props} />
+  <div className="flex gap-1.5">
+    <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interestTypeIcons['planta-solar'].bgColor)}>
+        <SolarPanelIcon className={cn("h-6 w-6", interestTypeIcons['planta-solar'].color)} />
+    </div>
+    <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interestTypeIcons['comercializadora'].bgColor)}>
+        <HousePlug className={cn("h-6 w-6", interestTypeIcons['comercializadora'].color)} />
+    </div>
   </div>
 );
 
@@ -36,7 +40,7 @@ const getNextStages = (currentStage: string): string[] => {
       'Por Contactar': ['Por Visitar', 'No'],
       'Por Visitar': ['Por Cotizar'],
       'Por Cotizar': ['Por Presentar Cotización'],
-      'Por Presentar Cotización': ['Ajustar Cotización', 'Seguimiento a la Cotización', 'Por Contratar', 'No'],
+      'Por Presentar Cotización': ['Por Contratar', 'Ajustar Cotización', 'Seguimiento a la Cotización', 'No'],
       'Ajustar Cotización': ['Por Presentar Cotización'],
       'Seguimiento a la Cotización': ['Por Contratar', 'Ajustar Cotización', 'No'],
       'Por Contratar': ['Finalizados'],
@@ -228,7 +232,6 @@ export const LeadDetailPanel = ({
     const canAdvance = true; // Placeholder for validation logic
     const [manualStage, setManualStage] = useState<string>('');
     const nextStages = getNextStages(lead.status);
-    const mainAction = nextStages.length > 0 ? nextStages[0] : null;
 
     const handleManualChange = () => {
         if (manualStage && manualStage !== lead.status) {
@@ -292,14 +295,25 @@ export const LeadDetailPanel = ({
                      <Card>
                         <CardHeader>
                             <CardTitle>Gestión de Etapas</CardTitle>
-                            <CardDescription>Avanza el lead al siguiente paso o muévelo manually a otra etapa.</CardDescription>
+                            <CardDescription>Avanza el lead al siguiente paso o muévelo manualmente a otra etapa.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                             {mainAction ? (
-                                <Button onClick={() => onUpdateStatus(mainAction)} size="lg" className="w-full font-bold" disabled={!canAdvance} title={!canAdvance ? "Completa los campos obligatorios para avanzar" : ""}>
-                                    <ArrowRight className="mr-2 h-4 w-4" />
-                                    Avanzar a: {mainAction}
-                                </Button>
+                            {nextStages.length > 0 ? (
+                                <div className="space-y-2">
+                                    <Button onClick={() => onUpdateStatus(nextStages[0])} size="lg" className="w-full font-bold" disabled={!canAdvance} title={!canAdvance ? "Completa los campos obligatorios para avanzar" : ""}>
+                                        <ArrowRight className="mr-2 h-4 w-4" />
+                                        {nextStages[0]}
+                                    </Button>
+                                    {nextStages.length > 1 && (
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            {nextStages.slice(1).map(stage => (
+                                                <Button key={stage} onClick={() => onUpdateStatus(stage)} variant="outline" className="w-full">
+                                                    {stage}
+                                                </Button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             ) : (
                                 <p className="text-sm text-muted-foreground text-center p-4 bg-muted rounded-md">Este es el final del flujo.</p>
                             )}
