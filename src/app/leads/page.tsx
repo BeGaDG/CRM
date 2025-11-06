@@ -30,6 +30,7 @@ import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
 import { StageKpiCard } from '@/components/leads/stage-kpi-card';
 import { Contact2, FileSearch, Presentation, DraftingCompass, UserRoundPlus, Ban, Hourglass, FolderCheck, Repeat, FileCheck, Phone, Eye } from 'lucide-react';
 
+
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
@@ -180,7 +181,7 @@ export default function LeadsPage() {
     <DashboardLayout>
       <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
           {/* KPI Cards */}
-           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2">
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {stages.map(stage => (
               <StageKpiCard 
                 key={stage.name}
