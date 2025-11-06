@@ -15,6 +15,7 @@ import { stages } from '@/lib/data/leads-data';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { LeadStatusFlow } from './lead-status-flow';
 import { Textarea } from '../ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 const interestTypeIcons = {
   'planta-solar': { icon: Grid, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
@@ -153,6 +154,52 @@ const AdvisorAssign = ({ lead, advisors, onAssignLead }: { lead: Lead; advisors:
     );
 };
 
+const QuickNotes = () => {
+    const notes = [
+        {
+            id: 'note-1',
+            author: 'Ana Gómez',
+            avatar: 'https://picsum.photos/seed/302/100/100',
+            content: 'El cliente está muy interesado pero necesita que ajustemos el precio. Le preocupa el ROI a corto plazo.',
+            date: 'Hace 2 horas',
+        },
+        {
+            id: 'note-2',
+            author: 'Ana Gómez',
+            avatar: 'https://picsum.photos/seed/302/100/100',
+            content: 'Se envió la cotización v2 con el descuento solicitado. A la espera de comentarios.',
+            date: 'Ayer',
+        }
+    ];
+
+    return (
+        <Card>
+            <CardHeader><CardTitle className="text-base">Notas Rápidas</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
+                <div className="space-y-4">
+                    {notes.map(note => (
+                        <div key={note.id} className="flex items-start gap-3">
+                            <Avatar className="h-8 w-8 border">
+                                <AvatarImage src={note.avatar} />
+                                <AvatarFallback>{note.author.substring(0,1)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 text-sm bg-muted/50 p-3 rounded-lg">
+                                <p className="font-medium">{note.author} <span className="text-xs text-muted-foreground ml-2">{note.date}</span></p>
+                                <p className="text-muted-foreground">{note.content}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <Separator />
+                <div className="space-y-2">
+                    <Textarea placeholder='Escribe una nota rápida...'/>
+                    <Button className="w-full">Guardar Nota</Button>
+                </div>
+            </CardContent>
+        </Card>
+    )
+}
+
 
 export const LeadDetailPanel = ({ 
   lead, 
@@ -275,13 +322,7 @@ export const LeadDetailPanel = ({
                 <div className="space-y-6">
                    <CollectedInfo lead={lead} />
                    <AdvisorAssign lead={lead} advisors={advisors} onAssignLead={onAssignLead} />
-                   <Card>
-                    <CardHeader><CardTitle className="text-base">Notas Rápidas</CardTitle></CardHeader>
-                    <CardContent className="space-y-2">
-                         <Textarea placeholder='Escribe una nota rápida...'/>
-                         <Button className="w-full">Guardar Nota</Button>
-                    </CardContent>
-                   </Card>
+                   <QuickNotes />
                 </div>
             </div>
         </main>
