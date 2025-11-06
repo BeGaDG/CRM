@@ -92,6 +92,7 @@ export default function LeadsPage() {
         status: 'Nuevo Lead',
         phone: newLeadData.phone || 'N/A',
         email: newLeadData.email || 'N/A',
+        source: newLeadData.source || 'Otro',
         creationDate: new Date().toISOString(),
         collectedData: {},
         advisorId: 'user-1', // Default assignment
@@ -107,6 +108,7 @@ export default function LeadsPage() {
       lastContact: 'Ahora',
       status: 'Nuevo Lead',
       creationDate: new Date().toISOString(),
+      source: lead.source || 'Importado',
       collectedData: {},
       advisorId: 'user-1', // Default assignment
       advisorName: 'Carlos Ruiz',
@@ -262,5 +264,3 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
-
-    

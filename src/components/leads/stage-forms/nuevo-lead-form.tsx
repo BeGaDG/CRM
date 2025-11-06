@@ -2,9 +2,10 @@
 'use client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { StageFormProps } from './form-props';
 
-export const NuevoLeadForm = ({ formData, handleChange }: StageFormProps) => {
+export const NuevoLeadForm = ({ formData, handleChange, handleSelectChange }: StageFormProps) => {
   return (
     <div className="space-y-4">
         <div>
@@ -22,6 +23,20 @@ export const NuevoLeadForm = ({ formData, handleChange }: StageFormProps) => {
         <div>
           <Label htmlFor="email">Correo electrónico</Label>
           <Input id="email" type="email" placeholder="ejemplo@correo.com" defaultValue={formData.email} onChange={handleChange}/>
+        </div>
+        <div>
+          <Label htmlFor="source">Fuente del Lead</Label>
+           <Select name="source" onValueChange={(value) => handleSelectChange('source', value)}>
+            <SelectTrigger id="source">
+              <SelectValue placeholder="Seleccionar fuente..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="referido">Referido</SelectItem>
+              <SelectItem value="pagina_web">Página Web</SelectItem>
+              <SelectItem value="redes_sociales">Redes Sociales</SelectItem>
+              <SelectItem value="otro">Otro</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
   )
