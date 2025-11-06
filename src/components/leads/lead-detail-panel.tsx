@@ -8,16 +8,17 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Grid, Zap, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign, FileText, Download } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Zap, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign, FileText, Download } from 'lucide-react';
 import { StageForm } from './stage-form';
 import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { SolarPanelIcon } from '@/components/icons';
 
 const interestTypeIcons = {
-  'planta-solar': { icon: Grid, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
+  'planta-solar': { icon: SolarPanelIcon, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
   'comercializadora': { icon: Zap, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Comercializadora' },
   'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Ambos' },
 };
@@ -84,14 +85,14 @@ const CollectedInfo = ({ lead }: { lead: Lead }) => (
         <CardContent className="space-y-4 text-sm">
             <InfoItem label="Teléfono" value={lead.phone} icon={Phone} />
             <InfoItem label="Email" value={lead.email} icon={Mail} />
-            <InfoItem label="Fuente" value="Referido" icon={TrendingUp}/>
+            <InfoItem label="Fuente" value={lead.source} icon={TrendingUp}/>
             <Separator />
             {Object.keys(lead.collectedData).length > 0 ? (
                 <>
                     <InfoItem label="NIC" value={lead.collectedData.nic} icon={Building}/>
                     <InfoItem label="Consumo (kWh)" value={lead.collectedData.consumo?.toLocaleString('es-CO')} icon={Zap} />
                     <InfoItem label="Pago Promedio" value={lead.collectedData.pago ? `$${lead.collectedData.pago.toLocaleString('es-CO')}` : null} icon={PiggyBank} />
-                    <InfoItem label="Potencia Pico (kWp)" value={lead.collectedData.potencia_pico} icon={Grid}/>
+                    <InfoItem label="Potencia Pico (kWp)" value={lead.collectedData.potencia_pico} icon={SolarPanelIcon}/>
                     <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} icon={DollarSign} />
                     <InfoItem label="Fecha de Próx. Seguimiento" value={lead.collectedData.follow_up_date ? new Date(lead.collectedData.follow_up_date).toLocaleDateString('es-CO') : null} icon={Calendar} />
                      <Separator />
