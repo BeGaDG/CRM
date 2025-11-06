@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -10,9 +9,10 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Sun, Zap, Layers, UserCircle } from 'lucide-react';
 import { StageForm } from './stage-form';
-import type { Lead, Advisor, Stage } from '@/lib/data/leads-data';
+import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { LeadStatusFlow } from './lead-status-flow';
 
 const interestTypeIcons = {
   'planta-solar': { icon: Sun, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
@@ -146,6 +146,9 @@ export const LeadDetailPanel = ({
             onUpdateStatus(manualStage);
         }
     }
+    
+    const flowStages = stages.filter(s => !['No', 'Finalizados', 'Recaptura BD'].includes(s.name));
+
 
     return (
         <main className="flex-1 flex flex-col p-4 lg:p-6 bg-muted/40 overflow-y-auto">
@@ -238,6 +241,14 @@ export const LeadDetailPanel = ({
                 <div className="space-y-6">
                    <CollectedInfo lead={lead} />
                    <AdvisorAssign lead={lead} advisors={advisors} onAssignLead={onAssignLead} />
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base">Flujo del Lead</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <LeadStatusFlow stages={flowStages} currentStageName={lead.status} />
+                        </CardContent>
+                    </Card>
                    <Card>
                     <CardHeader><CardTitle className="text-base">Notas Rápidas</CardTitle></CardHeader>
                     <CardContent className="space-y-2">
