@@ -14,7 +14,6 @@ import {
   Grid,
   File,
   MessageSquare,
-  SolarPanel,
   Calendar,
   XCircle,
   Briefcase
@@ -106,7 +105,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                      <SidebarMenuItem>
                         <Link href="#">
                             <SidebarMenuButton>
-                                <SolarPanel />
+                                <Grid />
                                 <span className="truncate">Proyectos solares</span>
                             </SidebarMenuButton>
                         </Link>

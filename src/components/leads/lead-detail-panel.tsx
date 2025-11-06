@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, SolarPanel, Zap, Layers, UserCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Grid, Zap, Layers, UserCircle } from 'lucide-react';
 import { StageForm } from './stage-form';
 import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { LeadStatusFlow } from './lead-status-flow';
 
 const interestTypeIcons = {
-  'planta-solar': { icon: SolarPanel, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
+  'planta-solar': { icon: Grid, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
   'comercializadora': { icon: Zap, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Comercializadora' },
   'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Ambos' },
 };
