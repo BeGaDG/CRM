@@ -116,9 +116,9 @@ const CollectedInfo = ({ lead }: { lead: Lead }) => (
                 <>
                     <InfoItem label="NIC" value={lead.collectedData.nic} icon={Building}/>
                     <InfoItem label="Consumo (kWh)" value={lead.collectedData.consumo?.toLocaleString('es-CO')} icon={HousePlug} />
-                    <InfoItem label="Pago Promedio" value={lead.collectedData.pago ? `$${'\'\'\''}{lead.collectedData.pago.toLocaleString('es-CO')}` : null} icon={PiggyBank} />
+                    <InfoItem label="Pago Promedio" value={lead.collectedData.pago ? `$${lead.collectedData.pago.toLocaleString('es-CO')}` : null} icon={PiggyBank} />
                     <InfoItem label="Potencia Pico (kWp)" value={lead.collectedData.potencia_pico} icon={SolarPanelIcon}/>
-                    <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${'\'\'\''}{lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} icon={DollarSign} />
+                    <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} icon={DollarSign} />
                     <InfoItem label="Fecha de Próx. Seguimiento" value={lead.collectedData.follow_up_date ? new Date(lead.collectedData.follow_up_date).toLocaleDateString('es-CO') : null} icon={Calendar} />
                      <InfoNoteItem label="Notas de Seguimiento" value={lead.collectedData.follow_up_notes} icon={MessageSquare} />
                      <Separator />
@@ -275,8 +275,8 @@ export const LeadDetailPanel = ({
                          <Separator orientation="vertical" className="h-4" />
                          {currentStageInfo && (
                             <Badge 
-                              className='font-medium text-white'
-                              style={{ backgroundColor: currentStageInfo.colorHex }}
+                              className='font-medium'
+                              style={{ backgroundColor: currentStageInfo.colorHex, color: 'white' }}
                             >
                                 {lead.status}
                             </Badge>
