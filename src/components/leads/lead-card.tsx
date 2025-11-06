@@ -7,6 +7,7 @@ import { differenceInDays } from 'date-fns';
 import { stages } from '@/lib/data/leads-data';
 import type { Lead } from '@/lib/data/leads-data';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { LeadStatusFlow } from './lead-status-flow';
 
 const interestTypeIcons = {
   'planta-solar': { icon: Sun, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10' },
@@ -21,6 +22,9 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
 
   const isOverdue = ['Nuevo Lead', 'Por Contactar'].includes(lead.status) &&
                     differenceInDays(new Date(), new Date(lead.creationDate)) > 2;
+  
+  const flowStages = stages.filter(s => !['No', 'Finalizados', 'Recaptura BD'].includes(s.name));
+
 
   return (
     <Card 
@@ -32,34 +36,39 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
       )}
       style={!isOverdue && currentStage ? { borderLeftColor: `hsl(var(--${currentStage.color.replace('bg-', '')}))`} : {}}
     >
-      <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="flex items-center gap-4 flex-1">
-          <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
-            <Icon className={cn("h-6 w-6", interest.color)} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-base truncate" title={lead.name}>{lead.name}</p>
-            <p className="text-sm text-muted-foreground flex items-center gap-1.5 truncate">
-                <UserCircle className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate">{lead.advisorName}</span>
-            </p>
-          </div>
-        </div>
+      <CardContent className="p-4 flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
+            <div className="flex items-center gap-4 flex-1">
+              <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
+                <Icon className={cn("h-6 w-6", interest.color)} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-base truncate" title={lead.name}>{lead.name}</p>
+                <p className="text-sm text-muted-foreground flex items-center gap-1.5 truncate">
+                    <UserCircle className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">{lead.advisorName}</span>
+                </p>
+              </div>
+            </div>
 
-        <div className="w-full sm:w-auto flex flex-row sm:items-center justify-between sm:justify-end gap-4 pl-14 sm:pl-0">
-            <div className="flex flex-col items-start sm:items-end text-sm">
-                <span className='font-medium text-foreground'>{lead.phone}</span>
-                <span className='text-muted-foreground whitespace-nowrap'>Últ. contacto: {lead.lastContact}</span>
+            <div className="w-full sm:w-auto flex flex-row sm:items-center justify-between sm:justify-end gap-4 pl-14 sm:pl-0">
+                <div className="flex flex-col items-start sm:items-end text-sm">
+                    <span className='font-medium text-foreground'>{lead.phone}</span>
+                    <span className='text-muted-foreground whitespace-nowrap'>Últ. contacto: {lead.lastContact}</span>
+                </div>
+                <div className="flex items-center gap-2 justify-end">
+                  {isOverdue && <TooltipProvider><Tooltip><TooltipTrigger><AlertCircle className="h-5 w-5 text-red-500"/></TooltipTrigger><TooltipContent><p>Lead sin contacto por más de 2 días</p></TooltipContent></Tooltip></TooltipProvider>}
+                  {currentStage && (
+                    <Badge variant="secondary" className='font-medium text-xs sm:text-sm whitespace-nowrap h-fit'>
+                      <span className={cn("h-2 w-2 rounded-full mr-2", currentStage.color)}></span>
+                      {lead.status}
+                    </Badge>
+                  )}
+                </div>
             </div>
-            <div className="flex items-center gap-2 justify-end">
-              {isOverdue && <TooltipProvider><Tooltip><TooltipTrigger><AlertCircle className="h-5 w-5 text-red-500"/></TooltipTrigger><TooltipContent><p>Lead sin contacto por más de 2 días</p></TooltipContent></Tooltip></TooltipProvider>}
-              {currentStage && (
-                <Badge variant="secondary" className='font-medium text-xs sm:text-sm whitespace-nowrap h-fit'>
-                  <span className={cn("h-2 w-2 rounded-full mr-2", currentStage.color)}></span>
-                  {lead.status}
-                </Badge>
-              )}
-            </div>
+        </div>
+        <div className="pt-2 border-t border-border w-full">
+           <LeadStatusFlow stages={flowStages} currentStageName={lead.status} />
         </div>
       </CardContent>
     </Card>

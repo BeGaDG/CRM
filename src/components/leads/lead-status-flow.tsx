@@ -24,48 +24,63 @@ const stageColors = [
 export const LeadStatusFlow: React.FC<LeadStatusFlowProps> = ({ stages, currentStageName }) => {
     const currentStageIndex = stages.findIndex(s => s.name === currentStageName);
 
+    if (currentStageIndex === -1) {
+        return (
+            <div className="flex flex-col items-start mt-2">
+                 <div className="flex items-center w-full">
+                    {stages.map((stage, i) => (
+                        <div key={`dot-${i}`} className="flex items-center w-full">
+                            <div className="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                            {i < stages.length - 1 && (
+                                <div className="h-0.5 w-full bg-gray-300 dark:bg-gray-700"></div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-2 text-xs font-medium text-muted-foreground">
+                    <span>{currentStageName}</span>
+                </div>
+            </div>
+        );
+    }
+    
     return (
-        <div className="space-y-4">
-            {stages.map((stage, index) => {
-                const isCompleted = index < currentStageIndex;
-                const isCurrent = index === currentStageIndex;
-                const isPending = index > currentStageIndex;
-                const stepNumber = index + 1;
-                
-                const stageColor = stageColors[index % stageColors.length];
+        <div className="flex flex-col items-start mt-2">
+            <div className="flex items-center w-full">
+                {stages.map((stage, index) => {
+                    const isCompleted = index < currentStageIndex;
+                    const isCurrent = index === currentStageIndex;
+                    const stageColor = stageColors[index % stageColors.length];
 
-                return (
-                    <div key={stage.name} className="flex flex-col">
-                        <div className="flex items-center">
-                            {stages.map((_, i) => (
-                                <div key={`dot-${i}`} className="flex items-center w-full">
-                                    <div 
-                                        className={cn("w-4 h-4 rounded-full transition-all duration-300", {
-                                            "bg-gray-600": i < index,
-                                            [stage.color]: i === index,
-                                            "bg-gray-300 dark:bg-gray-700": i > index,
-                                        })}
-                                        style={{ backgroundColor: i < index ? stageColors[i] : isCurrent ? stageColor : (isCompleted ? stageColors[i] : 'hsl(var(--muted))') }}
-                                    ></div>
-                                    {i < stages.length - 1 && (
-                                        <div
-                                            className={cn("h-0.5 w-full transition-all duration-300", {
-                                                "bg-gray-300 dark:bg-gray-700": i >= currentStageIndex,
-                                            })}
-                                            style={{ backgroundColor: i < currentStageIndex ? stageColors[i] : 'hsl(var(--muted))' }}
-                                        ></div>
-                                    )}
-                                </div>
-                            ))}
+                    return (
+                         <div key={`dot-${index}`} className="flex items-center w-full">
+                            <div 
+                                className={cn("w-3 h-3 rounded-full transition-all duration-300", {
+                                    "bg-gray-300 dark:bg-gray-700": !isCompleted && !isCurrent
+                                })}
+                                style={{ 
+                                    backgroundColor: isCurrent ? stageColor : (isCompleted ? stageColors[index] : 'hsl(var(--muted))')
+                                }}
+                            ></div>
+                            {index < stages.length - 1 && (
+                                <div
+                                    className={cn("h-0.5 w-full transition-all duration-300", {
+                                        "bg-gray-300 dark:bg-gray-700": index >= currentStageIndex,
+                                    })}
+                                     style={{ 
+                                        backgroundColor: index < currentStageIndex ? stageColors[index] : 'hsl(var(--muted))'
+                                    }}
+                                ></div>
+                            )}
                         </div>
-                        <div className="mt-2 text-xs font-medium">
-                            <span className={cn({ "text-foreground font-bold": isCurrent, "text-muted-foreground": !isCurrent })}>
-                                {stage.name} ({stepNumber} de {stages.length})
-                            </span>
-                        </div>
-                    </div>
-                )
-            })}
+                    )
+                })}
+            </div>
+            <div className="mt-2 text-xs font-medium">
+                <span className={cn("text-muted-foreground")}>
+                    {stages[currentStageIndex].name} ({currentStageIndex + 1} de {stages.length})
+                </span>
+            </div>
         </div>
     );
 };
