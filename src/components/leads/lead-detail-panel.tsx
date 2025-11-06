@@ -1,6 +1,6 @@
 
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -257,6 +257,8 @@ export const LeadDetailPanel = ({
     const canAdvance = true; // Placeholder for validation logic
     const [manualStage, setManualStage] = useState<string>('');
     const [isFullEditOpen, setIsFullEditOpen] = useState(false);
+    const [fullFormData, setFullFormData] = useState({});
+
     const nextStages = getNextStages(lead.status);
 
     const handleManualChange = () => {
@@ -326,7 +328,7 @@ export const LeadDetailPanel = ({
                      <Card>
                         <CardHeader>
                             <CardTitle>Gestión de Etapas</CardTitle>
-                            <CardDescription>Avanza el lead al siguiente paso o muévelo manualmente a otra etapa.</CardDescription>
+                            <CardDescription>Avanza el lead al siguiente paso o muévelo manually a otra etapa.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {nextStages.length > 0 ? (
@@ -395,6 +397,7 @@ export const LeadDetailPanel = ({
                         <FullLeadForm 
                             initialData={lead} 
                             onSave={handleFullSave}
+                            onDataChange={useCallback((data: any) => setFullFormData(data), [])}
                         />
                     </div>
                      <SheetFooter className="absolute bottom-0 right-0 p-6 bg-background w-full">

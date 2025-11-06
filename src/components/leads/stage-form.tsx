@@ -14,7 +14,6 @@ import {
   SeguimientoCotizacionForm,
   NoForm
 } from './stage-forms';
-import { useFormStage } from '@/hooks/use-form-stage';
 
 const stageToFormComponent: { [key: string]: React.FC<any> } = {
   'Nuevo Lead': NuevoLeadForm,
@@ -28,7 +27,38 @@ const stageToFormComponent: { [key: string]: React.FC<any> } = {
 };
 
 export const StageForm = ({ stageName, onSave, onDataChange, initialData = {} }: { stageName: string | null; onSave: (data: any) => void; onDataChange: (data: any) => void; initialData?: any; }) => {
-  const { formData, handleChange, handleSelectChange, handleDateChange } = useFormStage(initialData, onDataChange);
+    const [formData, setFormData] = React.useState(initialData);
+
+    React.useEffect(() => {
+        onDataChange(formData);
+    }, [formData, onDataChange]);
+
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value, type } = e.target;
+        const isCheckbox = type === 'checkbox';
+        const checked = (e.target as HTMLInputElement).checked;
+
+        setFormData((prev: any) => ({
+        ...prev,
+        [id]: isCheckbox ? checked : value,
+        }));
+    };
+
+    const handleSelectChange = (id: string, value: string | boolean) => {
+        setFormData((prev: any) => ({
+        ...prev,
+        [id]: value,
+        }));
+    };
+
+    const handleDateChange = (id: string, date?: Date) => {
+        setFormData((prev: any) => ({
+        ...prev,
+        [id]: date,
+        }));
+    };
+
 
   const handleSaveClick = () => {
     onSave(formData);

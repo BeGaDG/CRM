@@ -2,7 +2,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
-import { useFormStage } from '@/hooks/use-form-stage';
 import {
   NuevoLeadForm,
   PorVisitarForm,
@@ -24,15 +23,55 @@ const combineInitialData = (initialData: any) => {
     }
 };
 
-export const FullLeadForm = ({ initialData, onSave }: { initialData: any; onSave: (data: any) => void; }) => {
-    const combinedData = combineInitialData(initialData);
-    const { formData, handleChange, handleSelectChange, handleDateChange } = useFormStage(combinedData, () => {});
+export const FullLeadForm = ({
+  initialData,
+  onSave,
+  onDataChange,
+}: {
+  initialData: any;
+  onSave: (data: any) => void;
+  onDataChange: (data: any) => void;
+}) => {
+  const [formData, setFormData] = React.useState(
+    combineInitialData(initialData)
+  );
 
-    const handleSaveClick = () => {
-        onSave(formData);
-    }
+  React.useEffect(() => {
+    onDataChange(formData);
+  }, [formData, onDataChange]);
 
-    const formProps = { formData, handleChange, handleSelectChange, handleDateChange };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value, type } = e.target;
+    const isCheckbox = type === 'checkbox';
+    const checked = (e.target as HTMLInputElement).checked;
+
+    setFormData((prev: any) => ({
+      ...prev,
+      [id]: isCheckbox ? checked : value,
+    }));
+  };
+
+  const handleSelectChange = (id: string, value: string | boolean) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const handleDateChange = (id: string, date?: Date) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      [id]: date,
+    }));
+  };
+
+  const handleSaveClick = () => {
+    onSave(formData);
+  };
+
+  const formProps = { formData, handleChange, handleSelectChange, handleDateChange };
 
     return (
         <div className='space-y-6'>
