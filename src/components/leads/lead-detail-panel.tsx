@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign, FileText, Download, HousePlug } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign, FileText, Download, HousePlug, MessageSquare } from 'lucide-react';
 import { StageForm } from './stage-form';
 import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
@@ -64,6 +64,20 @@ const InfoItem = ({ label, value, icon: Icon }: { label: string; value?: string 
     );
 }
 
+const InfoNoteItem = ({ label, value, icon: Icon }: { label: string; value?: string | null, icon?: React.ElementType }) => {
+    if (!value) return null;
+    return (
+        <div className="text-sm space-y-1">
+            <p className="text-muted-foreground flex items-center gap-2">
+                {Icon && <Icon className="h-4 w-4" />}
+                <span>{label}</span>
+            </p>
+            <p className="font-medium text-left bg-muted/50 p-2 rounded-md border">{value}</p>
+        </div>
+    );
+};
+
+
 const InfoFileItem = ({ label, fileName, date }: { label: string; fileName?: string; date?: string }) => {
     if (!fileName) return null;
     return (
@@ -106,6 +120,7 @@ const CollectedInfo = ({ lead }: { lead: Lead }) => (
                     <InfoItem label="Potencia Pico (kWp)" value={lead.collectedData.potencia_pico} icon={SolarPanelIcon}/>
                     <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${'\'\'\''}{lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} icon={DollarSign} />
                     <InfoItem label="Fecha de Próx. Seguimiento" value={lead.collectedData.follow_up_date ? new Date(lead.collectedData.follow_up_date).toLocaleDateString('es-CO') : null} icon={Calendar} />
+                     <InfoNoteItem label="Notas de Seguimiento" value={lead.collectedData.follow_up_notes} icon={MessageSquare} />
                      <Separator />
                     <div className='space-y-2'>
                         <h4 className='font-medium text-muted-foreground'>Archivos Adjuntos</h4>
