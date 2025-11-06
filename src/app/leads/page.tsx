@@ -219,16 +219,16 @@ export default function LeadsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className='flex items-center gap-2'>
-              <Button variant="outline" className="gap-1.5 h-10" onClick={() => setIsFilterSheetOpen(true)}>
+            <div className='flex flex-col sm:flex-row items-center gap-2'>
+              <Button variant="outline" className="gap-1.5 h-10 w-full sm:w-auto" onClick={() => setIsFilterSheetOpen(true)}>
                 <Filter className="h-4 w-4" />
-                <span className='hidden sm:inline'>Filtros</span>
+                <span>Filtros</span>
               </Button>
-              <Button variant="outline" className="gap-1.5 h-10" onClick={() => setIsImportSheetOpen(true)}>
+              <Button variant="outline" className="gap-1.5 h-10 w-full sm:w-auto" onClick={() => setIsImportSheetOpen(true)}>
                 <Upload className="h-4 w-4" />
-                <span className='hidden sm:inline'>Importar</span>
+                <span>Importar</span>
               </Button>
-              <Button className="gap-1.5 h-10" onClick={() => setIsNewLeadFormOpen(true)}>
+              <Button className="gap-1.5 h-10 w-full sm:w-auto" onClick={() => setIsNewLeadFormOpen(true)}>
                   <PlusCircle className="h-4 w-4" />
                   <span>Nuevo Lead</span>
               </Button>
