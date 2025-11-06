@@ -27,6 +27,8 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
+import { StageKpiCard } from '@/components/leads/stage-kpi-card';
+import { Contact2, FileSearch, Presentation, Drafting } from 'lucide-react';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
@@ -160,10 +162,31 @@ export default function LeadsPage() {
     return counts;
   }, [leads]);
 
+  const kpiStages = [
+    { title: 'Nuevo Lead', icon: Contact, count: stageCounts['Nuevo Lead'] || 0, color: 'bg-blue-500' },
+    { title: 'Por Visitar', icon: Contact2, count: stageCounts['Por Visitar'] || 0, color: 'bg-teal-500' },
+    { title: 'Por Cotizar', icon: FileSearch, count: stageCounts['Por Cotizar'] || 0, color: 'bg-yellow-500' },
+    { title: 'Por Presentar Cotización', icon: Presentation, count: stageCounts['Por Presentar Cotización'] || 0, color: 'bg-amber-500' },
+    { title: 'Por Contratar', icon: Drafting, count: stageCounts['Por Contratar'] || 0, color: 'bg-emerald-500' },
+  ];
 
   return (
     <DashboardLayout>
       <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
+          {/* KPI Cards */}
+          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
+            {kpiStages.map(kpi => (
+              <StageKpiCard 
+                key={kpi.title}
+                title={kpi.title}
+                count={kpi.count}
+                total={leads.length}
+                icon={kpi.icon}
+                color={kpi.color}
+              />
+            ))}
+          </div>
+
           {/* Top Bar: Search, Filters and Actions */}
            <div className='flex flex-col sm:flex-row gap-4'>
             <div className="relative flex-1">

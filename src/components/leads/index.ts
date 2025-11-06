@@ -9,3 +9,4 @@ export * from './lead-detail-summary';
 export * from './lead-detail-forms';
 export * from './lead-detail-activity';
 export * from './stage-forms';
+export * from './stage-kpi-card';
