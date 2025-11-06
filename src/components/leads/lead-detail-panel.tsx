@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Zap, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign, FileText, Download } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign, FileText, Download, HousePlug } from 'lucide-react';
 import { StageForm } from './stage-form';
 import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
@@ -19,7 +19,7 @@ import { SolarPanelIcon } from '@/components/icons';
 
 const interestTypeIcons = {
   'planta-solar': { icon: SolarPanelIcon, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
-  'comercializadora': { icon: Zap, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Comercializadora' },
+  'comercializadora': { icon: HousePlug, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Comercializadora' },
   'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Ambos' },
 };
 
@@ -90,7 +90,7 @@ const CollectedInfo = ({ lead }: { lead: Lead }) => (
             {Object.keys(lead.collectedData).length > 0 ? (
                 <>
                     <InfoItem label="NIC" value={lead.collectedData.nic} icon={Building}/>
-                    <InfoItem label="Consumo (kWh)" value={lead.collectedData.consumo?.toLocaleString('es-CO')} icon={Zap} />
+                    <InfoItem label="Consumo (kWh)" value={lead.collectedData.consumo?.toLocaleString('es-CO')} icon={HousePlug} />
                     <InfoItem label="Pago Promedio" value={lead.collectedData.pago ? `$${lead.collectedData.pago.toLocaleString('es-CO')}` : null} icon={PiggyBank} />
                     <InfoItem label="Potencia Pico (kWp)" value={lead.collectedData.potencia_pico} icon={SolarPanelIcon}/>
                     <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} icon={DollarSign} />

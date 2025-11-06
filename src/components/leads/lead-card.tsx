@@ -3,7 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Zap, Layers, AlertCircle, UserCircle } from 'lucide-react';
+import { Layers, AlertCircle, UserCircle, HousePlug } from 'lucide-react';
 import { SolarPanelIcon } from '@/components/icons';
 import { differenceInDays } from 'date-fns';
 import { stages } from '@/lib/data/leads-data';
@@ -13,7 +13,7 @@ import { LeadStatusFlow } from './lead-status-flow';
 
 const interestTypeIcons = {
   'planta-solar': { icon: SolarPanelIcon, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10' },
-  'comercializadora': { icon: Zap, color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
+  'comercializadora': { icon: HousePlug, color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
   'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10' },
 };
 
