@@ -1,9 +1,9 @@
 
 'use client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { LucideIcon } from 'lucide-react';
+import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 type StageKpiCardProps = {
   title: string;
@@ -15,19 +15,42 @@ type StageKpiCardProps = {
 
 export const StageKpiCard = ({ title, count, total, icon: Icon, color }: StageKpiCardProps) => {
   const percentage = total > 0 ? (count / total) * 100 : 0;
+  
+  const chartData = [
+    { name: 'count', value: percentage },
+    { name: 'rest', value: 100 - percentage },
+  ];
+
+  const chartColor = `hsl(var(--${color.replace('bg-', '')}))`;
 
   return (
-    <Card className='h-full'>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-4 pt-4">
-        <CardTitle className="text-sm font-medium truncate">{title}</CardTitle>
-        <Icon className={cn("h-4 w-4 text-muted-foreground", color.replace('bg-', 'text-'))} />
-      </CardHeader>
-      <CardContent className="px-4 pb-4">
-        <div className="text-2xl font-bold">{count}</div>
-        <p className="text-xs text-muted-foreground truncate">
-          {percentage.toFixed(1)}% del total
-        </p>
-        <Progress value={percentage} className="h-1.5 mt-2" indicatorClassName={color} />
+    <Card className='h-full w-full overflow-hidden'>
+      <CardContent className="p-3 flex flex-col items-center justify-center text-center h-full">
+        <div className="relative h-24 w-24">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                dataKey="value"
+                innerRadius="80%"
+                outerRadius="100%"
+                startAngle={90}
+                endAngle={450}
+                stroke="none"
+              >
+                 <Cell key="count" fill={chartColor} />
+                 <Cell key="rest" fill="hsl(var(--muted))" />
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Icon className={cn("h-8 w-8", color.replace('bg-', 'text-'))} />
+          </div>
+        </div>
+        <p className="text-3xl font-bold mt-2">{count}</p>
+        <p className="text-xs text-muted-foreground font-medium truncate">{title}</p>
       </CardContent>
     </Card>
   );

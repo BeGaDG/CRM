@@ -191,7 +191,7 @@ export default function LeadsPage() {
             >
               <CarouselContent className="-ml-2">
                 {stages.map(stage => (
-                  <CarouselItem key={stage.name} className="pl-2 basis-1/2 md:basis-1/3 lg:basis-1/5">
+                  <CarouselItem key={stage.name} className="pl-2 basis-1/3 md:basis-1/4 lg:basis-1/6 xl:basis-[12%]">
                     <StageKpiCard 
                       title={stage.name}
                       count={stageCounts[stage.name] || 0}
@@ -292,5 +292,3 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
-
-    
