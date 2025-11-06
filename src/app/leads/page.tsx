@@ -27,8 +27,6 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
-import { StageKpiCard } from '@/components/leads/stage-kpi-card';
-import { Contact2, FileSearch, Presentation, DraftingCompass, UserRoundPlus, Ban, Hourglass, FolderCheck, Repeat, FileCheck, Phone, Eye } from 'lucide-react';
 
 
 export default function LeadsPage() {
@@ -163,36 +161,9 @@ export default function LeadsPage() {
     return counts;
   }, [leads]);
   
-  const iconMap = {
-    'Nuevo Lead': UserRoundPlus,
-    'Por Contactar': Phone,
-    'Por Visitar': Eye,
-    'Por Cotizar': FileSearch,
-    'Por Presentar Cotización': Presentation,
-    'Ajustar Cotización': FileCheck,
-    'Seguimiento a la Cotización': Hourglass,
-    'Por Contratar': DraftingCompass,
-    'Recaptura BD': Repeat,
-    'Finalizados': FolderCheck,
-    'No': Ban,
-  };
-
   return (
     <DashboardLayout>
       <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
-          {/* KPI Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {stages.map(stage => (
-              <StageKpiCard 
-                key={stage.name}
-                title={stage.name}
-                count={stageCounts[stage.name] || 0}
-                icon={iconMap[stage.name as keyof typeof iconMap] || Contact}
-                color={stage.color}
-              />
-            ))}
-          </div>
-
           {/* Top Bar: Search, Filters and Actions */}
            <div className='flex flex-col sm:flex-row gap-4'>
             <div className="relative flex-1">
@@ -278,5 +249,3 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
-
-    
