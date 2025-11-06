@@ -1,4 +1,3 @@
-
 'use client';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -26,7 +25,7 @@ export const StageKpiCard = ({ title, count, total, icon: Icon, color }: StageKp
   return (
     <Card className='h-full w-full overflow-hidden'>
       <CardContent className="p-3 flex flex-col items-center justify-center text-center h-full">
-        <div className="relative h-24 w-24">
+        <div className="relative h-20 w-20">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -46,10 +45,10 @@ export const StageKpiCard = ({ title, count, total, icon: Icon, color }: StageKp
             </PieChart>
           </ResponsiveContainer>
           <div className="absolute inset-0 flex items-center justify-center">
-            <Icon className={cn("h-8 w-8", color.replace('bg-', 'text-'))} />
+            <Icon className={cn("h-7 w-7", color.replace('bg-', 'text-'))} />
           </div>
         </div>
-        <p className="text-3xl font-bold mt-2">{count}</p>
+        <p className="text-2xl font-bold mt-1">{count}</p>
         <p className="text-xs text-muted-foreground font-medium truncate">{title}</p>
       </CardContent>
     </Card>
