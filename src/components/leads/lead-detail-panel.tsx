@@ -18,7 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { SolarPanelIcon } from '@/components/icons';
 
 const AmbosIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <div className="flex -space-x-2">
+  <div className="flex gap-1">
     <SolarPanelIcon {...props} />
     <HousePlug {...props} />
   </div>

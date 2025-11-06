@@ -12,7 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { LeadStatusFlow } from './lead-status-flow';
 
 const AmbosIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <div className="flex -space-x-2">
+  <div className="flex gap-1">
     <SolarPanelIcon {...props} />
     <HousePlug {...props} />
   </div>
