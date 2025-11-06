@@ -1,3 +1,4 @@
+
 'use client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -59,8 +60,7 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
                 <div className="flex items-center gap-2 justify-end">
                   {isOverdue && <TooltipProvider><Tooltip><TooltipTrigger><AlertCircle className="h-5 w-5 text-red-500"/></TooltipTrigger><TooltipContent><p>Lead sin contacto por más de 2 días</p></TooltipContent></Tooltip></TooltipProvider>}
                   {currentStage && (
-                    <Badge variant="secondary" className='font-medium text-xs sm:text-sm whitespace-nowrap h-fit'>
-                      <span className={cn("h-2 w-2 rounded-full mr-2", currentStage.color)}></span>
+                    <Badge className={cn('font-medium text-xs sm:text-sm whitespace-nowrap h-fit text-white', currentStage.color)}>
                       {lead.status}
                     </Badge>
                   )}
