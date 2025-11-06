@@ -28,7 +28,7 @@ import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
 import { StageKpiCard } from '@/components/leads/stage-kpi-card';
-import { Contact2, FileSearch, Presentation, Drafting } from 'lucide-react';
+import { Contact2, FileSearch, Presentation, DraftingCompass } from 'lucide-react';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
@@ -167,7 +167,7 @@ export default function LeadsPage() {
     { title: 'Por Visitar', icon: Contact2, count: stageCounts['Por Visitar'] || 0, color: 'bg-teal-500' },
     { title: 'Por Cotizar', icon: FileSearch, count: stageCounts['Por Cotizar'] || 0, color: 'bg-yellow-500' },
     { title: 'Por Presentar Cotización', icon: Presentation, count: stageCounts['Por Presentar Cotización'] || 0, color: 'bg-amber-500' },
-    { title: 'Por Contratar', icon: Drafting, count: stageCounts['Por Contratar'] || 0, color: 'bg-emerald-500' },
+    { title: 'Por Contratar', icon: DraftingCompass, count: stageCounts['Por Contratar'] || 0, color: 'bg-emerald-500' },
   ];
 
   return (
@@ -272,3 +272,5 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
+
+    
