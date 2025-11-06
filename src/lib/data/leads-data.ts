@@ -22,7 +22,7 @@ const leadExample = {
   creationDate: new Date().toISOString(),
   collectedData: {
     'nic': '1234567',
-    'consumo': '5000 kWh',
+    'consumo': 5000,
     'valor_cotizacion': 15000000,
     'potencia_pico': '10 kWp'
   },
@@ -38,7 +38,7 @@ export const stages: Stage[] = [
   { name: 'Por Cotizar', color: 'bg-yellow-500', colorHex: '#3b82f6' },
   { name: 'Por Presentar Cotización', color: 'bg-amber-500', colorHex: '#8b5cf6' },
   { name: 'Ajustar Cotización', color: 'bg-orange-500', colorHex: '#a855f7' },
-  { name: 'Seguimiento a la Cotización', color: 'bg-lime-500', colorHex: '#84cc16' },
+  { name: 'Seguimiento a la Cotización', color: 'bg-teal-400', colorHex: '#2dd4bf' },
   { name: 'Por Contratar', color: 'bg-emerald-500', colorHex: '#16a34a' },
   { name: 'Finalizados', color: 'bg-green-600', colorHex: '#10b981' },
   { name: 'No', color: 'bg-slate-500', colorHex: '#ef4444' },
@@ -59,7 +59,7 @@ export const advisors: Advisor[] = [
 
 
 export const initialLeads: Lead[] = [
-  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', interestType: 'planta-solar', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', creationDate: new Date().toISOString(), collectedData: { 'nic': '123456-7', 'consumo': '15000 kWh', 'valor_cotizacion': 0, 'potencia_pico': '' }, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
+  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', interestType: 'planta-solar', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', creationDate: new Date().toISOString(), collectedData: { 'nic': '123456-7', 'consumo': 15000, 'valor_cotizacion': 0, 'potencia_pico': '' }, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
   { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', interestType: 'comercializadora', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', creationDate: new Date().toISOString(), collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
   { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', interestType: 'ambos', status: 'Seguimiento a la Cotización', phone: '315 555 8888', email: 'logistica.total@email.com', creationDate: new Date().toISOString(), collectedData: {
     nic: '555888-1',
@@ -88,7 +88,7 @@ export const initialLeads: Lead[] = [
   }, advisorId: 'user-2', advisorName: 'Ana Gómez' },
   { id: 'lead-4', name: 'Nuevo Lead Alfa (Urgente)', city: 'Barranquilla', lastContact: 'Hace 4 días', interestType: 'planta-solar', status: 'Nuevo Lead', phone: '318 111 2233', email: 'alfa@cliente.com', creationDate: threeDaysAgo.toISOString(), collectedData: {}, advisorId: 'user-2', advisorName: 'Ana Gómez' },
   { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', interestType: 'comercializadora', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', creationDate: new Date().toISOString(), collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
-  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', interestType: 'planta-solar', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '987654-3', 'consumo': '8000 kWh'}, advisorId: 'user-3', advisorName: 'Luisa Fernández' },
-  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', interestType: 'ambos', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '555444-1', 'consumo': '25000 kWh', 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' }, advisorId: 'user-3', advisorName: 'Luisa Fernández' },
+  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', interestType: 'planta-solar', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '987654-3', 'consumo': 8000}, advisorId: 'user-3', advisorName: 'Luisa Fernández' },
+  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', interestType: 'ambos', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', creationDate: new Date().toISOString(), collectedData: {'nic': '555444-1', 'consumo': 25000, 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' }, advisorId: 'user-3', advisorName: 'Luisa Fernández' },
   { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', interestType: 'comercializadora', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', creationDate: new Date().toISOString(), collectedData: {}, advisorId: 'user-4', advisorName: 'Jorge Arias' },
 ];
