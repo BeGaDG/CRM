@@ -10,7 +10,14 @@ import {
   LayoutDashboard,
   TrendingUp,
   Settings,
-  Users
+  Users,
+  Grid,
+  File,
+  MessageSquare,
+  Sun,
+  Calendar,
+  XCircle,
+  Briefcase
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -35,6 +42,8 @@ import {
   SidebarMenuButton,
   SidebarProvider,
   SidebarTrigger,
+  SidebarGroup,
+  SidebarGroupLabel,
 } from '@/components/ui/sidebar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Search } from 'lucide-react';
@@ -54,40 +63,123 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon" className="border-r border-sidebar-border/80">
-        <SidebarHeader className="flex items-center gap-2.5 p-4">
-          <SolYCieloLogo className="h-8 w-8 text-primary" />
-          <h2 className="text-xl font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
-            Sol & Cielo
-          </h2>
+      <Sidebar collapsible="icon" className="border-r border-sidebar-border/80 bg-sidebar text-sidebar-foreground">
+        <SidebarHeader className="flex flex-col items-start gap-2 p-4 h-auto">
+          <div className="flex items-center gap-3">
+              <SolYCieloLogo className="h-10 w-10" />
+              <div>
+                  <h2 className="text-base font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
+                    Panel Administrativo
+                  </h2>
+                  <p className="text-xs text-sidebar-foreground/70 group-data-[collapsible=icon]:hidden">Sol y Cielo</p>
+              </div>
+          </div>
         </SidebarHeader>
         <SidebarContent className="p-2">
-          <SidebarMenu>
-            {navItems.map((item) => (
-              <SidebarMenuItem key={`${item.href}-${item.label}`}>
-                <Link href={item.href}>
-                  <SidebarMenuButton isActive={pathname === item.href}>
-                    <item.icon />
-                    <span className="truncate">{item.label}</span>
-                  </SidebarMenuButton>
-                </Link>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
+            <SidebarGroup>
+                <SidebarGroupLabel>Plataforma Web</SidebarGroupLabel>
+                 <SidebarMenu>
+                    <SidebarMenuItem>
+                        <Link href="/">
+                            <SidebarMenuButton isActive={pathname === '/'}>
+                                <Grid />
+                                <span className="truncate">Inicio</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <Link href="#">
+                            <SidebarMenuButton>
+                                <File />
+                                <span className="truncate">Solicitudes Web</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <Link href="#">
+                            <SidebarMenuButton>
+                                <MessageSquare />
+                                <span className="truncate">PQRS</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                     <SidebarMenuItem>
+                        <Link href="#">
+                            <SidebarMenuButton>
+                                <Sun />
+                                <span className="truncate">Proyectos solares</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarGroup>
+
+             <SidebarGroup>
+                <SidebarGroupLabel>CRM</SidebarGroupLabel>
+                <SidebarMenu>
+                     <SidebarMenuItem>
+                        <Link href="/leads">
+                            <SidebarMenuButton isActive={pathname.startsWith('/leads')}>
+                                <Contact />
+                                <span className="truncate">Leads</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <Link href="#">
+                            <SidebarMenuButton>
+                                <Calendar />
+                                <span className="truncate">Actividades</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                     <SidebarMenuItem>
+                        <Link href="#">
+                            <SidebarMenuButton>
+                                <XCircle />
+                                <span className="truncate">No interesados</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                     <SidebarMenuItem>
+                        <Link href="/indicadores">
+                            <SidebarMenuButton isActive={pathname.startsWith('/indicadores')}>
+                                <TrendingUp />
+                                <span className="truncate">Indicadores</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarGroup>
+
+            <SidebarGroup>
+                 <SidebarGroupLabel>Gestión</SidebarGroupLabel>
+                 <SidebarMenu>
+                     <SidebarMenuItem>
+                        <Link href="/users">
+                            <SidebarMenuButton isActive={pathname.startsWith('/users')}>
+                                <Users />
+                                <span className="truncate">Clientes</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                     <SidebarMenuItem>
+                        <Link href="/invoices">
+                            <SidebarMenuButton isActive={pathname.startsWith('/invoices')}>
+                                <FileText />
+                                <span className="truncate">Facturas</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarGroup>
         </SidebarContent>
         <SidebarFooter className="p-2">
           <SidebarMenu>
-             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Bell />
-                <span className="truncate">Notificaciones</span>
-                 <span className="ml-auto flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">3</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton>
                 <Settings />
-                <span className="truncate">Configuración</span>
+                <span className="truncate">Ajustes</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -117,7 +209,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                         data-ai-hint={userAvatar.imageHint}
                       />
                     )}
-                    <AvatarFallback>SC</AvatarFallback>
+                    <AvatarFallback>N</AvatarFallback>
                   </Avatar>
                   <span className="sr-only">Menú de usuario</span>
                 </Button>
