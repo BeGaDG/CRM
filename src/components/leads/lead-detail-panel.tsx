@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Grid, Zap, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Grid, Zap, Layers, UserCircle, Phone, Mail, Building, TrendingUp, PiggyBank, Calendar, DollarSign, FileText, Download } from 'lucide-react';
 import { StageForm } from './stage-form';
 import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
@@ -52,6 +52,26 @@ const InfoItem = ({ label, value, icon: Icon }: { label: string; value?: string 
     );
 }
 
+const InfoFileItem = ({ label, fileName, date }: { label: string; fileName?: string; date?: string }) => {
+    if (!fileName) return null;
+    return (
+        <div className="flex items-center justify-between text-sm p-3 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5 text-primary" />
+                <div>
+                    <p className="font-medium text-foreground">{label}</p>
+                    <p className="text-xs text-muted-foreground">{fileName}</p>
+                </div>
+            </div>
+            <Button variant="outline" size="sm" className="h-8">
+                <Download className="h-3.5 w-3.5 mr-2" />
+                Ver
+            </Button>
+        </div>
+    );
+}
+
+
 const CollectedInfo = ({ lead }: { lead: Lead }) => (
     <Card>
         <CardHeader>
@@ -74,6 +94,13 @@ const CollectedInfo = ({ lead }: { lead: Lead }) => (
                     <InfoItem label="Potencia Pico (kWp)" value={lead.collectedData.potencia_pico} icon={Grid}/>
                     <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} icon={DollarSign} />
                     <InfoItem label="Fecha de Próx. Seguimiento" value={lead.collectedData.follow_up_date ? new Date(lead.collectedData.follow_up_date).toLocaleDateString('es-CO') : null} icon={Calendar} />
+                     <Separator />
+                    <div className='space-y-2'>
+                        <h4 className='font-medium text-muted-foreground'>Archivos Adjuntos</h4>
+                        <InfoFileItem label="Factura de Servicio" fileName={lead.collectedData.factura_file} />
+                        <InfoFileItem label="Cotización Enviada" fileName={lead.collectedData.cotizacion_file} />
+                        <InfoFileItem label="Contrato Firmado" fileName={lead.collectedData.contrato_file} />
+                    </div>
                 </>
               ) : (
                  <p className="text-muted-foreground text-center text-xs p-4 bg-muted/50 rounded-lg border">
@@ -205,7 +232,7 @@ export const LeadDetailPanel = ({
                      <Card>
                         <CardHeader>
                             <CardTitle>Gestión de Etapas</CardTitle>
-                            <CardDescription>Avanza el lead al siguiente paso o muévelo manualmente a otra etapa.</CardDescription>
+                            <CardDescription>Avanza el lead al siguiente paso o muévelo manually a otra etapa.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                              {mainAction ? (

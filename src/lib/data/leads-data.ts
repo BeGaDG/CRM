@@ -80,7 +80,10 @@ export const initialLeads: Lead[] = [
     monitoreo: true,
     follow_up_date: new Date(),
     follow_up_action: 'llamada',
-    follow_up_notes: 'Cliente solicitó un descuento adicional. Se está evaluando la posibilidad. Llamar para confirmar.'
+    follow_up_notes: 'Cliente solicitó un descuento adicional. Se está evaluando la posibilidad. Llamar para confirmar.',
+    factura_file: 'factura_logistica_total.pdf',
+    cotizacion_file: 'cotizacion_v2_logistica.pdf',
+    contrato_file: 'borrador_contrato.pdf',
   }, advisorId: 'user-2', advisorName: 'Ana Gómez' },
   { id: 'lead-4', name: 'Nuevo Lead Alfa (Urgente)', city: 'Barranquilla', lastContact: 'Hace 4 días', interestType: 'planta-solar', status: 'Nuevo Lead', phone: '318 111 2233', email: 'alfa@cliente.com', creationDate: threeDaysAgo.toISOString(), collectedData: {}, advisorId: 'user-2', advisorName: 'Ana Gómez' },
   { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', interestType: 'comercializadora', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', creationDate: new Date().toISOString(), collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
