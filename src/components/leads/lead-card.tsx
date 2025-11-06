@@ -45,9 +45,10 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
       onClick={onClick} 
       className={cn(
         "cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4",
-        isSelected && "ring-2 ring-primary border-primary"
+        isSelected && "ring-2 ring-primary border-primary",
+        isOverdue && "border-l-red-500"
       )}
-       style={{ borderLeftColor: isOverdue ? '#ef4444' : (currentStage ? currentStage.colorHex : 'transparent') }}
+       style={{ borderLeftColor: isOverdue ? undefined : (currentStage ? currentStage.colorHex : 'transparent') }}
     >
       <CardContent className="p-4 flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
@@ -60,7 +61,15 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-base truncate" title={lead.name}>{lead.name}</p>
+                <div className="flex items-center gap-2">
+                    <p className="font-semibold text-base truncate" title={lead.name}>{lead.name}</p>
+                    {isOverdue && (
+                      <Badge variant="destructive" className="gap-1.5 flex-shrink-0">
+                          <AlertTriangle className="h-4 w-4" />
+                          Urgente
+                      </Badge>
+                    )}
+                </div>
                 <p className="text-sm text-muted-foreground flex items-center gap-1.5 truncate">
                     <UserCircle className="h-3 w-3 flex-shrink-0" />
                     <span className="truncate">{lead.advisorName}</span>
@@ -73,12 +82,6 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
                     <span className='font-medium text-foreground'>{lead.phone}</span>
                     <span className='text-muted-foreground whitespace-nowrap'>Últ. contacto: {lead.lastContact}</span>
                 </div>
-                 {isOverdue && (
-                  <Badge variant="destructive" className="gap-1.5">
-                    <AlertTriangle className="h-4 w-4" />
-                    Urgente
-                  </Badge>
-                )}
             </div>
         </div>
         <div className="pt-2 border-t border-border w-full">
