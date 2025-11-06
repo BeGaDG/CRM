@@ -16,16 +16,29 @@ const interestTypeIcons = {
   'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10' },
 };
 
+const stageTimelineColors = [
+    '#6b7280', // 1. Nuevo (Gris)
+    '#f59e0b', // 2. Por Contactar (Ámbar)
+    '#f97316', // 3. Por Visitar (Naranja)
+    '#3b82f6', // 4. Por Cotizar (Azul)
+    '#8b5cf6', // 5. Por Presentar (Violeta)
+    '#a855f7', // 6. Ajustar (Púrpura)
+    '#84cc16', // 7. Seguimiento (Lima)
+    '#16a34a', // 8. Por Contratar (Verde)
+    '#10b981', // 9. Finalizado (Esmeralda)
+];
+
 export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: () => void, isSelected: boolean }) => {
+  const flowStages = stages.filter(s => !['No', 'Finalizados', 'Recaptura BD'].includes(s.name));
+  const currentStageIndex = flowStages.findIndex(s => s.name === lead.status);
   const currentStage = stages.find(s => s.name === lead.status);
   const interest = interestTypeIcons[lead.interestType];
   const Icon = interest.icon;
 
   const isOverdue = ['Nuevo Lead', 'Por Contactar'].includes(lead.status) &&
                     differenceInDays(new Date(), new Date(lead.creationDate)) > 2;
-  
-  const flowStages = stages.filter(s => !['No', 'Finalizados', 'Recaptura BD'].includes(s.name));
 
+  const badgeColor = currentStageIndex !== -1 ? stageTimelineColors[currentStageIndex % stageTimelineColors.length] : 'hsl(var(--muted))';
 
   return (
     <Card 
@@ -60,7 +73,10 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
                 <div className="flex items-center gap-2 justify-end">
                   {isOverdue && <TooltipProvider><Tooltip><TooltipTrigger><AlertCircle className="h-5 w-5 text-red-500"/></TooltipTrigger><TooltipContent><p>Lead sin contacto por más de 2 días</p></TooltipContent></Tooltip></TooltipProvider>}
                   {currentStage && (
-                    <Badge className={cn('font-medium text-xs sm:text-sm whitespace-nowrap h-fit text-white', currentStage.color)}>
+                    <Badge 
+                        className={cn('font-medium text-xs sm:text-sm whitespace-nowrap h-fit text-white')}
+                        style={{ backgroundColor: badgeColor }}
+                    >
                       {lead.status}
                     </Badge>
                   )}
