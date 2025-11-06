@@ -224,6 +224,7 @@ export const LeadDetailPanel = ({
   onAssignLead: (advisorId: string) => void;
 }) => {
     const currentStageInfo = stages.find(s => s.name === lead.status);
+    const interestInfo = interestTypeIcons[lead.interestType];
     const canAdvance = true; // Placeholder for validation logic
     const [manualStage, setManualStage] = useState<string>('');
     const nextStages = getNextStages(lead.status);
@@ -246,9 +247,14 @@ export const LeadDetailPanel = ({
                 </Button>
                 <div>
                     <h1 className="text-2xl font-bold font-headline">{lead.name}</h1>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
                         <span>{lead.city}</span>
                         <Separator orientation="vertical" className="h-4" />
+                        <div className="flex items-center gap-1.5">
+                            <interestInfo.icon className={cn("h-4 w-4", interestInfo.color)} />
+                            <span>{interestInfo.label}</span>
+                        </div>
+                         <Separator orientation="vertical" className="h-4" />
                          {currentStageInfo && (
                             <Badge 
                               className='font-medium text-white'
