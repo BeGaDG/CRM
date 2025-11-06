@@ -1,4 +1,3 @@
-
 'use client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +6,7 @@ import { Sun, Zap, Layers, AlertCircle, UserCircle } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
 import { stages } from '@/lib/data/leads-data';
 import type { Lead } from '@/lib/data/leads-data';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const interestTypeIcons = {
   'planta-solar': { icon: Sun, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10' },
@@ -27,13 +27,13 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
       onClick={onClick} 
       className={cn(
         "cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4",
-        isOverdue ? "border-l-red-500" : "border-l-transparent",
+        isOverdue ? "border-l-red-500" : `border-l-transparent`,
         isSelected && "ring-2 ring-primary border-primary"
       )}
+      style={!isOverdue && currentStage ? { borderLeftColor: `hsl(var(--${currentStage.color.replace('bg-', '')}))`} : {}}
     >
       <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex items-center gap-4 flex-1">
-          <div className={cn("w-1.5 h-12 sm:h-8 rounded-full", currentStage?.color)}></div>
           <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
             <Icon className={cn("h-6 w-6", interest.color)} />
           </div>
@@ -46,13 +46,13 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
           </div>
         </div>
 
-        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 pl-16 sm:pl-0">
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 pl-14 sm:pl-0">
             <div className="flex flex-col items-start sm:items-end text-sm">
                 <span className='font-medium text-foreground'>{lead.phone}</span>
                 <span className='text-muted-foreground whitespace-nowrap'>Últ. contacto: {lead.lastContact}</span>
             </div>
             <div className="flex items-center gap-2 justify-end">
-              {isOverdue && <AlertCircle className="h-5 w-5 text-red-500" title="Este lead no ha sido contactado en más de 2 días"/>}
+              {isOverdue && <TooltipProvider><Tooltip><TooltipTrigger><AlertCircle className="h-5 w-5 text-red-500"/></TooltipTrigger><TooltipContent><p>Lead sin contacto por más de 2 días</p></TooltipContent></Tooltip></TooltipProvider>}
               {currentStage && (
                 <Badge variant="secondary" className='font-medium text-xs sm:text-sm whitespace-nowrap h-fit'>
                   <span className={cn("h-2 w-2 rounded-full mr-2", currentStage.color)}></span>
