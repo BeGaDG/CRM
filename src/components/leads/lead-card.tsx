@@ -3,7 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Layers, AlertCircle, UserCircle, HousePlug } from 'lucide-react';
+import { Layers, AlertTriangle, UserCircle, HousePlug } from 'lucide-react';
 import { SolarPanelIcon } from '@/components/icons';
 import { differenceInDays } from 'date-fns';
 import { stages } from '@/lib/data/leads-data';
@@ -12,9 +12,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { LeadStatusFlow } from './lead-status-flow';
 
 const AmbosIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <div className="flex gap-1">
-    <SolarPanelIcon {...props} />
-    <HousePlug {...props} />
+  <div className="flex gap-1.5">
+    <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interestTypeIcons['planta-solar'].bgColor)}>
+        <SolarPanelIcon className={cn("h-6 w-6", interestTypeIcons['planta-solar'].color)} />
+    </div>
+    <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interestTypeIcons['comercializadora'].bgColor)}>
+        <HousePlug className={cn("h-6 w-6", interestTypeIcons['comercializadora'].color)} />
+    </div>
   </div>
 );
 
@@ -41,23 +45,15 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
       onClick={onClick} 
       className={cn(
         "cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4",
-        isOverdue ? "border-l-red-500" : `border-l-transparent`,
         isSelected && "ring-2 ring-primary border-primary"
       )}
-      style={!isOverdue && currentStage ? { borderLeftColor: currentStage.colorHex } : {}}
+       style={{ borderLeftColor: isOverdue ? '#ef4444' : (currentStage ? currentStage.colorHex : 'transparent') }}
     >
       <CardContent className="p-4 flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
             <div className="flex items-center gap-4 flex-1">
               {lead.interestType === 'ambos' ? (
-                <div className="flex gap-1.5">
-                  <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interestTypeIcons['planta-solar'].bgColor)}>
-                    <SolarPanelIcon className={cn("h-6 w-6", interestTypeIcons['planta-solar'].color)} />
-                  </div>
-                  <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interestTypeIcons['comercializadora'].bgColor)}>
-                    <HousePlug className={cn("h-6 w-6", interestTypeIcons['comercializadora'].color)} />
-                  </div>
-                </div>
+                 <AmbosIcon />
               ) : (
                 <div className={cn("h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
                   <Icon className={cn("h-6 w-6", interest.color)} />
@@ -77,9 +73,12 @@ export const LeadCard = ({ lead, onClick, isSelected }: { lead: Lead, onClick: (
                     <span className='font-medium text-foreground'>{lead.phone}</span>
                     <span className='text-muted-foreground whitespace-nowrap'>Últ. contacto: {lead.lastContact}</span>
                 </div>
-                <div className="flex items-center gap-2 justify-end">
-                  {isOverdue && <TooltipProvider><Tooltip><TooltipTrigger><AlertCircle className="h-5 w-5 text-red-500"/></TooltipTrigger><TooltipContent><p>Lead sin contacto por más de 2 días</p></TooltipContent></Tooltip></TooltipProvider>}
-                </div>
+                 {isOverdue && (
+                  <Badge variant="destructive" className="gap-1.5">
+                    <AlertTriangle className="h-4 w-4" />
+                    Urgente
+                  </Badge>
+                )}
             </div>
         </div>
         <div className="pt-2 border-t border-border w-full">
