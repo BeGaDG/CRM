@@ -8,6 +8,7 @@ import {
   PlusCircle,
   Search,
   Upload,
+  ArrowLeft,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -15,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { LeadCard } from '@/components/leads/lead-card';
 import { LeadDetailPanel } from '@/components/leads/lead-detail-panel';
 import { NewLeadForm } from '@/components/leads/new-lead-form';
-import type { Lead } from '@/components/leads/lead-card';
+import type { Lead } from '@/lib/data/leads-data';
 import {
   Select,
   SelectContent,
@@ -163,7 +164,17 @@ export default function LeadsPage() {
   
   return (
     <DashboardLayout>
-      <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
+       {selectedLead ? (
+        <LeadDetailPanel
+            lead={selectedLead}
+            onBack={handleDetailClose}
+            onUpdateStatus={handleUpdateStatus}
+            onSaveStageData={handleSaveStageData}
+            advisors={advisors}
+            onAssignLead={handleAssignLead}
+        />
+       ) : (
+        <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
           {/* Top Bar: Search, Filters and Actions */}
            <div className='flex flex-col sm:flex-row gap-4'>
             <div className="relative flex-1">
@@ -229,17 +240,10 @@ export default function LeadsPage() {
               )}
           </div>
         </main>
+      )}
 
         <NewLeadForm open={isNewLeadFormOpen} onOpenChange={setIsNewLeadFormOpen} onSave={handleSaveLead} />
         <ImportLeadsSheet open={isImportSheetOpen} onOpenChange={setIsImportSheetOpen} onImport={handleImportLeads} />
-        <LeadDetailPanel
-            lead={selectedLead}
-            onOpenChange={handleDetailClose}
-            onUpdateStatus={handleUpdateStatus}
-            onSaveStageData={handleSaveStageData}
-            advisors={advisors}
-            onAssignLead={handleAssignLead}
-        />
         <LeadFilterSheet 
             open={isFilterSheetOpen} 
             onOpenChange={setIsFilterSheetOpen} 

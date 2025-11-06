@@ -1,82 +1,251 @@
 
 'use client';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { Sun, Zap, Layers } from 'lucide-react';
-import type { Lead, Advisor } from '@/lib/data/leads-data';
-import { LeadDetailSummary } from './lead-detail-summary';
-import { LeadDetailForms } from './lead-detail-forms';
-import { LeadDetailActivity } from './lead-detail-activity';
+import { ArrowLeft, ArrowRight, ChevronsUpDown, Info, Sun, Zap, Layers, UserCircle } from 'lucide-react';
+import { StageForm } from './stage-form';
+import type { Lead, Advisor, Stage } from '@/lib/data/leads-data';
+import { stages } from '@/lib/data/leads-data';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const interestTypeIcons = {
-  'planta-solar': { icon: Sun, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10' },
-  'comercializadora': { icon: Zap, color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
-  'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10' },
+  'planta-solar': { icon: Sun, color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', label: 'Planta Solar' },
+  'comercializadora': { icon: Zap, color: 'text-blue-500', bgColor: 'bg-blue-500/10', label: 'Comercializadora' },
+  'ambos': { icon: Layers, color: 'text-green-500', bgColor: 'bg-green-500/10', label: 'Ambos' },
+};
+
+const getNextStages = (currentStage: string): string[] => {
+    const stageMap: { [key: string]: string[] } = {
+      'Nuevo Lead': ['Por Contactar'],
+      'Por Contactar': ['Por Visitar', 'No'],
+      'Por Visitar': ['Por Cotizar'],
+      'Por Cotizar': ['Por Presentar Cotización'],
+      'Por Presentar Cotización': ['Ajustar Cotización', 'Seguimiento a la Cotización', 'Por Contratar', 'No'],
+      'Ajustar Cotización': ['Por Presentar Cotización'],
+      'Seguimiento a la Cotización': ['Por Contratar', 'Ajustar Cotización', 'No'],
+      'Por Contratar': ['Finalizados'],
+      'Finalizados': [],
+      'No': ['Recaptura BD'],
+      'Recaptura BD': ['Por Contactar'],
+    };
+    return stageMap[currentStage] || [];
+};
+
+const InfoItem = ({ label, value }: { label: string; value?: string | number | null }) => {
+    if (!value && value !== 0) return null;
+    return (
+    <div className="flex justify-between text-sm">
+        <p className="text-muted-foreground">{label}</p>
+        <p className="font-medium text-right">{value}</p>
+    </div>
+    );
+}
+
+const CollectedInfo = ({ lead }: { lead: Lead }) => (
+    <Card>
+        <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+                <Info className="h-4 w-4" />
+                Información Clave Recopilada
+            </CardTitle>
+            <CardDescription>Resumen de los datos más importantes del lead.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+            <InfoItem label="Teléfono" value={lead.phone} />
+            <InfoItem label="Email" value={lead.email} />
+            <InfoItem label="Fuente" value="Referido" />
+            <Separator />
+            {Object.keys(lead.collectedData).length > 0 ? (
+                <>
+                    <InfoItem label="NIC" value={lead.collectedData.nic} />
+                    <InfoItem label="Consumo" value={lead.collectedData.consumo} />
+                    <InfoItem label="Potencia Pico" value={lead.collectedData.potencia_pico} />
+                    <InfoItem label="Valor Cotización" value={lead.collectedData.valor_cotizacion ? `$${lead.collectedData.valor_cotizacion.toLocaleString('es-CO')}` : null} />
+                </>
+              ) : (
+                 <p className="text-muted-foreground text-center text-xs p-4 bg-muted/50 rounded-lg border">
+                  No hay datos adicionales.
+                </p>
+            )}
+        </CardContent>
+    </Card>
+);
+
+const AdvisorAssign = ({ lead, advisors, onAssignLead }: { lead: Lead; advisors: Advisor[]; onAssignLead: (advisorId: string) => void; }) => {
+    const [selectedAdvisorId, setSelectedAdvisorId] = useState(lead?.advisorId || '');
+    
+    useEffect(() => {
+        if (lead) setSelectedAdvisorId(lead.advisorId);
+    }, [lead]);
+
+    const handleAssignClick = () => {
+        onAssignLead(selectedAdvisorId);
+    };
+
+    const isReassignDisabled = selectedAdvisorId === lead.advisorId;
+
+    return (
+        <Card>
+            <CardHeader>
+                 <CardTitle className="text-base flex items-center gap-2">
+                    <UserCircle className="h-4 w-4" />
+                    Asesor Asignado
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+                 <Select value={selectedAdvisorId} onValueChange={setSelectedAdvisorId}>
+                    <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Seleccionar asesor..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {advisors.map(advisor => (
+                            <SelectItem key={advisor.id} value={advisor.id}>
+                                {advisor.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <Button onClick={handleAssignClick} disabled={isReassignDisabled} className="w-full">
+                    Reasignar
+                </Button>
+            </CardContent>
+        </Card>
+    );
 };
 
 
 export const LeadDetailPanel = ({ 
   lead, 
-  onOpenChange,
+  onBack,
   onUpdateStatus, 
   onSaveStageData,
   advisors,
   onAssignLead
 }: { 
-  lead: Lead | null; 
-  onOpenChange: (open: boolean) => void;
+  lead: Lead; 
+  onBack: () => void;
   onUpdateStatus: (stage: string) => void; 
   onSaveStageData: (stage: string, data: any) => void; 
   advisors: Advisor[];
   onAssignLead: (advisorId: string) => void;
 }) => {
-    if (!lead) return null;
+    const currentStageInfo = stages.find(s => s.name === lead.status);
+    const canAdvance = true; // Placeholder for validation logic
+    const [manualStage, setManualStage] = useState<string>('');
+    const nextStages = getNextStages(lead.status);
+    const mainAction = nextStages.length > 0 ? nextStages[0] : null;
 
-    const interest = interestTypeIcons[lead.interestType];
-    const Icon = interest.icon;
+    const handleManualChange = () => {
+        if (manualStage && manualStage !== lead.status) {
+            onUpdateStatus(manualStage);
+        }
+    }
 
     return (
-        <Sheet open={!!lead} onOpenChange={onOpenChange}>
-            <SheetContent className="p-0 sm:max-w-2xl w-full flex flex-col">
-                <SheetHeader className="text-left p-4">
-                    <div className="flex items-center gap-4">
-                        <div className={cn("h-16 w-16 flex-shrink-0 rounded-lg flex items-center justify-center", interest.bgColor)}>
-                            <Icon className={cn("h-8 w-8", interest.color)} />
-                        </div>
-                        <div>
-                            <SheetTitle className="text-2xl font-bold font-headline">{lead.name}</SheetTitle>
-                            <p className="text-muted-foreground">{lead.city}</p>
-                        </div>
+        <main className="flex-1 flex flex-col p-4 lg:p-6 bg-muted/40 overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center gap-4 mb-6">
+                <Button variant="outline" size="icon" className="h-8 w-8" onClick={onBack}>
+                    <ArrowLeft className="h-4 w-4" />
+                    <span className="sr-only">Volver</span>
+                </Button>
+                <div>
+                    <h1 className="text-2xl font-bold font-headline">{lead.name}</h1>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span>{lead.city}</span>
+                        <Separator orientation="vertical" className="h-4" />
+                         {currentStageInfo && (
+                            <Badge variant="secondary" className='font-medium'>
+                                <span className={cn("h-2 w-2 rounded-full mr-2", currentStageInfo.color)}></span>
+                                {lead.status}
+                            </Badge>
+                        )}
                     </div>
-                </SheetHeader>
-                <div className="flex-1 overflow-y-auto p-1">
-                    <Tabs defaultValue="resumen" className="flex flex-col h-full">
-                        <TabsList className="mx-4 mt-2 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-                            <TabsTrigger value="resumen">Resumen</TabsTrigger>
-                            <TabsTrigger value="formularios">Formularios</TabsTrigger>
-                            <TabsTrigger value="actividad">Actividad</TabsTrigger>
-                        </TabsList>
-                        <LeadDetailSummary 
-                            lead={lead} 
-                            onUpdateStatus={onUpdateStatus} 
-                            advisors={advisors}
-                            onAssignLead={onAssignLead}
-                        />
-                        <LeadDetailForms 
-                            lead={lead}
-                            onSaveStageData={onSaveStageData}
-                        />
-                        <LeadDetailActivity />
-                    </Tabs>
                 </div>
-                <div className="p-4 border-t bg-background/80 backdrop-blur-sm flex gap-2 sticky bottom-0">
-                    <Input placeholder='Escribe una nota rápida...'/>
-                    <Button>Guardar</Button>
+            </div>
+
+            {/* Main Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+                {/* Left Column (Forms & Actions) */}
+                <div className="lg:col-span-2 space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Formulario de Etapa: {lead.status}</CardTitle>
+                             <CardDescription>
+                                Completa la información requerida para esta etapa del proceso.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                             <StageForm 
+                                stageName={lead.status} 
+                                onSave={(data) => onSaveStageData(lead.status, data)}
+                                initialData={lead.collectedData}
+                                onDataChange={(data) => { /* Handle data change for validation */}}
+                            />
+                        </CardContent>
+                    </Card>
+
+                    {/* Stage Actions */}
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Gestión de Etapas</CardTitle>
+                            <CardDescription>Avanza el lead al siguiente paso o muévelo manualmente a otra etapa.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                             {mainAction ? (
+                                <Button onClick={() => onUpdateStatus(mainAction)} size="lg" className="w-full font-bold" disabled={!canAdvance} title={!canAdvance ? "Completa los campos obligatorios para avanzar" : ""}>
+                                    <ArrowRight className="mr-2 h-4 w-4" />
+                                    Avanzar a: {mainAction}
+                                </Button>
+                            ) : (
+                                <p className="text-sm text-muted-foreground text-center p-4 bg-muted rounded-md">Este es el final del flujo.</p>
+                            )}
+                            <Separator />
+                            <div className="space-y-2">
+                                <Label className="flex items-center gap-2 text-muted-foreground">
+                                    <ChevronsUpDown className="h-4 w-4" />
+                                    Cambio Manual de Etapa
+                                </Label>
+                                <div className="flex gap-2">
+                                    <Select onValueChange={setManualStage} value={manualStage}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecciona una etapa..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {stages.map(stage => (
+                                                <SelectItem key={stage.name} value={stage.name} disabled={stage.name === lead.status}>
+                                                    {stage.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <Button onClick={handleManualChange} disabled={!manualStage || manualStage === lead.status} variant="outline">
+                                        Cambiar
+                                    </Button>
+                                </div>
+                            </div>
+                        </CardContent>
+                     </Card>
                 </div>
-            </SheetContent>
-        </Sheet>
-    )
+
+                {/* Right Column (Info) */}
+                <div className="space-y-6">
+                   <CollectedInfo lead={lead} />
+                   <AdvisorAssign lead={lead} advisors={advisors} onAssignLead={onAssignLead} />
+                   <Card>
+                    <CardHeader><CardTitle className="text-base">Notas Rápidas</CardTitle></CardHeader>
+                    <CardContent className="space-y-2">
+                         <Input placeholder='Escribe una nota rápida...'/>
+                         <Button className="w-full">Guardar Nota</Button>
+                    </CardContent>
+                   </Card>
+                </div>
+            </div>
+        </main>
+    );
 }
