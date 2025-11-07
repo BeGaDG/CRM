@@ -216,6 +216,7 @@ export default function LeadsPage() {
   }, [leads]);
 
   const stageIcons = {
+    'all': Contact,
     'Nuevo Lead': Mail,
     'Por Contactar': PhoneCall,
     'Por Visitar': Eye,
@@ -229,6 +230,8 @@ export default function LeadsPage() {
     'Recaptura BD': GitCommit,
   };
   
+  const kpiStages = [{name: 'all', ...stages[0]}, ...stages];
+
   return (
     <DashboardLayout>
        {selectedLead ? (
@@ -242,8 +245,25 @@ export default function LeadsPage() {
         />
        ) : (
         <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
-          {/* Top Bar: Search, Filters and Actions */}
-           <div className='flex flex-col sm:flex-row gap-4'>
+          <div className="flex-shrink-0">
+            <h1 className="text-2xl font-semibold">Administra y da seguimiento a todos tus leads potenciales</h1>
+            
+            <div className="flex items-center gap-2 overflow-x-auto py-4">
+              {kpiStages.map(stage => (
+                  <StageKpiCard 
+                      key={stage.name}
+                      title={stage.name === 'all' ? 'Todos los Leads' : stage.name}
+                      count={stageCounts[stage.name] || 0}
+                      icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
+                      color={stage.color}
+                      isSelected={filterStage === stage.name}
+                      onClick={() => setFilterStage(stage.name)}
+                  />
+              ))}
+            </div>
+          </div>
+
+           <div className='flex flex-col sm:flex-row gap-4 flex-shrink-0'>
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -270,35 +290,6 @@ export default function LeadsPage() {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {stages.map(stage => (
-                  <StageKpiCard 
-                      key={stage.name}
-                      title={stage.name}
-                      count={stageCounts[stage.name] || 0}
-                      icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
-                      color={stage.color}
-                  />
-              ))}
-          </div>
-
-          {/* Filters Pills */}
-           <div className='flex items-center gap-2'>
-            <p className='text-sm font-medium text-muted-foreground'>Etapas:</p>
-              <Select value={filterStage} onValueChange={setFilterStage}>
-                <SelectTrigger className="h-9 w-auto min-w-[150px] border-dashed">
-                  <SelectValue placeholder="Filtrar por etapa..." />
-                </SelectTrigger>
-                <SelectContent>
-                   <SelectItem value="all">Todos los Leads ({stageCounts['all'] || 0})</SelectItem>
-                  {stages.map((stage) => (
-                    <SelectItem key={stage.name} value={stage.name}>
-                       {stage.name} ({stageCounts[stage.name] || 0})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-          </div>
 
           {/* Leads List */}
           <div className='flex-1 space-y-3 overflow-y-auto pr-2'>
