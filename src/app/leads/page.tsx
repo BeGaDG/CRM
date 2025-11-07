@@ -34,8 +34,6 @@ import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
 import { StageKpiCard } from '@/components/leads/stage-kpi-card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
@@ -225,22 +223,6 @@ export default function LeadsPage() {
   
   const kpiStages = [{name: 'all', color: 'bg-blue-500', colorHex: '#3b82f6'}, ...stages];
 
-  const StageKpiCards = () => (
-    <>
-      {kpiStages.map(stage => (
-        <StageKpiCard
-          key={stage.name}
-          title={stage.name === 'all' ? 'Todos' : stage.name}
-          count={stageCounts[stage.name] || 0}
-          icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
-          color={stage.color}
-          isSelected={filterStage === stage.name}
-          onClick={() => setFilterStage(stage.name)}
-        />
-      ))}
-    </>
-  );
-
   return (
     <DashboardLayout>
        {selectedLead ? (
@@ -258,29 +240,18 @@ export default function LeadsPage() {
             <h1 className="text-2xl font-semibold">Gestión de Leads</h1>
             <p className='text-muted-foreground text-sm mb-4'>Administra y da seguimiento a todos tus leads potenciales</p>
             
-            {/* Desktop Grid */}
-            <div className="hidden sm:flex flex-wrap items-center gap-2 py-4">
-              <StageKpiCards />
-            </div>
-
-            {/* Mobile Carousel */}
-            <div className="sm:hidden py-4">
-              <Carousel opts={{ align: 'start', dragFree: true }} className="w-full">
-                <CarouselContent className="-ml-2">
-                  {kpiStages.map((stage, index) => (
-                    <CarouselItem key={index} className="basis-auto pl-2">
-                       <StageKpiCard
-                          title={stage.name === 'all' ? 'Todos' : stage.name}
-                          count={stageCounts[stage.name] || 0}
-                          icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
-                          color={stage.color}
-                          isSelected={filterStage === stage.name}
-                          onClick={() => setFilterStage(stage.name)}
-                      />
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
+            <div className="flex flex-wrap items-center gap-2 py-4">
+              {kpiStages.map(stage => (
+                <StageKpiCard
+                  key={stage.name}
+                  title={stage.name === 'all' ? 'Todos' : stage.name}
+                  count={stageCounts[stage.name] || 0}
+                  icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
+                  color={stage.color}
+                  isSelected={filterStage === stage.name}
+                  onClick={() => setFilterStage(stage.name)}
+                />
+              ))}
             </div>
           </div>
 
