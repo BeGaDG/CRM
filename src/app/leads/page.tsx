@@ -177,7 +177,6 @@ export default function LeadsPage() {
       };
       setSelectedLead(updatedSelectedLead);
     }
-    console.log(`Saving draft data for stage "${stage}"`, data);
   };
   
   const handleDetailClose = () => {
@@ -223,7 +222,7 @@ export default function LeadsPage() {
     'Recaptura BD': GitCommit,
   };
   
-  const kpiStages = [{name: 'all', color: 'bg-slate-500', colorHex: '#64748b'}, ...stages];
+  const kpiStages = [{name: 'all', color: 'bg-blue-500', colorHex: '#3b82f6'}, ...stages];
 
   return (
     <DashboardLayout>
@@ -239,21 +238,20 @@ export default function LeadsPage() {
        ) : (
         <main className="flex-1 flex flex-col gap-4 p-4 lg:p-6 bg-muted/40 overflow-hidden">
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-semibold">Administra y da seguimiento a todos tus leads potenciales</h1>
+            <h1 className="text-2xl font-semibold">Gestión de Leads</h1>
+            <p className='text-muted-foreground text-sm mb-4'>Administra y da seguimiento a todos tus leads potenciales</p>
             
-            <div className="flex items-center gap-2 overflow-x-auto py-4">
+             <div className="flex items-center gap-2 overflow-x-auto py-4">
               {kpiStages.map(stage => (
-                <div key={stage.name} className="flex flex-col items-center gap-1 flex-shrink-0 w-24">
-                  <StageKpiCard 
-                      key={stage.name}
-                      count={stageCounts[stage.name] || 0}
-                      icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
-                      color={stage.color}
-                      isSelected={filterStage === stage.name}
-                      onClick={() => setFilterStage(stage.name)}
-                  />
-                  <p className="text-xs text-center text-muted-foreground truncate w-full">{stage.name === 'all' ? 'Todos' : stage.name}</p>
-                </div>
+                <StageKpiCard 
+                    key={stage.name}
+                    title={stage.name === 'all' ? 'Todos' : stage.name}
+                    count={stageCounts[stage.name] || 0}
+                    icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
+                    color={stage.color}
+                    isSelected={filterStage === stage.name}
+                    onClick={() => setFilterStage(stage.name)}
+                />
               ))}
             </div>
           </div>
