@@ -10,6 +10,9 @@ import {
   Search,
   Upload,
   ArrowLeft,
+  Mail,
+  PhoneCall,
+  Eye
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -29,6 +32,7 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
+import { StageKpiCard } from '@/components/leads/stage-kpi-card';
 
 
 export default function LeadsPage() {
@@ -172,6 +176,13 @@ export default function LeadsPage() {
     });
     return counts;
   }, [leads]);
+
+  const kpiStages = [
+    { name: 'Nuevo Lead', icon: Mail, color: 'bg-blue-500' },
+    { name: 'Por Contactar', icon: PhoneCall, color: 'bg-cyan-500' },
+    { name: 'Por Visitar', icon: Eye, color: 'bg-teal-500' },
+    { name: 'Por Cotizar', icon: Contact, color: 'bg-yellow-500' },
+  ];
   
   return (
     <DashboardLayout>
@@ -212,6 +223,18 @@ export default function LeadsPage() {
                   <span>Nuevo Lead</span>
               </Button>
             </div>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {kpiStages.map(stage => (
+                  <StageKpiCard 
+                      key={stage.name}
+                      title={stage.name}
+                      count={stageCounts[stage.name] || 0}
+                      icon={stage.icon}
+                      color={stage.color}
+                  />
+              ))}
           </div>
 
           {/* Filters Pills */}
