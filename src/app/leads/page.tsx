@@ -13,6 +13,13 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { LeadCard } from '@/components/leads/lead-card';
 import { LeadDetailPanel } from '@/components/leads/lead-detail-panel';
 import { NewLeadForm } from '@/components/leads/new-lead-form';
@@ -21,7 +28,6 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 
 
@@ -227,7 +233,28 @@ export default function LeadsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className='flex flex-col sm:flex-row items-center gap-2'>
+             <div className='flex flex-col sm:flex-row items-center gap-2'>
+              <Select onValueChange={setFilterStage} defaultValue="all">
+                <SelectTrigger className="w-full sm:w-[200px]">
+                    <SelectValue placeholder="Filtrar por etapa..." />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">
+                      <div className="flex items-center justify-between w-full">
+                        <span>Todas las etapas</span>
+                        <Badge variant="secondary" className="ml-2 rounded-full">{stageCounts.all}</Badge>
+                      </div>
+                    </SelectItem>
+                    {stages.map(stage => (
+                      <SelectItem key={stage.name} value={stage.name}>
+                         <div className="flex items-center justify-between w-full">
+                            <span>{stage.name}</span>
+                            <Badge variant="secondary" className="ml-2 rounded-full">{stageCounts[stage.name] || 0}</Badge>
+                         </div>
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
               <Button variant="outline" className="gap-1.5 h-10 w-full sm:w-auto" onClick={() => setIsFilterSheetOpen(true)}>
                 <Filter className="h-4 w-4" />
                 <span>Filtros</span>
@@ -242,19 +269,6 @@ export default function LeadsPage() {
               </Button>
             </div>
           </div>
-          
-          <Tabs value={filterStage} onValueChange={setFilterStage} className="w-full">
-            <div className="overflow-x-auto">
-              <TabsList>
-                {filterStages.map((stage) => (
-                   <TabsTrigger key={stage.name} value={stage.name} className='gap-2'>
-                     <span>{stage.name === 'all' ? 'Todos' : stage.name}</span>
-                     <Badge variant={filterStage === stage.name ? 'default' : 'secondary'} className="rounded-full">{stageCounts[stage.name]}</Badge>
-                   </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-          </Tabs>
 
           {/* Leads List */}
           <div className='flex-1 space-y-3 overflow-y-auto pr-2'>
