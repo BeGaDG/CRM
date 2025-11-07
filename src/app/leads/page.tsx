@@ -241,7 +241,7 @@ export default function LeadsPage() {
             <h1 className="text-2xl font-semibold">Gestión de Leads</h1>
             <p className='text-muted-foreground text-sm mb-4'>Administra y da seguimiento a todos tus leads potenciales</p>
             
-             <div className="flex items-center gap-2 overflow-x-auto py-4">
+            <div className="flex flex-wrap items-center gap-2 py-4">
               {kpiStages.map(stage => (
                 <StageKpiCard 
                     key={stage.name}

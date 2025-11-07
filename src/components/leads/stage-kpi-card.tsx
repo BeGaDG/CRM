@@ -23,7 +23,7 @@ export const StageKpiCard = ({ title, count, icon: Icon, color, isSelected, onCl
         <Card
             onClick={onClick}
             className={cn(
-                "cursor-pointer flex-shrink-0 w-32 h-28 flex flex-col justify-center items-center gap-2 p-2 transition-all duration-200 border-2",
+                "cursor-pointer basis-28 flex-1 flex flex-col justify-center items-center gap-2 p-2 transition-all duration-200 border-2",
                 isSelected ? "border-primary bg-primary/5" : "bg-card hover:bg-muted"
             )}
         >
