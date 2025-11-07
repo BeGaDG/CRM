@@ -69,7 +69,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <Image src="/Icono.png" width={60} height={60} alt="Logo Sol & Cielo" />
               <div>
                   <h2 className="text-base font-semibold tracking-tight font-headline group-data-[collapsible=icon]:hidden">
-                    Panel Administrativo
+                    Panelo Administrativo
                   </h2>
                   <p className="text-xs text-sidebar-foreground/70 group-data-[collapsible=icon]:hidden">Sol y Cielo</p>
               </div>
