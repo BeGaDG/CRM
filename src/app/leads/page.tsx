@@ -12,7 +12,15 @@ import {
   ArrowLeft,
   Mail,
   PhoneCall,
-  Eye
+  Eye,
+  FileText,
+  Presentation,
+  GitCommit,
+  Repeat,
+  FileCheck,
+  FileX,
+  UserCheck,
+  Settings2
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -177,12 +185,19 @@ export default function LeadsPage() {
     return counts;
   }, [leads]);
 
-  const kpiStages = [
-    { name: 'Nuevo Lead', icon: Mail, color: 'bg-blue-500' },
-    { name: 'Por Contactar', icon: PhoneCall, color: 'bg-cyan-500' },
-    { name: 'Por Visitar', icon: Eye, color: 'bg-teal-500' },
-    { name: 'Por Cotizar', icon: Contact, color: 'bg-yellow-500' },
-  ];
+  const stageIcons = {
+    'Nuevo Lead': Mail,
+    'Por Contactar': PhoneCall,
+    'Por Visitar': Eye,
+    'Por Cotizar': FileText,
+    'Por Presentar Cotización': Presentation,
+    'Ajustar Cotización': Settings2,
+    'Seguimiento a la Cotización': Repeat,
+    'Por Contratar': UserCheck,
+    'Finalizados': FileCheck,
+    'No': FileX,
+    'Recaptura BD': GitCommit,
+  };
   
   return (
     <DashboardLayout>
@@ -225,13 +240,13 @@ export default function LeadsPage() {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {kpiStages.map(stage => (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {stages.map(stage => (
                   <StageKpiCard 
                       key={stage.name}
                       title={stage.name}
                       count={stageCounts[stage.name] || 0}
-                      icon={stage.icon}
+                      icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
                       color={stage.color}
                   />
               ))}
@@ -287,3 +302,5 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
+
+    
