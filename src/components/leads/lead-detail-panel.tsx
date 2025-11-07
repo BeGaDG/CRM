@@ -13,11 +13,11 @@ import { StageForm } from './stage-form';
 import type { Lead, Advisor } from '@/lib/data/leads-data';
 import { stages } from '@/lib/data/leads-data';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Textarea } from '../ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { SolarPanelIcon } from '@/components/icons';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
 import { FullLeadForm } from './full-lead-form';
+import { ActivityHistory } from './activity-history';
 
 
 const AmbosIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -190,52 +190,6 @@ const AdvisorAssign = ({ lead, advisors, onAssignLead }: { lead: Lead; advisors:
     );
 };
 
-const QuickNotes = () => {
-    const notes = [
-        {
-            id: 'note-1',
-            author: 'Ana Gómez',
-            avatar: '/avatars/user-2.jpg',
-            content: 'El cliente está muy interesado pero necesita que ajustemos el precio. Le preocupa el ROI a corto plazo.',
-            date: 'Hace 2 horas',
-        },
-        {
-            id: 'note-2',
-            author: 'Ana Gómez',
-            avatar: '/avatars/user-2.jpg',
-            content: 'Se envió la cotización v2 con el descuento solicitado. A la espera de comentarios.',
-            date: 'Ayer',
-        }
-    ];
-
-    return (
-        <Card>
-            <CardHeader><CardTitle className="text-base">Notas Rápidas</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-                <div className="space-y-4">
-                    {notes.map(note => (
-                        <div key={note.id} className="flex items-start gap-3">
-                            <Avatar className="h-8 w-8 border">
-                                <AvatarImage src={note.avatar} />
-                                <AvatarFallback>{note.author.substring(0,1)}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 text-sm bg-muted/50 p-3 rounded-lg">
-                                <p className="font-medium">{note.author} <span className="text-xs text-muted-foreground ml-2">{note.date}</span></p>
-                                <p className="text-muted-foreground">{note.content}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <Separator />
-                <div className="space-y-2">
-                    <Textarea placeholder='Escribe una nota rápida...'/>
-                    <Button className="w-full">Guardar Nota</Button>
-                </div>
-            </CardContent>
-        </Card>
-    )
-}
-
 
 export const LeadDetailPanel = ({ 
   lead, 
@@ -336,9 +290,9 @@ export const LeadDetailPanel = ({
                             <CardDescription>Avanza el lead al siguiente paso o muévelo manually a otra etapa.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            {nextStages.length > 0 ? (
+                           {nextStages.length > 0 ? (
                                 <div className="space-y-2">
-                                    <Button onClick={() => onUpdateStatus(nextStages[0])} size="lg" className="w-full font-bold" disabled={!canAdvance} title={!canAdvance ? "Completa los campos obligatorios para avanzar" : ""}>
+                                     <Button onClick={() => onUpdateStatus(nextStages[0])} size="lg" className="w-full font-bold" disabled={!canAdvance} title={!canAdvance ? "Completa los campos obligatorios para avanzar" : ""}>
                                         <ArrowRight className="mr-2 h-4 w-4" />
                                         {nextStages[0]}
                                     </Button>
@@ -387,7 +341,7 @@ export const LeadDetailPanel = ({
                 <div className="space-y-6">
                    <CollectedInfo lead={lead} onEditClick={() => setIsFullEditOpen(true)} />
                    <AdvisorAssign lead={lead} advisors={advisors} onAssignLead={onAssignLead} />
-                   <QuickNotes />
+                   <ActivityHistory activities={lead.activityHistory || []} />
                 </div>
             </div>
 

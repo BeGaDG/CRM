@@ -28,7 +28,7 @@ import { Input } from '@/components/ui/input';
 import { LeadCard } from '@/components/leads/lead-card';
 import { LeadDetailPanel } from '@/components/leads/lead-detail-panel';
 import { NewLeadForm } from '@/components/leads/new-lead-form';
-import type { Lead } from '@/lib/data/leads-data';
+import type { Lead, Activity } from '@/lib/data/leads-data';
 import {
   Select,
   SelectContent,
@@ -62,14 +62,29 @@ export default function LeadsPage() {
     }
   }, [pathname]);
 
+  const addActivity = (lead: Lead, description: string): Lead => {
+    const newActivity: Activity = {
+      date: new Date().toISOString(),
+      description,
+      user: "Usuario Actual", // Placeholder for logged-in user
+    };
+    return {
+      ...lead,
+      activityHistory: [newActivity, ...(lead.activityHistory || [])],
+    };
+  };
+
   const handleUpdateStatus = (stage: string) => {
      if (selectedLead) {
+      const description = `Cambió el estado a "${stage}".`;
+      const leadWithActivity = addActivity(selectedLead, description);
+
       const updatedLeads = leads.map(lead =>
-        lead.id === selectedLead.id ? { ...lead, status: stage, lastContact: 'Ahora' } : lead
+        lead.id === selectedLead.id ? { ...leadWithActivity, status: stage, lastContact: 'Ahora' } : lead
       );
       setLeads(updatedLeads);
 
-      const updatedSelectedLead = { ...selectedLead, status: stage, lastContact: 'Ahora' };
+      const updatedSelectedLead = { ...leadWithActivity, status: stage, lastContact: 'Ahora' };
       setSelectedLead(updatedSelectedLead);
     }
   };
@@ -78,12 +93,15 @@ export default function LeadsPage() {
     if (selectedLead) {
       const advisor = advisors.find(a => a.id === advisorId);
       if (advisor) {
+        const description = `Reasignado al asesor "${advisor.name}".`;
+        const leadWithActivity = addActivity(selectedLead, description);
+
         const updatedLeads = leads.map(lead =>
-          lead.id === selectedLead.id ? { ...lead, advisorId: advisor.id, advisorName: advisor.name, lastContact: 'Ahora' } : lead
+          lead.id === selectedLead.id ? { ...leadWithActivity, advisorId: advisor.id, advisorName: advisor.name, lastContact: 'Ahora' } : lead
         );
         setLeads(updatedLeads);
 
-        const updatedSelectedLead = { ...selectedLead, advisorId: advisor.id, advisorName: advisor.name, lastContact: 'Ahora' };
+        const updatedSelectedLead = { ...leadWithActivity, advisorId: advisor.id, advisorName: advisor.name, lastContact: 'Ahora' };
         setSelectedLead(updatedSelectedLead);
       }
     }
@@ -95,7 +113,7 @@ export default function LeadsPage() {
   };
 
   const handleSaveLead = (newLeadData: Partial<Lead>) => {
-      const newLead: Lead = {
+      let newLead: Lead = {
         id: `lead-${Date.now()}`,
         name: newLeadData.name || 'Nuevo Lead',
         city: newLeadData.city || 'Por definir',
@@ -109,7 +127,11 @@ export default function LeadsPage() {
         collectedData: {},
         advisorId: 'user-1', // Default assignment
         advisorName: 'Carlos Ruiz',
+        activityHistory: [],
       };
+      const description = `Lead creado.`;
+      newLead = addActivity(newLead, description);
+
       setLeads([newLead, ...leads]);
   };
   
@@ -124,6 +146,11 @@ export default function LeadsPage() {
       collectedData: {},
       advisorId: 'user-1', // Default assignment
       advisorName: 'Carlos Ruiz',
+      activityHistory: [{
+        date: new Date().toISOString(),
+        description: 'Lead importado desde archivo.',
+        user: 'Sistema',
+      }],
     }));
     setLeads([...newLeads, ...leads]);
     setIsImportSheetOpen(false);
@@ -131,10 +158,13 @@ export default function LeadsPage() {
 
   const handleSaveStageData = (stage: string, data: any) => {
     if (selectedLead) {
+      const description = `Se actualizaron los datos para la etapa "${stage}".`;
+      const leadWithActivity = addActivity(selectedLead, description);
+
       const updatedLeads = leads.map(l => {
         if (l.id === selectedLead.id) {
           return {
-            ...l,
+            ...leadWithActivity,
             collectedData: {
               ...l.collectedData,
               ...data,
@@ -146,9 +176,9 @@ export default function LeadsPage() {
       setLeads(updatedLeads);
 
       const updatedSelectedLead = {
-        ...selectedLead,
+        ...leadWithActivity,
         collectedData: {
-          ...selectedLead.collectedData,
+          ...leadWithActivity.collectedData,
           ...data,
         },
       };

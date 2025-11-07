@@ -10,6 +10,12 @@ export type Advisor = {
   name: string;
 }
 
+export type Activity = {
+  date: string;
+  description: string;
+  user: string;
+};
+
 const leadExample = {
   id: 'lead-1',
   name: 'Constructora S.A.S',
@@ -29,6 +35,7 @@ const leadExample = {
   },
   advisorId: 'user-1',
   advisorName: 'Carlos Ruiz',
+  activityHistory: [] as Activity[],
 };
 export type Lead = typeof leadExample;
 
@@ -60,8 +67,12 @@ export const advisors: Advisor[] = [
 
 
 export const initialLeads: Lead[] = [
-  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', interestType: 'planta-solar', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', creationDate: new Date().toISOString(), source: 'Página Web', collectedData: { 'nic': '123456-7', 'consumo': 15000, 'valor_cotizacion': 0, 'potencia_pico': '' }, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
-  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', interestType: 'comercializadora', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', creationDate: new Date().toISOString(), source: 'Referido', collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
+  { id: 'lead-1', name: 'Constructora S.A.S', city: 'Bogotá D.C.', lastContact: 'Hace 2h', interestType: 'planta-solar', status: 'Por Visitar', phone: '310 123 4567', email: 'contacto@constructora.com', creationDate: new Date().toISOString(), source: 'Página Web', collectedData: { 'nic': '123456-7', 'consumo': 15000, 'valor_cotizacion': 0, 'potencia_pico': '' }, advisorId: 'user-1', advisorName: 'Carlos Ruiz', activityHistory: [
+      { date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), description: 'Cambió el estado a "Por Visitar".', user: 'Carlos Ruiz' },
+      { date: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), description: 'Cambió el estado a "Por Contactar".', user: 'Carlos Ruiz' },
+      { date: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), description: 'Lead creado.', user: 'Sistema' },
+  ] },
+  { id: 'lead-2', name: 'Inversiones XYZ', city: 'Medellín', lastContact: 'Ayer', interestType: 'comercializadora', status: 'Por Visitar', phone: '312 987 6543', email: 'gerencia@inversionesxyz.co', creationDate: new Date().toISOString(), source: 'Referido', collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz', activityHistory: [] },
   { id: 'lead-3', name: 'Logística Total', city: 'Cali', lastContact: 'Hace 3 días', interestType: 'ambos', status: 'Seguimiento a la Cotización', phone: '315 555 8888', email: 'logistica.total@email.com', creationDate: new Date().toISOString(), source: 'Redes Sociales', collectedData: {
     nic: '555888-1',
     consumo: 25000,
@@ -86,10 +97,15 @@ export const initialLeads: Lead[] = [
     factura_file: 'factura_logistica_total.pdf',
     cotizacion_file: 'cotizacion_v2_logistica.pdf',
     contrato_file: 'borrador_contrato.pdf',
-  }, advisorId: 'user-2', advisorName: 'Ana Gómez' },
-  { id: 'lead-4', name: 'Nuevo Lead Alfa', city: 'Barranquilla', lastContact: 'Hace 4 días', interestType: 'planta-solar', status: 'Nuevo Lead', phone: '318 111 2233', email: 'alfa@cliente.com', creationDate: threeDaysAgo.toISOString(), source: 'Página Web', collectedData: {}, advisorId: 'user-2', advisorName: 'Ana Gómez' },
-  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', interestType: 'comercializadora', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', creationDate: new Date().toISOString(), source: 'Referido', collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz' },
-  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', interestType: 'planta-solar', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', creationDate: new Date().toISOString(), source: 'Otro', collectedData: {'nic': '987654-3', 'consumo': 8000}, advisorId: 'user-3', advisorName: 'Luisa Fernández' },
-  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', interestType: 'ambos', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', creationDate: new Date().toISOString(), source: 'Página Web', collectedData: {'nic': '555444-1', 'consumo': 25000, 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' }, advisorId: 'user-3', advisorName: 'Luisa Fernández' },
-  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', interestType: 'comercializadora', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', creationDate: new Date().toISOString(), source: 'Referido', collectedData: {}, advisorId: 'user-4', advisorName: 'Jorge Arias' },
+  }, advisorId: 'user-2', advisorName: 'Ana Gómez', activityHistory: [
+      { date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), description: 'Se guardaron notas en "Seguimiento a la Cotización".', user: 'Ana Gómez' },
+      { date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), description: 'Cambió el estado a "Seguimiento a la Cotización".', user: 'Ana Gómez' },
+      { date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), description: 'Reasignado al asesor "Ana Gómez".', user: 'Carlos Ruiz' },
+      { date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), description: 'Lead creado.', user: 'Sistema' },
+  ] },
+  { id: 'lead-4', name: 'Nuevo Lead Alfa', city: 'Barranquilla', lastContact: 'Hace 4 días', interestType: 'planta-solar', status: 'Nuevo Lead', phone: '318 111 2233', email: 'alfa@cliente.com', creationDate: threeDaysAgo.toISOString(), source: 'Página Web', collectedData: {}, advisorId: 'user-2', advisorName: 'Ana Gómez', activityHistory: [] },
+  { id: 'lead-5', name: 'Contacto Pendiente Beta', city: 'Cartagena', lastContact: 'Hace 5h', interestType: 'comercializadora', status: 'Por Contactar', phone: '317 444 5566', email: 'beta@contacto.com', creationDate: new Date().toISOString(), source: 'Referido', collectedData: {}, advisorId: 'user-1', advisorName: 'Carlos Ruiz', activityHistory: [] },
+  { id: 'lead-6', name: 'Cotización Gamma', city: 'Bogotá D.C.', lastContact: 'Hace 2 días', interestType: 'planta-solar', status: 'Por Cotizar', phone: '316 777 8899', email: 'gamma@cotizacion.com', creationDate: new Date().toISOString(), source: 'Otro', collectedData: {'nic': '987654-3', 'consumo': 8000}, advisorId: 'user-3', advisorName: 'Luisa Fernández', activityHistory: [] },
+  { id: 'lead-7', name: 'Presentación Delta', city: 'Medellín', lastContact: 'Hoy', interestType: 'ambos', status: 'Por Presentar Cotización', phone: '319 000 1122', email: 'delta@presentacion.com', creationDate: new Date().toISOString(), source: 'Página Web', collectedData: {'nic': '555444-1', 'consumo': 25000, 'valor_cotizacion': 120000000, 'potencia_pico': '50kWp' }, advisorId: 'user-3', advisorName: 'Luisa Fernández', activityHistory: [] },
+  { id: 'lead-8', name: 'Contrato Epsilon', city: 'Cali', lastContact: 'Hace 1 semana', interestType: 'comercializadora', status: 'Por Contratar', phone: '314 333 4455', email: 'epsilon@contrato.com', creationDate: new Date().toISOString(), source: 'Referido', collectedData: {}, advisorId: 'user-4', advisorName: 'Jorge Arias', activityHistory: [] },
 ];
