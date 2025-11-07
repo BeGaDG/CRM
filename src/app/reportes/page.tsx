@@ -39,21 +39,8 @@ export default function ReportesPage() {
                 <FilterBar />
                 
                 {/* KPIs section */}
-                <div className="hidden sm:grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     {kpisData.map(kpi => <KpiCard key={kpi.title} {...kpi} />)}
-                </div>
-                <div className="sm:hidden">
-                    <Carousel opts={{ align: "start" }} className="w-full">
-                        <CarouselContent>
-                            {kpisData.map((kpi, index) => (
-                            <CarouselItem key={index} className="basis-4/5">
-                                <KpiCard {...kpi} />
-                            </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                        <CarouselPrevious className="ml-12"/>
-                        <CarouselNext className="mr-12"/>
-                    </Carousel>
                 </div>
 
                 {/* Main charts section */}
