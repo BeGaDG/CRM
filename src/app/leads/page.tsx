@@ -9,18 +9,6 @@ import {
   PlusCircle,
   Search,
   Upload,
-  ArrowLeft,
-  Mail,
-  PhoneCall,
-  Eye,
-  FileText,
-  Presentation,
-  GitCommit,
-  Repeat,
-  FileCheck,
-  FileX,
-  UserCheck,
-  Settings2
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -33,7 +21,9 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
 import { stages, advisors, initialLeads } from '@/lib/data/leads-data';
-import { StageKpiCard } from '@/components/leads/stage-kpi-card';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
@@ -206,22 +196,7 @@ export default function LeadsPage() {
     return counts;
   }, [leads]);
 
-  const stageIcons = {
-    'all': Contact,
-    'Nuevo Lead': Mail,
-    'Por Contactar': PhoneCall,
-    'Por Visitar': Eye,
-    'Por Cotizar': FileText,
-    'Por Presentar Cotización': Presentation,
-    'Ajustar Cotización': Settings2,
-    'Seguimiento a la Cotización': Repeat,
-    'Por Contratar': UserCheck,
-    'Finalizados': FileCheck,
-    'No': FileX,
-    'Recaptura BD': GitCommit,
-  };
-  
-  const kpiStages = [{name: 'all', color: 'bg-blue-500', colorHex: '#3b82f6'}, ...stages];
+  const filterStages = [{name: 'all'}, ...stages];
 
   return (
     <DashboardLayout>
@@ -239,23 +214,9 @@ export default function LeadsPage() {
           <div className="flex-shrink-0">
             <h1 className="text-2xl font-semibold">Gestión de Leads</h1>
             <p className='text-muted-foreground text-sm mb-4'>Administra y da seguimiento a todos tus leads potenciales</p>
-            
-            <div className="flex flex-wrap items-center gap-2 py-4">
-              {kpiStages.map(stage => (
-                <StageKpiCard
-                  key={stage.name}
-                  title={stage.name === 'all' ? 'Todos' : stage.name}
-                  count={stageCounts[stage.name] || 0}
-                  icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
-                  color={stage.color}
-                  isSelected={filterStage === stage.name}
-                  onClick={() => setFilterStage(stage.name)}
-                />
-              ))}
-            </div>
           </div>
 
-           <div className='flex flex-col sm:flex-row gap-4 flex-shrink-0'>
+          <div className='flex flex-col sm:flex-row gap-4 flex-shrink-0'>
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -282,6 +243,16 @@ export default function LeadsPage() {
             </div>
           </div>
           
+          <Tabs value={filterStage} onValueChange={setFilterStage} className='overflow-x-auto'>
+              <TabsList>
+                {filterStages.map((stage) => (
+                   <TabsTrigger key={stage.name} value={stage.name} className='gap-2'>
+                     <span>{stage.name === 'all' ? 'Todos' : stage.name}</span>
+                     <Badge variant={filterStage === stage.name ? 'default' : 'secondary'} className="rounded-full">{stageCounts[stage.name]}</Badge>
+                   </TabsTrigger>
+                ))}
+              </TabsList>
+          </Tabs>
 
           {/* Leads List */}
           <div className='flex-1 space-y-3 overflow-y-auto pr-2'>

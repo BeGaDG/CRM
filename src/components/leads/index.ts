@@ -8,5 +8,4 @@ export * from './lead-filter-sheet';
 export * from './stage-forms';
 export * from './lead-status-flow';
 export * from './full-lead-form';
-export * from './stage-kpi-card';
 export * from './activity-history';
