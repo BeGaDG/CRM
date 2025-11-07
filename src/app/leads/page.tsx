@@ -29,13 +29,6 @@ import { LeadCard } from '@/components/leads/lead-card';
 import { LeadDetailPanel } from '@/components/leads/lead-detail-panel';
 import { NewLeadForm } from '@/components/leads/new-lead-form';
 import type { Lead, Activity } from '@/lib/data/leads-data';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { ImportLeadsSheet } from '@/components/leads/import-leads-sheet';
 import { LeadFilterSheet } from '@/components/leads/lead-filter-sheet';
@@ -230,7 +223,7 @@ export default function LeadsPage() {
     'Recaptura BD': GitCommit,
   };
   
-  const kpiStages = [{name: 'all', ...stages[0]}, ...stages];
+  const kpiStages = [{name: 'all', color: 'bg-slate-500', colorHex: '#64748b'}, ...stages];
 
   return (
     <DashboardLayout>
@@ -250,15 +243,17 @@ export default function LeadsPage() {
             
             <div className="flex items-center gap-2 overflow-x-auto py-4">
               {kpiStages.map(stage => (
+                <div key={stage.name} className="flex flex-col items-center gap-1 flex-shrink-0 w-24">
                   <StageKpiCard 
                       key={stage.name}
-                      title={stage.name === 'all' ? 'Todos los Leads' : stage.name}
                       count={stageCounts[stage.name] || 0}
                       icon={stageIcons[stage.name as keyof typeof stageIcons] || Contact}
                       color={stage.color}
                       isSelected={filterStage === stage.name}
                       onClick={() => setFilterStage(stage.name)}
                   />
+                  <p className="text-xs text-center text-muted-foreground truncate w-full">{stage.name === 'all' ? 'Todos' : stage.name}</p>
+                </div>
               ))}
             </div>
           </div>
@@ -323,5 +318,3 @@ export default function LeadsPage() {
     </DashboardLayout>
   );
 }
-
-    
