@@ -243,7 +243,8 @@ export default function LeadsPage() {
             </div>
           </div>
           
-          <Tabs value={filterStage} onValueChange={setFilterStage} className='overflow-x-auto'>
+          <Tabs value={filterStage} onValueChange={setFilterStage} className="w-full">
+            <div className="overflow-x-auto">
               <TabsList>
                 {filterStages.map((stage) => (
                    <TabsTrigger key={stage.name} value={stage.name} className='gap-2'>
@@ -252,6 +253,7 @@ export default function LeadsPage() {
                    </TabsTrigger>
                 ))}
               </TabsList>
+            </div>
           </Tabs>
 
           {/* Leads List */}
