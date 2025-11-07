@@ -18,8 +18,8 @@ export const StageKpiCard = ({ title, count, icon: Icon, color }: StageKpiCardPr
     return (
         <Card className="shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-3 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                    <Icon className={cn("h-4 w-4", iconColor)} />
+                <div className="flex items-center gap-2 min-w-0">
+                    <Icon className={cn("h-4 w-4 flex-shrink-0", iconColor)} />
                     <p className="text-xs font-medium text-muted-foreground truncate">{title}</p>
                 </div>
                 <p className="text-lg font-bold">{count}</p>
@@ -27,5 +27,3 @@ export const StageKpiCard = ({ title, count, icon: Icon, color }: StageKpiCardPr
         </Card>
     );
 };
-
-    
